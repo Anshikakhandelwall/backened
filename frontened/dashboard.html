@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+<link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<div class="logo">
+🎓 <div>
+<h3>SmartTimetable</h3>
+<p>Alert System</p>
+</div>
+</div>
+
+<div class="profile">
+<div class="avatar">I</div>
+<div>
+<h4>levi ackerman</h4>
+<span class="role">Student</span>
+</div>
+</div>
+
+
+<ul class="menu">
+<li class="active"><a href="dashboard.html">Dashboard</a></li>
+<li><a href="mytimetable.html">My Timetable</a></li>
+<li><a href="iks.html">IKS Credits</a></li>
+<li><a href="events.html">Events</a></li>
+<li><a href="changepassword.html">Change Password </a></li>
+</ul>
+
+<div class="logout">
+        <a href="signin.html" onclick="logoutUser()">Sign Out</a>
+      </div>
+
+</div>
+
+ <!-- MAIN CONTENT -->
+    <div class="main">
+
+      <!-- HEADER -->
+      <div class="header">
+        <div>
+          <h2>Dashboard</h2>
+          <p class="subtitle">Welcome back to your student portal</p>
+        </div>
+        <span id="date"></span>
+      </div>
+
+      <!-- GREETING CARD -->
+      <div class="welcome">
+
+        <div>
+          <p class="day" id="todayDay">WEDNESDAY</p>
+          <h1 id="greetingText">Good Evening, Levi! 👋</h1>
+          <p>Here's your schedule for today.</p>
+        </div>
+
+        <div class="class-count">
+          <h2 id="classCount">3</h2>
+          <p>CLASSES TODAY</p>
+        </div>
+
+      </div>
+
+      <!-- ALERT -->
+      <div class="alert">
+        🔔 You'll get a popup reminder 5 minutes before each lecture starts.
+      </div>
+
+      <!-- TODAY'S LECTURES -->
+      <h3 class="section-title">Today's Lectures</h3>
+
+      <div id="lectureContainer">
+
+        <div class="lecture">
+          <div class="time">
+            09:00<br>10:00
+          </div>
+
+          <div class="details">
+            <h4>Machine Learning</h4>
+            <p>Room 301</p>
+          </div>
+
+          <div class="status awaiting">Awaiting</div>
+        </div>
+
+        <div class="lecture">
+          <div class="time">
+            10:15<br>12:15
+          </div>
+
+          <div class="details">
+            <h4>Database Management</h4>
+            <p>Lab C</p>
+          </div>
+
+          <div class="status ongoing">Ongoing</div>
+        </div>
+
+        <div class="lecture">
+          <div class="time">
+            12:30<br>01:30
+          </div>
+
+          <div class="details">
+            <h4>English Communication</h4>
+            <p>Room 204</p>
+          </div>
+
+          <div class="status completed">Completed</div>
+        </div>
+
+      </div>
+
+      <!-- UPCOMING EVENT -->
+      <h3 class="section-title">Upcoming Event</h3>
+
+      <div class="event-card">
+        <div>
+          <h4>Hackathon 2026</h4>
+          <p>Starts on 5 April 2026</p>
+        </div>
+        <button>View Details</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script type="module">
+  // ── Auth guard ─────────────────────────────────────────────
+  const token    = localStorage.getItem('accessToken');
+  const userName = localStorage.getItem('userName') || 'Student';
+  const userRole = localStorage.getItem('userRole') || 'student';
+
+  if (!token) {
+    window.location.href = 'signin.html';
+  }
+
+  // ── Logout ─────────────────────────────────────────────────
+  window.logoutUser = async () => {
+    await fetch('http://localhost:3000/api/auth/logout', {
+      method:      'POST',
+      credentials: 'include',
+    });
+    localStorage.clear();
+    window.location.href = 'signin.html';
+  };
+
+  // ── Fill user info ──────────────────────────────────────────
+  const avatarEl = document.querySelector('.avatar');
+  const nameEl   = document.querySelector('.profile h4');
+  const roleEl   = document.querySelector('.role');
+
+  if (avatarEl) avatarEl.textContent = userName.charAt(0).toUpperCase();
+  if (nameEl)   nameEl.textContent   = userName;
+  if (roleEl)   roleEl.textContent   =
+    userRole.charAt(0).toUpperCase() + userRole.slice(1);
+
+  // ── Date & greeting ─────────────────────────────────────────
+  const now    = new Date();
+  const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  const dateEl = document.getElementById('date');
+  if (dateEl)
+    dateEl.textContent =
+      `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+  const todayDayEl = document.getElementById('todayDay');
+  if (todayDayEl)
+    todayDayEl.textContent = days[now.getDay()].toUpperCase();
+
+  const hour     = now.getHours();
+  const greeting = hour < 12 ? 'Good Morning'
+                 : hour < 17 ? 'Good Afternoon'
+                 : 'Good Evening';
+
+  const greetEl = document.getElementById('greetingText');
+  if (greetEl)
+    greetEl.textContent = `${greeting}, ${userName.split(' ')[0]}! 👋`;
+</script>
+
+
+</body>
+</html>

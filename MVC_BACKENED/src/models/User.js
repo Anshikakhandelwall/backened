@@ -43,7 +43,8 @@ const UserModel = {
 
   createAdmin: async ({ userId, role_type }) => {
     await db.query(
-      `INSERT INTO admins (admin_id, role_type) VALUES (?, ?)`,
+      `INSERT INTO admins (admin_id, role_type)
+       VALUES (?, ?)`,
       [userId, role_type]
     );
   },
@@ -57,7 +58,9 @@ const UserModel = {
 
   clearOTP: async (email) => {
     await db.query(
-      `UPDATE users SET otp_code = NULL, otp_expiry = NULL WHERE email = ?`,
+      `UPDATE users
+       SET otp_code = NULL, otp_expiry = NULL
+       WHERE email = ?`,
       [email]
     );
   },
@@ -77,6 +80,7 @@ const UserModel = {
       [userId]
     );
   },
+
 };
 
 export default UserModel;

@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Timetable</title>
+   <link rel="stylesheet" href="mytimetable.css">
+</head>
+<body>
+
+  <div class="container">
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<div class="logo">
+🎓 <div>
+<h3>SmartTimetable</h3>
+<p>Alert System</p>
+</div>
+</div>
+
+<div class="profile">
+<div class="avatar">I</div>
+<div>
+<h4>levi ackerman</h4>
+<span class="role">Student</span>
+</div>
+</div>
+
+
+<ul class="menu">
+<li class="active"><a href="dashboard.html">Dashboard</a></li>
+<li><a href="mytimetable.html">My Timetable</a></li>
+<li><a href="iks.html">IKS Credits</a></li>
+<li><a href="events.html">Events</a></li>
+<li><a href="changepassword.html">Change Password </a></li>
+</ul>
+
+<div class="logout">
+        <a href="signin.html" onclick="logoutUser()">Sign Out</a>
+      </div>
+
+</div>
+
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+      <div class="header">
+        <div>
+          <h2>My Timetable</h2>
+          <p class="subtitle">Your weekly class schedule</p>
+        </div>
+
+        <div class="header-actions">
+          <button class="download-btn">Download PDF</button>
+        </div>
+      </div>
+
+      <!-- TOP CARDS -->
+      <div class="summary-cards">
+
+        <div class="summary-card">
+          <h3>Total Subjects</h3>
+          <p>6</p>
+        </div>
+
+        <div class="summary-card">
+          <h3>Classes This Week</h3>
+          <p>28</p>
+        </div>
+
+        <div class="summary-card">
+          <h3>Labs</h3>
+          <p>4</p>
+        </div>
+
+        <div class="summary-card">
+          <h3>Free Hours</h3>
+          <p>7</p>
+        </div>
+
+      </div>
+
+      <!-- TIMETABLE TABLE -->
+      <div class="table-container">
+        <table>
+    <thead>
+      <tr>
+        <th>Day</th>
+        <th>9:20 - 10:10</th>
+        <th>10:10 - 11:00</th>
+        <th>11:00 - 11:50</th>
+        <th>11:50 - 12:40</th>
+        <th>12:40 - 1:40</th>
+        <th>1:40 - 2:30</th>
+        <th>2:30 - 3:20</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td class="day">Monday</td>
+
+        <td>
+          <div class="subject-card ml">
+            <h4>Machine Learning</h4>
+            <p>Room 301</p>
+          </div>
+        </td>
+
+        <td>
+          <div class="subject-card dbms">
+            <h4>DBMS</h4>
+            <p>Lab C</p>
+          </div>
+        </td>
+
+        <td>
+          <div class="subject-card maths">
+            <h4>Mathematics</h4>
+            <p>Room 102</p>
+          </div>
+        </td>
+
+        <td>
+          <div class="subject-card english">
+            <h4>English</h4>
+            <p>Room 204</p>
+          </div>
+        </td>
+
+        <td class="break">Break</td>
+
+        <td>
+          <div class="subject-card lab">
+            <h4>Computer Lab</h4>
+            <p>Lab A</p>
+          </div>
+        </td>
+
+        <td>-</td>
+      </tr>
+
+      <tr>
+        <td class="day">Tuesday</td>
+
+        <td>
+          <div class="subject-card dbms">
+            <h4>DBMS</h4>
+            <p>Lab C</p>
+          </div>
+        </td>
+
+        <td>
+          <div class="subject-card ml">
+            <h4>Machine Learning</h4>
+            <p>Room 301</p>
+          </div>
+        </td>
+
+        <td>-</td>
+
+        <td>
+          <div class="subject-card maths">
+            <h4>Mathematics</h4>
+            <p>Room 102</p>
+          </div>
+        </td>
+
+        <td class="break">Break</td>
+
+        <td>
+          <div class="subject-card english">
+            <h4>English</h4>
+            <p>Room 204</p>
+          </div>
+        </td>
+
+        <td>
+          <div class="subject-card lab">
+            <h4>Computer Lab</h4>
+            <p>Lab A</p>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="day">Wednesday</td>
+
+        <td>
+          <div class="subject-card maths">
+            <h4>Mathematics</h4>
+            <p>Room 102</p>
+          </div>
+        </td>
+
+        <td>
+          <div class="subject-card english">
+            <h4>English</h4>
+            <p>Room 204</p>
+          </div>
+        </td>
+
+        <td>
+          <div class="subject-card ml">
+            <h4>Machine Learning</h4>
+            <p>Room 301</p>
+          </div>
+        </td>
+
+        <td>-</td>
+
+        <td class="break">Break</td>
+
+        <td>
+          <div class="subject-card dbms">
+            <h4>DBMS</h4>
+            <p>Lab C</p>
+          </div>
+        </td>
+
+        <td>
+          <div class="subject-card lab">
+            <h4>Computer Lab</h4>
+            <p>Lab A</p>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="day">Thursday</td>
+
+        <td>
+          <div class="subject-card ml">
+            <h4>Machine Learning</h4>
+            <p>Room 301</p>
+          </div>
+        </td>
+
+        <td>
+          <div class="subject-card maths">
+            <h4>Mathematics</h4>
+            <p>Room 102</p>
+          </div>
+        </td>
+
+        <td>
+          <div class="subject-card dbms">
+            <h4>DBMS</h4>
+            <p>Lab C</p>
+          </div>
+        </td>
+
+        <td>-</td>
+
+        <td class="break">Break</td>
+
+        <td>
+          <div class="subject-card english">
+            <h4>English</h4>
+            <p>Room 204</p>
+          </div>
+        </td>
+
+        <td>
+          <div class="subject-card lab">
+            <h4>Computer Lab</h4>
+            <p>Lab A</p>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="day">Friday</td>
+
+        <td>
+          <div class="subject-card english">
+            <h4>English</h4>
+            <p>Room 204</p>
+          </div>
+        </td>
+
+        <td>
+          <div class="subject-card lab">
+            <h4>Computer Lab</h4>
+            <p>Lab A</p>
+          </div>
+        </td>
+
+        <td>
+          <div class="subject-card maths">
+            <h4>Mathematics</h4>
+            <p>Room 102</p>
+          </div>
+        </td>
+
+        <td>
+          <div class="subject-card ml">
+            <h4>Machine Learning</h4>
+            <p>Room 301</p>
+          </div>
+        </td>
+
+        <td class="break">Break</td>
+
+        <td>
+          <div class="subject-card dbms">
+            <h4>DBMS</h4>
+            <p>Lab C</p>
+          </div>
+        </td>
+
+        <td>-</td>
+      </tr>
+
+      <tr>
+        <td class="day">Saturday</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td class="break">Break</td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+      <!-- LEGEND -->
+      <div class="legend">
+        <div><span class="box ml-box"></span> Machine Learning</div>
+        <div><span class="box dbms-box"></span> DBMS</div>
+        <div><span class="box maths-box"></span> Mathematics</div>
+        <div><span class="box english-box"></span> English</div>
+        <div><span class="box lab-box"></span> Lab</div>
+      </div>
+
+    </div>
+
+  </div>
+  

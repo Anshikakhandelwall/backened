@@ -7,22 +7,25 @@ import {
   forgotPassword,
   verifyOTP,
   resetPassword,
+  changePassword,
 } from '../controller/authController.js';
 import { authenticate } from '../middleware/auth.middleware.js';
-import { authorise }    from '../middleware/role.middleware.js';
+import { authorise } from '../middleware/role.middleware.js';
 
 const router = express.Router();
 
-// Public
-router.post('/register',   register);
-router.post('/login',      login);
-router.post('/refresh',    refresh);
-router.post('/logout',     logout);
-router.post('/forgot',     forgotPassword);
+// ── Public ─────────────────────────────────────────────────────────────────
+router.post('/register', register);
+router.post('/login', login);
+router.post('/refresh', refresh);
+router.post('/logout', logout);
+router.post('/forgot', forgotPassword);
 router.post('/verify-otp', verifyOTP);
-router.post('/reset',      resetPassword);
+router.post('/reset', resetPassword);
 
-// Protected
+// ── Protected ──────────────────────────────────────────────────────────────
+router.post('/change-password', authenticate, changePassword);
+
 router.get('/student/dashboard',
   authenticate, authorise('student'),
   (req, res) => res.json({ success: true, message: 'Student dashboard', user: req.user })

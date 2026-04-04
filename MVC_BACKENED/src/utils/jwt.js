@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-export const generateAccessToken  = (payload) =>
+export const generateAccessToken = (payload) =>
   jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
   });

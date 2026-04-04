@@ -222,3 +222,35 @@ export const resetPassword = async (req, res) => {
     sendError(res, 500, 'Password reset failed');
   }
 };
+
+// ── CHANGE PASSWORD (protected) ────────────────────────────────────────────
+export const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user.userId;
+
+    if (!currentPassword || !newPassword)
+      return sendError(res, 400, 'Both fields are required');
+
+    if (newPassword.length < 8)
+      return sendError(res, 400, 'Password must be at least 8 characters');
+
+    const user = await UserModel.findById(userId);
+    if (!user)
+      return sendError(res, 404, 'User not found');
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch)
+      return sendError(res, 401, 'Current password is incorrect');
+
+    const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
+    await UserModel.updatePassword({ email: user.email, hashedPassword });
+    await UserModel.markFirstLoginDone(userId);
+
+    res.status(200).json({ success: true, message: 'Password changed successfully' });
+
+  } catch (err) {
+    console.error('changePassword error:', err);
+    sendError(res, 500, 'Password change failed');
+  }
+};
