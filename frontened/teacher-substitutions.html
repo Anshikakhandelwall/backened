@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Substitutions</title>
+  <link rel="stylesheet" href="teacher-substitutions.css">
+</head>
+<body>
+
+<div class="container">
+
+  <div class="sidebar">
+    <div>
+      <div class="logo">🎓
+        <div><h3>SmartTimetable</h3><p>Alert System</p></div>
+      </div>
+      <div class="profile">
+        <div class="avatar" id="avatarLetter">T</div>
+        <div>
+          <h4 id="teacherName">Teacher</h4>
+          <span class="role">Teacher</span>
+        </div>
+      </div>
+      <ul class="menu">
+        <li><a href="teacher-dashboard.html">Dashboard</a></li>
+        <li><a href="teacher-timetable.html">My Timetable</a></li>
+        <li><a href="teacher-mark-lecture.html">Mark Lecture</a></li>
+        <li class="active"><a href="teacher-substitutions.html">Substitutions</a></li>
+        <li><a href="teacher-events.html">Events</a></li>
+        <li><a href="changepassword.html">Change Password</a></li>
+      </ul>
+    </div>
+    <div class="logout">
+      <a href="#" onclick="handleLogout()">Sign Out</a>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="header">
+      <div>
+        <h2>Substitutions</h2>
+        <p class="subtitle">Your substitution history</p>
+      </div>
+      <span id="date"></span>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('covering', this)">
+        Covering For Others
+      </button>
+      <button class="tab" onclick="switchTab('absent', this)">
+        My Absences
+      </button>
+    </div>
+
+    <div id="subList">
+      <p style="color:#6b7280">Loading substitutions...</p>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  const BASE_URL   = 'http://localhost:5000/api';
+  const token      = localStorage.getItem('accessToken');
+  const userName   = localStorage.getItem('userName') || 'Teacher';
+  const userRole   = localStorage.getItem('userRole');
+
+  if (!token || userRole !== 'teacher') window.location.href = 'signin.html';
+
+  window.handleLogout = async () => {
+    await fetch(`${BASE_URL}/auth/logout`, { method:'POST', credentials:'include' });
+    localStorage.clear();
+    window.location.href = 'signin.html';
+  };
+
+  document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
+  document.getElementById('teacherName').textContent  = userName;
+
+  const now    = new Date();
+  const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('date').textContent =
+    `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+  let allData = { covering: [], absent: [] };
+
+  // ── Tab switch ───────────────────────────────────────────────────────────
+  window.switchTab = (type, btn) => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    renderSubs(allData[type], type);
+  };
+
+  // ── Render ───────────────────────────────────────────────────────────────
+  const renderSubs = (subs, type) => {
+    const container = document.getElementById('subList');
+
+    if (!subs.length) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <h3>No records found</h3>
+          <p>${type === 'covering'
+            ? 'You have not covered any classes yet.'
+            : 'No absences recorded.'}</p>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = subs.map(s => `
+      <div class="sub-card ${type}">
+        <div class="sub-header">
+          <div>
+            <h4>${s.subject_name}</h4>
+            <p>${s.section_name} &nbsp;|&nbsp; ${s.room || 'TBD'}</p>
+          </div>
+          <span class="sub-badge ${type === 'covering' ? 'badge-covering' : 'badge-absent'}">
+            ${type === 'covering' ? 'Covering' : 'Absent'}
+          </span>
+        </div>
+        <div class="sub-details">
+          <span>📅 ${s.sub_date}</span>
+          <span>⏰ ${s.start_time} – ${s.end_time}</span>
+          <span>${type === 'covering'
+            ? '👤 Original: ' + s.original_teacher
+            : '👤 Covered by: ' + s.substitute_teacher}</span>
+          ${s.reason ? `<span>📝 ${s.reason}</span>` : ''}
+        </div>
+      </div>`
+    ).join('');
+  };
+
+  // ── Fetch ────────────────────────────────────────────────────────────────
+  try {
+    const res  = await fetch(`${BASE_URL}/substitutions/teacher`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+      credentials: 'include',
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      allData = data.data;
+    } else {
+      allData = getSample();
+    }
+  } catch {
+    allData = getSample();
+  }
+
+  renderSubs(allData.covering, 'covering');
+
+  function getSample() {
+    return {
+      covering: [
+        {
+          subject_name: 'DBMS', section_name: 'CS-B', room: 'Lab C',
+          sub_date: '2026-04-03', start_time: '10:10', end_time: '11:00',
+          original_teacher: 'Dr. Sharma', reason: 'Medical leave',
+        },
+        {
+          subject_name: 'Mathematics', section_name: 'CS-A', room: 'Room 102',
+          sub_date: '2026-03-28', start_time: '11:00', end_time: '11:50',
+          original_teacher: 'Prof. Gupta', reason: 'Conference',
+        },
+      ],
+      absent: [
+        {
+          subject_name: 'Machine Learning', section_name: 'CS-A', room: 'Room 301',
+          sub_date: '2026-03-20', start_time: '09:20', end_time: '10:10',
+          substitute_teacher: 'Dr. Mehta', reason: 'Personal leave',
+        },
+      ],
+    };
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Monitor</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div>
+      <div class="logo">🎓<div><h3>SmartTimetable</h3><p>Admin Panel</p></div></div>
+      <div class="profile">
+        <div class="avatar" id="avatarLetter">A</div>
+        <div class="profile-info"><h4 id="adminName">Admin</h4><span class="role-badge">Admin</span></div>
+      </div>
+      <ul class="menu">
+        <li><a href="admin-dashboard.html"><span class="menu-icon">📊</span>Dashboard</a></li>
+        <li><a href="admin-timetable.html"><span class="menu-icon">📅</span>Timetable</a></li>
+        <li><a href="admin-substitutions.html"><span class="menu-icon">🔁</span>Substitutions</a></li>
+        <li class="active"><a href="admin-attendance.html"><span class="menu-icon">👁</span>Attendance</a></li>
+        <li><a href="admin-events.html"><span class="menu-icon">🎉</span>Events</a></li>
+        <li><a href="admin-users.html"><span class="menu-icon">👥</span>Users</a></li>
+        <li><a href="changepassword.html"><span class="menu-icon">🔒</span>Change Password</a></li>
+      </ul>
+    </div>
+    <div class="logout"><a href="#" onclick="handleLogout()">Sign Out</a></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="page-header">
+      <div class="page-header-left">
+        <h2>Attendance Monitor</h2>
+        <p>Track lecture status across all sections</p>
+      </div>
+      <span id="date"></span>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="stat-card green">
+        <h3>Conducted</h3>
+        <p id="countConducted">—</p>
+      </div>
+      <div class="stat-card red">
+        <h3>Absent</h3>
+        <p id="countAbsent">—</p>
+      </div>
+      <div class="stat-card amber">
+        <h3>Cancelled</h3>
+        <p id="countCancelled">—</p>
+      </div>
+      <div class="stat-card blue">
+        <h3>Delayed</h3>
+        <p id="countDelayed">—</p>
+      </div>
+    </div>
+
+    <!-- DATE FILTER -->
+    <div class="search-bar">
+      <input type="date" id="filterDate" onchange="fetchByDate()">
+      <select id="filterStatus" onchange="applyFilter()">
+        <option value="">All Statuses</option>
+        <option value="conducted">Conducted</option>
+        <option value="cancelled">Cancelled</option>
+        <option value="delayed">Delayed</option>
+        <option value="teacher_absent">Teacher Absent</option>
+      </select>
+    </div>
+
+    <!-- ABSENT ALERT -->
+    <div id="absentAlert" class="alert-box alert-red" style="display:none"></div>
+
+    <!-- TABLE -->
+    <div class="section-title">Lecture Attendance Records</div>
+    <div class="table-box">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Teacher</th>
+            <th>Subject</th>
+            <th>Section</th>
+            <th>Time</th>
+            <th>Room</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="attendanceTable">
+          <tr><td colspan="8" style="text-align:center;padding:30px;color:#6b7280">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+  const BASE_URL = 'http://localhost:5000/api';
+  const token    = localStorage.getItem('accessToken');
+  const userName = localStorage.getItem('userName') || 'Admin';
+  if (!token || localStorage.getItem('userRole') !== 'admin') window.location.href = 'signin.html';
+
+  window.handleLogout = async () => {
+    await fetch(`${BASE_URL}/auth/logout`,{method:'POST',credentials:'include'});
+    localStorage.clear(); window.location.href = 'signin.html';
+  };
+
+  document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
+  document.getElementById('adminName').textContent    = userName;
+
+  const now    = new Date();
+  const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('date').textContent =
+    `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  document.getElementById('filterDate').value = now.toISOString().split('T')[0];
+
+  let allRecords = [];
+
+  // ── Fetch absent today ─────────────────────────────────────────────────
+  window.fetchByDate = async () => {
+    const date = document.getElementById('filterDate').value;
+    try {
+      const res  = await fetch(`${BASE_URL}/attendance/admin/absent-today`, {
+        headers: {'Authorization':`Bearer ${token}`}, credentials:'include',
+      });
+      const data = await res.json();
+      allRecords = data.success ? data.data : getSample();
+    } catch { allRecords = getSample(); }
+    updateCounts();
+    applyFilter();
+  };
+
+  // ── Filter ──────────────────────────────────────────────────────────────
+  window.applyFilter = () => {
+    const status = document.getElementById('filterStatus').value;
+    const filtered = status
+      ? allRecords.filter(r => r.status === status)
+      : allRecords;
+    renderTable(filtered);
+  };
+
+  // ── Count summary ──────────────────────────────────────────────────────
+  const updateCounts = () => {
+    document.getElementById('countConducted').textContent = allRecords.filter(r=>r.status==='conducted').length;
+    document.getElementById('countAbsent').textContent    = allRecords.filter(r=>r.status==='teacher_absent').length;
+    document.getElementById('countCancelled').textContent = allRecords.filter(r=>r.status==='cancelled').length;
+    document.getElementById('countDelayed').textContent   = allRecords.filter(r=>r.status==='delayed').length;
+
+    const absent = allRecords.filter(r=>r.status==='teacher_absent').length;
+    const alertEl = document.getElementById('absentAlert');
+    if (absent > 0) {
+      alertEl.style.display = 'block';
+      alertEl.textContent   = `⚠️ ${absent} teacher(s) absent — consider assigning substitutes`;
+    } else {
+      alertEl.style.display = 'none';
+    }
+  };
+
+  // ── Render table ───────────────────────────────────────────────────────
+  const renderTable = (records) => {
+    const tbody = document.getElementById('attendanceTable');
+    if (!records.length) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#6b7280">No records found</td></tr>`;
+      return;
+    }
+    const statusMap = {
+      conducted:      ['badge-green',  'Conducted'],
+      cancelled:      ['badge-red',    'Cancelled'],
+      delayed:        ['badge-amber',  'Delayed'],
+      teacher_absent: ['badge-purple', 'Absent'],
+    };
+    tbody.innerHTML = records.map(r => {
+      const [cls, label] = statusMap[r.status] || ['badge-gray', r.status];
+      return `<tr>
+        <td>${r.lecture_date || r.sub_date || '—'}</td>
+        <td>${r.teacher_name}</td>
+        <td>${r.subject_name}</td>
+        <td>${r.section_name}</td>
+        <td>${r.start_time} – ${r.end_time}</td>
+        <td>${r.room || '—'}</td>
+        <td><span class="badge ${cls}">${label}</span></td>
+        <td>
+          ${r.status === 'teacher_absent'
+            ? `<button class="btn btn-amber btn-sm"
+                onclick="window.location.href='admin-substitutions.html'">
+                Assign Sub
+              </button>`
+            : '—'}
+        </td>
+      </tr>`;
+    }).join('');
+  };
+
+  const getSample = () => [
+    { lecture_date:'2026-04-04', teacher_name:'Dr. Sharma', subject_name:'DBMS',             section_name:'CS-B', start_time:'10:10', end_time:'11:00', room:'Lab C',    status:'teacher_absent' },
+    { lecture_date:'2026-04-04', teacher_name:'Dr. Mehta',  subject_name:'Machine Learning', section_name:'CS-A', start_time:'09:20', end_time:'10:10', room:'Room 301', status:'conducted'      },
+    { lecture_date:'2026-04-04', teacher_name:'Prof. Gupta',subject_name:'Mathematics',      section_name:'CS-A', start_time:'11:00', end_time:'11:50', room:'Room 102', status:'cancelled'      },
+    { lecture_date:'2026-04-04', teacher_name:'Ms. Rao',    subject_name:'English',          section_name:'CS-B', start_time:'13:40', end_time:'14:30', room:'Room 204', status:'delayed'        },
+  ];
+
+  fetchByDate();
+</script>
+</body>
+</html>

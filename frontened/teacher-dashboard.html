@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard</title>
+  <link rel="stylesheet" href="teacher-dashboard.css">
+</head>
+<body>
+
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div>
+      <div class="logo">
+        🎓
+        <div>
+          <h3>SmartTimetable</h3>
+          <p>Alert System</p>
+        </div>
+      </div>
+
+      <div class="profile">
+        <div class="avatar" id="avatarLetter">T</div>
+        <div>
+          <h4 id="teacherName">Teacher</h4>
+          <span class="role">Teacher</span>
+        </div>
+      </div>
+
+      <ul class="menu">
+        <li class="active"><a href="teacher-dashboard.html">Dashboard</a></li>
+        <li><a href="teacher-timetable.html">My Timetable</a></li>
+        <li><a href="teacher-mark-lecture.html">Mark Lecture</a></li>
+        <li><a href="teacher-substitutions.html">Substitutions</a></li>
+        <li><a href="teacher-events.html">Events</a></li>
+        <li><a href="changepassword.html">Change Password</a></li>
+      </ul>
+    </div>
+
+    <div class="logout">
+      <a href="#" onclick="handleLogout()">Sign Out</a>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="header">
+      <div>
+        <h2>Teacher Dashboard</h2>
+        <p class="subtitle">Welcome back to your portal</p>
+      </div>
+      <span id="date"></span>
+    </div>
+
+    <!-- WELCOME -->
+    <div class="welcome">
+      <div>
+        <p class="day" id="todayDay">MONDAY</p>
+        <h1 id="greetingText">Good Morning, Teacher! 👋</h1>
+        <p>Here are your classes for today.</p>
+      </div>
+      <div class="class-count">
+        <h2 id="classCount">0</h2>
+        <p>CLASSES TODAY</p>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat-card">
+        <h3>Total Lectures Today</h3>
+        <p id="totalToday">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Conducted</h3>
+        <p id="conducted">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Pending</h3>
+        <p id="pending">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Substitutions</h3>
+        <p id="subCount">0</p>
+      </div>
+    </div>
+
+    <!-- TODAY'S LECTURES -->
+    <h3 class="section-title">Today's Lectures</h3>
+    <div id="lectureContainer">
+      <p style="color:#6b7280">Loading lectures...</p>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+  const BASE_URL   = 'http://localhost:5000/api';
+  const token      = localStorage.getItem('accessToken');
+  const userName   = localStorage.getItem('userName') || 'Teacher';
+  const userRole   = localStorage.getItem('userRole');
+
+  // ── Auth guard ─────────────────────────────────────────────────────────
+  if (!token || userRole !== 'teacher') {
+    window.location.href = 'signin.html';
+  }
+
+  // ── Logout ─────────────────────────────────────────────────────────────
+  window.handleLogout = async () => {
+    await fetch(`${BASE_URL}/auth/logout`, {
+      method: 'POST', credentials: 'include'
+    });
+    localStorage.clear();
+    window.location.href = 'signin.html';
+  };
+
+  // ── Fill user info ─────────────────────────────────────────────────────
+  document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
+  document.getElementById('teacherName').textContent  = userName;
+
+  // ── Date & greeting ────────────────────────────────────────────────────
+  const now    = new Date();
+  const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  document.getElementById('date').textContent =
+    `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+  document.getElementById('todayDay').textContent = days[now.getDay()].toUpperCase();
+
+  const hour     = now.getHours();
+  const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
+  document.getElementById('greetingText').textContent =
+    `${greeting}, ${userName.split(' ')[0]}! 👋`;
+
+  // ── Fetch today's lectures ─────────────────────────────────────────────
+  const fetchTodayLectures = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/timetable/teacher/today`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+        credentials: 'include',
+      });
+      const data = await res.json();
+
+      if (data.success && data.data.length > 0) {
+        renderLectures(data.data);
+      } else {
+        document.getElementById('lectureContainer').innerHTML =
+          '<p style="color:#6b7280;padding:20px 0">No lectures scheduled for today.</p>';
+      }
+
+    } catch (err) {
+      console.error('Fetch lectures error:', err);
+      // Show sample data if backend not ready yet
+      renderSampleLectures();
+    }
+  };
+
+  const renderLectures = (lectures) => {
+    const container = document.getElementById('lectureContainer');
+    let conducted = 0, pending = 0;
+
+    container.innerHTML = lectures.map(l => {
+      const statusClass = l.status === 'conducted' ? 'conducted'
+                        : l.status === 'cancelled'  ? 'cancelled'
+                        : 'pending';
+      const statusLabel = l.status ? l.status.charAt(0).toUpperCase()
+                        + l.status.slice(1) : 'Pending';
+
+      if (l.status === 'conducted') conducted++;
+      else pending++;
+
+      return `
+        <div class="lecture">
+          <div class="time">${l.start_time}<br>${l.end_time}</div>
+          <div class="details">
+            <h4>${l.subject_name}</h4>
+            <p>${l.section_name} &nbsp;|&nbsp; ${l.room || 'TBD'}</p>
+          </div>
+          <div class="status ${statusClass}">${statusLabel}</div>
+          <button class="mark-btn"
+            onclick="window.location.href='teacher-mark-lecture.html?slot=${l.slot_id}'">
+            Mark Status
+          </button>
+        </div>`;
+    }).join('');
+
+    document.getElementById('classCount').textContent  = lectures.length;
+    document.getElementById('totalToday').textContent  = lectures.length;
+    document.getElementById('conducted').textContent   = conducted;
+    document.getElementById('pending').textContent     = pending;
+  };
+
+  // Sample data — shown when backend not connected yet
+  const renderSampleLectures = () => {
+    const sample = [
+      { slot_id:1, start_time:'09:20', end_time:'10:10',
+        subject_name:'Machine Learning',    section_name:'CS-A', room:'Room 301', status:'conducted' },
+      { slot_id:2, start_time:'10:10', end_time:'11:00',
+        subject_name:'DBMS',                section_name:'CS-B', room:'Lab C',    status:null },
+      { slot_id:3, start_time:'11:00', end_time:'11:50',
+        subject_name:'Mathematics',         section_name:'CS-A', room:'Room 102', status:null },
+    ];
+    renderLectures(sample);
+  };
+
+  fetchTodayLectures();
+</script>
+
+</body>
+</html>

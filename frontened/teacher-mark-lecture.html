@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mark Lecture</title>
+  <link rel="stylesheet" href="teacher-mark-lecture.css">
+</head>
+<body>
+
+<div class="container">
+
+  <div class="sidebar">
+    <div>
+      <div class="logo">🎓
+        <div><h3>SmartTimetable</h3><p>Alert System</p></div>
+      </div>
+      <div class="profile">
+        <div class="avatar" id="avatarLetter">T</div>
+        <div>
+          <h4 id="teacherName">Teacher</h4>
+          <span class="role">Teacher</span>
+        </div>
+      </div>
+      <ul class="menu">
+        <li><a href="teacher-dashboard.html">Dashboard</a></li>
+        <li><a href="teacher-timetable.html">My Timetable</a></li>
+        <li class="active"><a href="teacher-mark-lecture.html">Mark Lecture</a></li>
+        <li><a href="teacher-substitutions.html">Substitutions</a></li>
+        <li><a href="teacher-events.html">Events</a></li>
+        <li><a href="changepassword.html">Change Password</a></li>
+      </ul>
+    </div>
+    <div class="logout">
+      <a href="#" onclick="handleLogout()">Sign Out</a>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="header">
+      <div>
+        <h2>Mark Lecture Status</h2>
+        <p class="subtitle">Update today's lecture attendance</p>
+      </div>
+      <span id="date"></span>
+    </div>
+
+    <div id="lectureList">
+      <p style="color:#6b7280">Loading today's lectures...</p>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  const BASE_URL = 'http://localhost:5000/api';
+  const token    = localStorage.getItem('accessToken');
+  const userName = localStorage.getItem('userName') || 'Teacher';
+  const userRole = localStorage.getItem('userRole');
+
+  if (!token || userRole !== 'teacher') window.location.href = 'signin.html';
+
+  window.handleLogout = async () => {
+    await fetch(`${BASE_URL}/auth/logout`, { method:'POST', credentials:'include' });
+    localStorage.clear();
+    window.location.href = 'signin.html';
+  };
+
+  document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
+  document.getElementById('teacherName').textContent  = userName;
+
+  const now    = new Date();
+  const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('date').textContent =
+    `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+  // ── Mark status ──────────────────────────────────────────────────────────
+  window.markStatus = async (slotId, status, btn) => {
+    try {
+      const res = await fetch(`${BASE_URL}/attendance/mark`, {
+        method:  'POST',
+        headers: {
+          'Content-Type':  'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          slot_id:      slotId,
+          lecture_date: now.toISOString().split('T')[0],
+          status,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        // Update UI
+        const card = btn.closest('.lecture-card');
+        const statusEl = card.querySelector('.current-status');
+        const colors = {
+          conducted:      '#dcfce7',
+          cancelled:      '#fee2e2',
+          delayed:        '#fef3c7',
+          teacher_absent: '#e0e7ff',
+        };
+        const labels = {
+          conducted:      'Conducted',
+          cancelled:      'Cancelled',
+          delayed:        'Delayed',
+          teacher_absent: 'Marked Absent',
+        };
+        statusEl.textContent         = `✓ ${labels[status]}`;
+        statusEl.style.background    = colors[status];
+        statusEl.style.padding       = '6px 14px';
+        statusEl.style.borderRadius  = '20px';
+        statusEl.style.fontSize      = '12px';
+        statusEl.style.fontWeight    = 'bold';
+      } else {
+        alert(data.message || 'Could not update status');
+      }
+
+    } catch (err) {
+      console.error('Mark status error:', err);
+      // Show UI update even if backend not ready
+      const card   = btn.closest('.lecture-card');
+      const statusEl = card.querySelector('.current-status');
+      statusEl.textContent      = `✓ ${status.charAt(0).toUpperCase() + status.slice(1)}`;
+      statusEl.style.background = '#dcfce7';
+      statusEl.style.padding    = '6px 14px';
+      statusEl.style.borderRadius = '20px';
+      statusEl.style.fontSize   = '12px';
+      statusEl.style.fontWeight = 'bold';
+    }
+  };
+
+  // ── Render lectures ──────────────────────────────────────────────────────
+  const renderLectures = (lectures) => {
+    const container = document.getElementById('lectureList');
+
+    if (!lectures.length) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <h3>No lectures today</h3>
+          <p>You have no scheduled lectures for today.</p>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = lectures.map(l => `
+      <div class="lecture-card">
+        <div class="lec-time">${l.start_time} – ${l.end_time}</div>
+        <div class="lec-info">
+          <h4>${l.subject_name}</h4>
+          <p>${l.section_name} &nbsp;|&nbsp; ${l.room || 'TBD'}</p>
+        </div>
+        <div class="status-btns">
+          <button class="btn-status btn-conducted"
+            onclick="markStatus(${l.slot_id}, 'conducted', this)">
+            Conducted
+          </button>
+          <button class="btn-status btn-cancelled"
+            onclick="markStatus(${l.slot_id}, 'cancelled', this)">
+            Cancelled
+          </button>
+          <button class="btn-status btn-delayed"
+            onclick="markStatus(${l.slot_id}, 'delayed', this)">
+            Delayed
+          </button>
+          <button class="btn-status btn-absent"
+            onclick="markStatus(${l.slot_id}, 'teacher_absent', this)">
+            Mark Absent
+          </button>
+        </div>
+        <div class="current-status"
+          style="background:${l.status ? '#dcfce7' : '#f3f4f6'};
+                 color:${l.status ? '#15803d' : '#9ca3af'};
+                 padding:6px 14px; border-radius:20px;
+                 font-size:12px; font-weight:bold;">
+          ${l.status ? l.status.charAt(0).toUpperCase() + l.status.slice(1) : 'Not Marked'}
+        </div>
+      </div>`
+    ).join('');
+  };
+
+  // ── Fetch or use sample ──────────────────────────────────────────────────
+  try {
+    const res  = await fetch(`${BASE_URL}/timetable/teacher/today`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+      credentials: 'include',
+    });
+    const data = await res.json();
+    if (data.success) renderLectures(data.data);
+    else renderLectures(getSample());
+  } catch {
+    renderLectures(getSample());
+  }
+
+  function getSample() {
+    return [
+      { slot_id:1, start_time:'09:20', end_time:'10:10',
+        subject_name:'Machine Learning', section_name:'CS-A', room:'Room 301', status:null },
+      { slot_id:2, start_time:'10:10', end_time:'11:00',
+        subject_name:'DBMS',             section_name:'CS-B', room:'Lab C',    status:'conducted' },
+      { slot_id:3, start_time:'11:00', end_time:'11:50',
+        subject_name:'Mathematics',      section_name:'CS-A', room:'Room 102', status:null },
+    ];
+  }
+</script>
+</body>
+</html>

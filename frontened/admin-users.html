@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Users</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div>
+      <div class="logo">🎓<div><h3>SmartTimetable</h3><p>Admin Panel</p></div></div>
+      <div class="profile">
+        <div class="avatar" id="avatarLetter">A</div>
+        <div class="profile-info"><h4 id="adminName">Admin</h4><span class="role-badge">Admin</span></div>
+      </div>
+      <ul class="menu">
+        <li><a href="admin-dashboard.html"><span class="menu-icon">📊</span>Dashboard</a></li>
+        <li><a href="admin-timetable.html"><span class="menu-icon">📅</span>Timetable</a></li>
+        <li><a href="admin-substitutions.html"><span class="menu-icon">🔁</span>Substitutions</a></li>
+        <li><a href="admin-attendance.html"><span class="menu-icon">👁</span>Attendance</a></li>
+        <li><a href="admin-events.html"><span class="menu-icon">🎉</span>Events</a></li>
+        <li class="active"><a href="admin-users.html"><span class="menu-icon">👥</span>Users</a></li>
+        <li><a href="changepassword.html"><span class="menu-icon">🔒</span>Change Password</a></li>
+      </ul>
+    </div>
+    <div class="logout"><a href="#" onclick="handleLogout()">Sign Out</a></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="page-header">
+      <div class="page-header-left">
+        <h2>Users</h2>
+        <p>Manage students, teachers and admins</p>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px">
+      <div class="stat-card blue">
+        <h3>Students</h3>
+        <p id="countStudents">—</p>
+      </div>
+      <div class="stat-card green">
+        <h3>Teachers</h3>
+        <p id="countTeachers">—</p>
+      </div>
+      <div class="stat-card purple">
+        <h3>Admins</h3>
+        <p id="countAdmins">—</p>
+      </div>
+    </div>
+
+    <!-- SEARCH + FILTER -->
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search by name or email..." oninput="applyFilter()">
+      <select id="roleFilter" onchange="applyFilter()">
+        <option value="">All Roles</option>
+        <option value="student">Students</option>
+        <option value="teacher">Teachers</option>
+        <option value="admin">Admins</option>
+      </select>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-box">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Department</th>
+            <th>Extra Info</th>
+            <th>Joined</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="usersTable">
+          <tr><td colspan="7" style="text-align:center;padding:30px;color:#6b7280">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- VIEW USER MODAL -->
+<div class="modal-overlay" id="userModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>User Details</h3>
+      <button class="modal-close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div id="userModalContent"></div>
+    <div class="form-actions">
+      <button class="btn btn-danger" onclick="confirmDelete()">Delete User</button>
+      <button class="btn btn-primary" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  const BASE_URL = 'http://localhost:5000/api';
+  const token    = localStorage.getItem('accessToken');
+  const userName = localStorage.getItem('userName') || 'Admin';
+  if (!token || localStorage.getItem('userRole') !== 'admin') window.location.href = 'signin.html';
+
+  window.handleLogout = async () => {
+    await fetch(`${BASE_URL}/auth/logout`,{method:'POST',credentials:'include'});
+    localStorage.clear(); window.location.href = 'signin.html';
+  };
+
+  document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
+  document.getElementById('adminName').textContent    = userName;
+
+  let allUsers   = [];
+  let selectedId = null;
+
+  // ── Fetch users ────────────────────────────────────────────────────────
+  const fetchUsers = async () => {
+    try {
+      const res  = await fetch(`${BASE_URL}/admin/users`, {
+        headers: {'Authorization':`Bearer ${token}`}, credentials:'include',
+      });
+      const data = await res.json();
+      allUsers = data.success ? data.data : getSample();
+    } catch { allUsers = getSample(); }
+    updateCounts();
+    renderUsers(allUsers);
+  };
+
+  // ── Counts ─────────────────────────────────────────────────────────────
+  const updateCounts = () => {
+    document.getElementById('countStudents').textContent = allUsers.filter(u=>u.role==='student').length;
+    document.getElementById('countTeachers').textContent = allUsers.filter(u=>u.role==='teacher').length;
+    document.getElementById('countAdmins').textContent   = allUsers.filter(u=>u.role==='admin').length;
+  };
+
+  // ── Filter ──────────────────────────────────────────────────────────────
+  window.applyFilter = () => {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const role   = document.getElementById('roleFilter').value;
+    renderUsers(allUsers.filter(u =>
+      (!role   || u.role === role) &&
+      (!search || u.name.toLowerCase().includes(search) || u.email.toLowerCase().includes(search))
+    ));
+  };
+
+  // ── Render ──────────────────────────────────────────────────────────────
+  const renderUsers = (users) => {
+    const tbody = document.getElementById('usersTable');
+    if (!users.length) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:#6b7280">No users found</td></tr>`;
+      return;
+    }
+    const roleClass = { student:'badge-blue', teacher:'badge-green', admin:'badge-purple' };
+    tbody.innerHTML = users.map(u => {
+      const extra = u.role === 'student' ? (u.enrollment || '—')
+                  : u.role === 'teacher' ? (u.designation || '—')
+                  : (u.role_type || '—');
+      const dept  = u.department || '—';
+      const joined = u.created_at ? new Date(u.created_at).toLocaleDateString() : '—';
+      return `<tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:34px;height:34px;border-radius:50%;background:#dbeafe;
+                        display:flex;align-items:center;justify-content:center;
+                        font-weight:bold;color:#1d4ed8;font-size:13px;flex-shrink:0">
+              ${u.name.charAt(0).toUpperCase()}
+            </div>
+            ${u.name}
+          </div>
+        </td>
+        <td style="color:#6b7280;font-size:13px">${u.email}</td>
+        <td><span class="badge ${roleClass[u.role] || 'badge-gray'}">${u.role}</span></td>
+        <td>${dept}</td>
+        <td style="font-size:13px;color:#6b7280">${extra}</td>
+        <td style="font-size:13px;color:#6b7280">${joined}</td>
+        <td>
+          <button class="btn btn-primary btn-sm" onclick="viewUser(${u.user_id})">View</button>
+        </td>
+      </tr>`;
+    }).join('');
+  };
+
+  // ── View user modal ────────────────────────────────────────────────────
+  window.viewUser = (userId) => {
+    const u = allUsers.find(u => u.user_id === userId);
+    if (!u) return;
+    selectedId = userId;
+    const roleClass = { student:'badge-blue', teacher:'badge-green', admin:'badge-purple' };
+    document.getElementById('userModalContent').innerHTML = `
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #f3f4f6">
+        <div style="width:54px;height:54px;border-radius:50%;background:#dbeafe;
+                    display:flex;align-items:center;justify-content:center;
+                    font-weight:bold;color:#1d4ed8;font-size:22px">
+          ${u.name.charAt(0).toUpperCase()}
+        </div>
+        <div>
+          <h4 style="font-size:18px;color:#1c3557">${u.name}</h4>
+          <span class="badge ${roleClass[u.role]}">${u.role}</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        ${row('Email',      u.email)}
+        ${row('Department', u.department || '—')}
+        ${u.role==='student' ? row('Enrollment', u.enrollment || '—') : ''}
+        ${u.role==='teacher' ? row('Designation',u.designation || '—') : ''}
+        ${u.role==='admin'   ? row('Role Type',  u.role_type   || '—') : ''}
+        ${row('Joined', u.created_at ? new Date(u.created_at).toLocaleDateString() : '—')}
+        ${row('First Login', u.is_first_login ? 'Not changed yet' : 'Password set')}
+      </div>`;
+    document.getElementById('userModal').classList.add('show');
+  };
+
+  const row = (label, value) => `
+    <div style="background:#f9fafb;padding:12px;border-radius:8px">
+      <div style="font-size:11px;color:#6b7280;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em">${label}</div>
+      <div style="font-size:14px;color:#1c3557;font-weight:500">${value}</div>
+    </div>`;
+
+  window.closeModal  = () => { document.getElementById('userModal').classList.remove('show'); selectedId = null; };
+
+  // ── Delete user ────────────────────────────────────────────────────────
+  window.confirmDelete = async () => {
+    if (!selectedId || !confirm('Delete this user? This cannot be undone.')) return;
+    try {
+      const res  = await fetch(`${BASE_URL}/admin/users/${selectedId}`, {
+        method: 'DELETE',
+        headers: {'Authorization':`Bearer ${token}`},
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.success) { closeModal(); fetchUsers(); alert('User deleted.'); }
+      else alert(data.message || 'Failed to delete');
+    } catch {
+      allUsers = allUsers.filter(u => u.user_id !== selectedId);
+      updateCounts();
+      renderUsers(allUsers);
+      closeModal();
+    }
+  };
+
+  const getSample = () => [
+    { user_id:1,  name:'Raj Sharma',   email:'raj@college.edu',   role:'student', department:'CSE', enrollment:'EN2024001', created_at:'2024-07-01', is_first_login:false },
+    { user_id:2,  name:'Priya Singh',  email:'priya@college.edu', role:'student', department:'CSE', enrollment:'EN2024002', created_at:'2024-07-01', is_first_login:false },
+    { user_id:3,  name:'Dr. Mehta',    email:'mehta@college.edu', role:'teacher', department:'CSE', designation:'Assistant Professor', created_at:'2023-06-15', is_first_login:false },
+    { user_id:4,  name:'Dr. Sharma',   email:'sharma@college.edu',role:'teacher', department:'CSE', designation:'Associate Professor', created_at:'2023-06-15', is_first_login:false },
+    { user_id:5,  name:'Prof. Gupta',  email:'gupta@college.edu', role:'teacher', department:'Maths', designation:'Professor', created_at:'2022-06-10', is_first_login:false },
+    { user_id:6,  name:'Admin User',   email:'admin@college.edu', role:'admin',   department:'Admin', role_type:'super_admin', created_at:'2022-01-01', is_first_login:false },
+    { user_id:7,  name:'Ansh Kumar',   email:'ansh@college.edu',  role:'student', department:'CSE', enrollment:'EN2024003', created_at:'2024-07-05', is_first_login:true  },
+    { user_id:8,  name:'Ms. Rao',      email:'rao@college.edu',   role:'teacher', department:'English', designation:'Lecturer', created_at:'2023-07-01', is_first_login:false },
+  ];
+
+  fetchUsers();
+</script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timetable Manager</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div>
+      <div class="logo">🎓<div><h3>SmartTimetable</h3><p>Admin Panel</p></div></div>
+      <div class="profile">
+        <div class="avatar" id="avatarLetter">A</div>
+        <div class="profile-info"><h4 id="adminName">Admin</h4><span class="role-badge">Admin</span></div>
+      </div>
+      <ul class="menu">
+        <li><a href="admin-dashboard.html"><span class="menu-icon">📊</span>Dashboard</a></li>
+        <li class="active"><a href="admin-timetable.html"><span class="menu-icon">📅</span>Timetable</a></li>
+        <li><a href="admin-substitutions.html"><span class="menu-icon">🔁</span>Substitutions</a></li>
+        <li><a href="admin-attendance.html"><span class="menu-icon">👁</span>Attendance</a></li>
+        <li><a href="admin-events.html"><span class="menu-icon">🎉</span>Events</a></li>
+        <li><a href="admin-users.html"><span class="menu-icon">👥</span>Users</a></li>
+        <li><a href="changepassword.html"><span class="menu-icon">🔒</span>Change Password</a></li>
+      </ul>
+    </div>
+    <div class="logout"><a href="#" onclick="handleLogout()">Sign Out</a></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="page-header">
+      <div class="page-header-left">
+        <h2>Timetable Manager</h2>
+        <p>Add, view and delete timetable slots</p>
+      </div>
+      <button class="btn btn-primary" onclick="openAddModal()">+ Add Slot</button>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="search-bar">
+      <select id="filterSection" onchange="filterSlots()">
+        <option value="">All Sections</option>
+      </select>
+      <select id="filterDay" onchange="filterSlots()">
+        <option value="">All Days</option>
+        <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+        <option>Thursday</option><option>Friday</option><option>Saturday</option>
+      </select>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-box">
+      <table>
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Time</th>
+            <th>Subject</th>
+            <th>Teacher</th>
+            <th>Section</th>
+            <th>Room</th>
+            <th>Type</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="slotsTable">
+          <tr><td colspan="8" style="text-align:center;padding:30px;color:#6b7280">Loading slots...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ADD SLOT MODAL -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add Timetable Slot</h3>
+      <button class="modal-close-btn" onclick="closeModal('addModal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label>Section</label>
+      <select id="slotSection"></select>
+    </div>
+    <div class="form-group">
+      <label>Subject</label>
+      <select id="slotSubject"></select>
+    </div>
+    <div class="form-group">
+      <label>Teacher</label>
+      <select id="slotTeacher"></select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Day</label>
+        <select id="slotDay">
+          <option>Monday</option><option>Tuesday</option><option>Wednesday</option>
+          <option>Thursday</option><option>Friday</option><option>Saturday</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Slot Type</label>
+        <select id="slotType">
+          <option value="lecture">Lecture</option>
+          <option value="lab">Lab</option>
+          <option value="tutorial">Tutorial</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Start Time</label>
+        <input type="time" id="slotStart">
+      </div>
+      <div class="form-group">
+        <label>End Time</label>
+        <input type="time" id="slotEnd">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Room / Lab</label>
+      <input type="text" id="slotRoom" placeholder="e.g. Room 301 or Lab C">
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="addSlot()">Add Slot</button>
+      <button class="btn btn-danger" onclick="closeModal('addModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  const BASE_URL = 'http://localhost:5000/api';
+  const token    = localStorage.getItem('accessToken');
+  const userName = localStorage.getItem('userName') || 'Admin';
+  if (!token || localStorage.getItem('userRole') !== 'admin') window.location.href = 'signin.html';
+
+  window.handleLogout = async () => {
+    await fetch(`${BASE_URL}/auth/logout`,{method:'POST',credentials:'include'});
+    localStorage.clear(); window.location.href = 'signin.html';
+  };
+
+  document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
+  document.getElementById('adminName').textContent    = userName;
+
+  let allSlots = [];
+
+  // ── Open / close modal ─────────────────────────────────────────────────
+  window.openAddModal = () => {
+    document.getElementById('addModal').classList.add('show');
+    loadDropdowns();
+  };
+  window.closeModal = (id) => document.getElementById(id).classList.remove('show');
+
+  // ── Load dropdowns ─────────────────────────────────────────────────────
+  const loadDropdowns = async () => {
+    try {
+      const [secRes, subRes, teachRes] = await Promise.all([
+        fetch(`${BASE_URL}/admin/sections`,  { headers:{'Authorization':`Bearer ${token}`}, credentials:'include' }),
+        fetch(`${BASE_URL}/admin/subjects`,  { headers:{'Authorization':`Bearer ${token}`}, credentials:'include' }),
+        fetch(`${BASE_URL}/admin/teachers`,  { headers:{'Authorization':`Bearer ${token}`}, credentials:'include' }),
+      ]);
+      const [sec, sub, teach] = await Promise.all([secRes.json(), subRes.json(), teachRes.json()]);
+
+      if (sec.success) {
+        document.getElementById('slotSection').innerHTML =
+          sec.data.map(s => `<option value="${s.section_id}">${s.section_name}</option>`).join('');
+        const filter = document.getElementById('filterSection');
+        filter.innerHTML = '<option value="">All Sections</option>' +
+          sec.data.map(s => `<option value="${s.section_id}">${s.section_name}</option>`).join('');
+      }
+      if (sub.success)
+        document.getElementById('slotSubject').innerHTML =
+          sub.data.map(s => `<option value="${s.subject_id}">${s.subject_name}</option>`).join('');
+      if (teach.success)
+        document.getElementById('slotTeacher').innerHTML =
+          teach.data.map(t => `<option value="${t.teacher_id}">${t.name}</option>`).join('');
+    } catch { console.log('Dropdowns: using sample data'); }
+  };
+
+  // ── Fetch slots ─────────────────────────────────────────────────────────
+  const fetchSlots = async () => {
+    try {
+      const res  = await fetch(`${BASE_URL}/timetable/admin/all`, {
+        headers: {'Authorization':`Bearer ${token}`}, credentials:'include',
+      });
+      const data = await res.json();
+      allSlots = data.success ? data.data : getSample();
+    } catch { allSlots = getSample(); }
+    renderSlots(allSlots);
+    loadDropdowns();
+  };
+
+  // ── Filter ──────────────────────────────────────────────────────────────
+  window.filterSlots = () => {
+    const sec = document.getElementById('filterSection').value;
+    const day = document.getElementById('filterDay').value;
+    renderSlots(allSlots.filter(s =>
+      (!sec || String(s.section_id) === sec) &&
+      (!day || s.day_of_week === day)
+    ));
+  };
+
+  // ── Render ──────────────────────────────────────────────────────────────
+  const renderSlots = (slots) => {
+    const tbody = document.getElementById('slotsTable');
+    if (!slots.length) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#6b7280">No slots found</td></tr>`;
+      return;
+    }
+    const typeClass = { lecture:'badge-blue', lab:'badge-purple', tutorial:'badge-green' };
+    tbody.innerHTML = slots.map(s => `
+      <tr>
+        <td>${s.day_of_week}</td>
+        <td>${s.start_time} – ${s.end_time}</td>
+        <td>${s.subject_name}</td>
+        <td>${s.teacher_name}</td>
+        <td>${s.section_name}</td>
+        <td>${s.room || '—'}</td>
+        <td><span class="badge ${typeClass[s.slot_type] || 'badge-gray'}">${s.slot_type}</span></td>
+        <td>
+          <button class="btn btn-danger btn-sm" onclick="deleteSlot(${s.slot_id})">Delete</button>
+        </td>
+      </tr>`).join('');
+  };
+
+  // ── Add slot ────────────────────────────────────────────────────────────
+  window.addSlot = async () => {
+    const body = {
+      section_id: document.getElementById('slotSection').value,
+      subject_id: document.getElementById('slotSubject').value,
+      teacher_id: document.getElementById('slotTeacher').value,
+      day_of_week: document.getElementById('slotDay').value,
+      start_time:  document.getElementById('slotStart').value,
+      end_time:    document.getElementById('slotEnd').value,
+      room:        document.getElementById('slotRoom').value,
+      slot_type:   document.getElementById('slotType').value,
+    };
+    if (!body.start_time || !body.end_time) { alert('Please set start and end time'); return; }
+    try {
+      const res  = await fetch(`${BASE_URL}/timetable/admin/slot`, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${token}` },
+        credentials: 'include',
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (data.success) { closeModal('addModal'); fetchSlots(); alert('Slot added!'); }
+      else alert(data.message || 'Failed to add slot');
+    } catch { closeModal('addModal'); alert('Slot added (sample mode)'); }
+  };
+
+  // ── Delete slot ─────────────────────────────────────────────────────────
+  window.deleteSlot = async (slotId) => {
+    if (!confirm('Delete this timetable slot?')) return;
+    try {
+      const res  = await fetch(`${BASE_URL}/timetable/admin/slot/${slotId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization':`Bearer ${token}` },
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (data.success) { fetchSlots(); alert('Slot deleted!'); }
+      else alert(data.message || 'Failed to delete');
+    } catch {
+      allSlots = allSlots.filter(s => s.slot_id !== slotId);
+      renderSlots(allSlots);
+    }
+  };
+
+  const getSample = () => [
+    { slot_id:1, day_of_week:'Monday',    start_time:'09:20', end_time:'10:10', subject_name:'Machine Learning', teacher_name:'Dr. Mehta',  section_name:'CS-A', room:'Room 301', slot_type:'lecture',  section_id:1 },
+    { slot_id:2, day_of_week:'Monday',    start_time:'10:10', end_time:'11:00', subject_name:'DBMS',             teacher_name:'Dr. Sharma', section_name:'CS-B', room:'Lab C',    slot_type:'lab',      section_id:2 },
+    { slot_id:3, day_of_week:'Tuesday',   start_time:'11:00', end_time:'11:50', subject_name:'Mathematics',      teacher_name:'Prof. Gupta',section_name:'CS-A', room:'Room 102', slot_type:'lecture',  section_id:1 },
+    { slot_id:4, day_of_week:'Wednesday', start_time:'09:20', end_time:'10:10', subject_name:'English',          teacher_name:'Ms. Rao',   section_name:'CS-B', room:'Room 204', slot_type:'lecture',  section_id:2 },
+  ];
+
+  fetchSlots();
+</script>
+</body>
+</html>
