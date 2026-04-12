@@ -57,8 +57,8 @@ export const getUserById = async (req, res) => {
 // ── Delete user ───────────────────────────────────────────────────────────
 export const deleteUser = async (req, res) => {
   try {
-    const { userId }    = req.params;
-    const requesterId   = req.user.userId;
+    const { userId } = req.params;
+    const requesterId = req.user.userId;
 
     if (parseInt(userId) === requesterId)
       return sendError(res, 400, 'You cannot delete your own account');
@@ -115,5 +115,79 @@ export const getAllBranches = async (req, res) => {
   } catch (err) {
     console.error('getAllBranches error:', err);
     sendError(res, 500, 'Could not fetch branches');
+  }
+};
+
+import bcrypt from 'bcrypt';
+
+const SALT_ROUNDS = 12;
+
+// ── Admin creates student ─────────────────────────────────────────────
+export const createStudent = async (req, res) => {
+  try {
+    const { name, email, password, enrollment, department, section_id } = req.body;
+
+    if (!name || !email || !password || !section_id)
+      return sendError(res, 400, 'name, email, password and section_id are required');
+
+    // Check duplicate email
+    const [existing] = await (await import('../config/db.js')).default.query(
+      'SELECT user_id FROM users WHERE email = ?', [email]
+    );
+    if (existing.length > 0)
+      return sendError(res, 409, 'Email already registered');
+
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+    const userId = await AdminModel.createStudent({
+      name, email, hashedPassword,
+      enrollment: enrollment || email.split('@')[0],
+      department: department || '',
+      sectionId: section_id,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Student created successfully',
+      userId,
+    });
+
+  } catch (err) {
+    console.error('createStudent error:', err);
+    sendError(res, 500, 'Could not create student');
+  }
+};
+
+// ── Admin creates teacher ─────────────────────────────────────────────
+export const createTeacher = async (req, res) => {
+  try {
+    const { name, email, password, department, designation } = req.body;
+
+    if (!name || !email || !password)
+      return sendError(res, 400, 'name, email and password are required');
+
+    const [existing] = await (await import('../config/db.js')).default.query(
+      'SELECT user_id FROM users WHERE email = ?', [email]
+    );
+    if (existing.length > 0)
+      return sendError(res, 409, 'Email already registered');
+
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+    const userId = await AdminModel.createTeacher({
+      name, email, hashedPassword,
+      department: department || '',
+      designation: designation || 'Teacher',
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Teacher created successfully',
+      userId,
+    });
+
+  } catch (err) {
+    console.error('createTeacher error:', err);
+    sendError(res, 500, 'Could not create teacher');
   }
 };

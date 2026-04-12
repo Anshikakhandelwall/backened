@@ -9,7 +9,10 @@ import {
     getAllSections,
     getAllSubjects,
     getAllBranches,
-} from '../controller/AdminController.js';
+ createStudent,
+createTeacher,
+} 
+from '../controller/AdminController.js';
 import { authenticate } from '../middleware/auth.middleware.js';
 import { authorise } from '../middleware/role.middleware.js';
 
@@ -33,5 +36,9 @@ router.get('/teachers', getAllTeachers);
 router.get('/sections', getAllSections);
 router.get('/subjects', getAllSubjects);
 router.get('/branches', getAllBranches);
+
+
+router.post('/students/create', createStudent);
+router.post('/teachers/create', createTeacher);
 
 export default router;

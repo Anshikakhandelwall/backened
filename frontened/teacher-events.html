@@ -1,348 +1,262 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Events</title>
   <link rel="stylesheet" href="teacher-events.css">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1c3557">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SmartTimetable">
+  <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
+
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div>
-      <div class="logo">
-        🎓
-        <div>
-          <h3>SmartTimetable</h3>
-          <p>Alert System</p>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div>
+        <div class="logo">
+          🎓
+          <div>
+            <h3>SmartTimetable</h3>
+            <p>Alert System</p>
+          </div>
         </div>
+
+        <div class="profile">
+          <div class="avatar" id="avatarLetter">T</div>
+          <div>
+            <h4 id="teacherName">Teacher</h4>
+            <span class="role">Teacher</span>
+          </div>
+        </div>
+
+        <ul class="menu">
+          <li><a href="teacher-dashboard.html">Dashboard</a></li>
+          <li><a href="teacher-timetable.html">My Timetable</a></li>
+          <li><a href="teacher-mark-lecture.html">Mark Lecture</a></li>
+          <li><a href="teacher-substitutions.html">Substitutions</a></li>
+          <li class="active"><a href="teacher-events.html">Events</a></li>
+          <li><a href="changepassword.html">Change Password</a></li>
+        </ul>
       </div>
 
-      <div class="profile">
-        <div class="avatar" id="avatarLetter">T</div>
-        <div>
-          <h4 id="teacherName">Teacher</h4>
-          <span class="role">Teacher</span>
-        </div>
+      <div class="logout">
+        <a href="#" onclick="handleLogout()">Sign Out</a>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <div class="header">
+        <h2>Events</h2>
+        <span id="date"></span>
       </div>
 
-      <ul class="menu">
-        <li><a href="teacher-dashboard.html">Dashboard</a></li>
-        <li><a href="teacher-timetable.html">My Timetable</a></li>
-        <li><a href="teacher-mark-lecture.html">Mark Lecture</a></li>
-        <li><a href="teacher-substitutions.html">Substitutions</a></li>
-        <li class="active"><a href="teacher-events.html">Events</a></li>
-        <li><a href="changepassword.html">Change Password</a></li>
-      </ul>
-    </div>
+      <h1>Upcoming Events</h1>
+      <p class="subtitle">Stay updated with university, branch and section events.</p>
 
-    <div class="logout">
-      <a href="#" onclick="handleLogout()">Sign Out</a>
+      <!-- FILTER TABS -->
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterEvents('all', this)">
+          All Events
+        </button>
+        <button class="filter-tab" onclick="filterEvents('university', this)">
+          University
+        </button>
+        <button class="filter-tab" onclick="filterEvents('branch', this)">
+          Branch
+        </button>
+        <button class="filter-tab" onclick="filterEvents('section', this)">
+          Section
+        </button>
+      </div>
+
+      <!-- EVENTS GRID -->
+      <div class="events-grid" id="eventsGrid">
+        <p style="color:#6b7280">Loading events...</p>
+      </div>
+
     </div>
   </div>
 
-  <!-- MAIN -->
-  <div class="main">
+  <!-- EVENT DETAIL MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" id="modalBox">
+      <h2 id="modalTitle">Event Name</h2>
+      <p class="modal-subtitle" id="modalDesc">Description</p>
 
-    <div class="header">
-      <h2>Events</h2>
-      <span id="date"></span>
+      <div class="modal-detail">
+        <span class="modal-label">📅 Date</span>
+        <span id="modalDate">—</span>
+      </div>
+      <div class="modal-detail">
+        <span class="modal-label">⏰ Time</span>
+        <span id="modalTime">—</span>
+      </div>
+      <div class="modal-detail">
+        <span class="modal-label">📍 Venue</span>
+        <span id="modalVenue">—</span>
+      </div>
+      <div class="modal-detail">
+        <span class="modal-label">🎓 Credits</span>
+        <span id="modalCredits">—</span>
+      </div>
+      <div class="modal-detail">
+        <span class="modal-label">🏫 Scope</span>
+        <span id="modalScope">—</span>
+      </div>
+
+      <button class="modal-close" onclick="closeModal()">Close</button>
     </div>
-
-    <h1>Upcoming Events</h1>
-    <p class="subtitle">Stay updated with university, branch and section events.</p>
-
-    <!-- FILTER TABS -->
-    <div class="filter-tabs">
-      <button class="filter-tab active" onclick="filterEvents('all', this)">
-        All Events
-      </button>
-      <button class="filter-tab" onclick="filterEvents('university', this)">
-        University
-      </button>
-      <button class="filter-tab" onclick="filterEvents('branch', this)">
-        Branch
-      </button>
-      <button class="filter-tab" onclick="filterEvents('section', this)">
-        Section
-      </button>
-    </div>
-
-    <!-- EVENTS GRID -->
-    <div class="events-grid" id="eventsGrid">
-      <p style="color:#6b7280">Loading events...</p>
-    </div>
-
   </div>
-</div>
 
-<!-- EVENT DETAIL MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-  <div class="modal" id="modalBox">
-    <h2 id="modalTitle">Event Name</h2>
-    <p class="modal-subtitle" id="modalDesc">Description</p>
+  <script type="module">
+    const BASE_URL = 'http://localhost:5000/api';
+    const token = localStorage.getItem('accessToken');
+    const userName = localStorage.getItem('userName') || 'Teacher';
 
-    <div class="modal-detail">
-      <span class="modal-label">📅 Date</span>
-      <span id="modalDate">—</span>
-    </div>
-    <div class="modal-detail">
-      <span class="modal-label">⏰ Time</span>
-      <span id="modalTime">—</span>
-    </div>
-    <div class="modal-detail">
-      <span class="modal-label">📍 Venue</span>
-      <span id="modalVenue">—</span>
-    </div>
-    <div class="modal-detail">
-      <span class="modal-label">🎓 Credits</span>
-      <span id="modalCredits">—</span>
-    </div>
-    <div class="modal-detail">
-      <span class="modal-label">🏫 Scope</span>
-      <span id="modalScope">—</span>
-    </div>
-
-    <button class="modal-close" onclick="closeModal()">Close</button>
-  </div>
-</div>
-
-<script type="module">
-
-  const BASE_URL = 'http://localhost:5000/api';
-  const token    = localStorage.getItem('accessToken');
-  const userName = localStorage.getItem('userName') || 'Teacher';
-  const userRole = localStorage.getItem('userRole');
-
-  // ── Auth guard ───────────────────────────────────────────────────────────
-  if (!token || userRole !== 'teacher') {
-    window.location.href = 'signin.html';
-  }
-
-  // ── Logout ───────────────────────────────────────────────────────────────
-  window.handleLogout = async () => {
-    await fetch(`${BASE_URL}/auth/logout`, {
-      method: 'POST', credentials: 'include'
-    });
-    localStorage.clear();
-    window.location.href = 'signin.html';
-  };
-
-  // ── Fill user info ────────────────────────────────────────────────────────
-  document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
-  document.getElementById('teacherName').textContent  = userName;
-
-  // ── Date ──────────────────────────────────────────────────────────────────
-  const now    = new Date();
-  const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  document.getElementById('date').textContent =
-    `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-
-  // ── All events stored here ────────────────────────────────────────────────
-  let allEvents = [];
-
-  // ── Filter ────────────────────────────────────────────────────────────────
-  window.filterEvents = (scope, btn) => {
-    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-
-    const filtered = scope === 'all'
-      ? allEvents
-      : allEvents.filter(e => e.scope === scope);
-
-    renderEvents(filtered);
-  };
-
-  // ── Render events ─────────────────────────────────────────────────────────
-  const renderEvents = (events) => {
-    const grid = document.getElementById('eventsGrid');
-
-    if (!events.length) {
-      grid.innerHTML = `
-        <div class="empty-state">
-          <h3>No events found</h3>
-          <p>No events available for this category right now.</p>
-        </div>`;
-      return;
+    if (!token || localStorage.getItem('userRole') !== 'teacher') {
+      window.location.href = 'signin.html';
     }
 
-    grid.innerHTML = events.map(e => {
+    window.handleLogout = async () => {
+      await fetch(`${BASE_URL}/auth/logout`, { method: 'POST', credentials: 'include' });
+      localStorage.clear(); window.location.href = 'signin.html';
+    };
 
-      const eventDate  = new Date(e.event_date);
-      const isPast     = eventDate < new Date();
-      const hasConflict = e.has_conflict || false;
+    const avatarEl = document.getElementById('avatarLetter');
+    const nameEl = document.getElementById('teacherName');
+    if (avatarEl) avatarEl.textContent = userName.charAt(0).toUpperCase();
+    if (nameEl) nameEl.textContent = userName;
 
-      const scopeClass = `scope-${e.scope}`;
-      const scopeLabel = e.scope.charAt(0).toUpperCase() + e.scope.slice(1);
+    const now = new Date();
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dateEl = document.getElementById('date');
+    if (dateEl)
+      dateEl.textContent =
+        `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 
-      const dateStr = `${eventDate.getDate()} ${months[eventDate.getMonth()]} ${eventDate.getFullYear()}`;
+    let allEvents = [];
 
-      return `
+    // ── Filter ─────────────────────────────────────────────────────────────
+    window.filterEvents = (scope, btn) => {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      renderEvents(scope === 'all'
+        ? allEvents
+        : allEvents.filter(e => e.scope === scope)
+      );
+    };
+
+    // ── Render ─────────────────────────────────────────────────────────────
+    const renderEvents = (events) => {
+      const grid = document.getElementById('eventsGrid');
+      if (!grid) return;
+
+      if (!events.length) {
+        grid.innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1">
+          <h3>No events found</h3>
+          <p>No events available for this category.</p>
+        </div>`;
+        return;
+      }
+
+      grid.innerHTML = events.map(e => {
+        const d = new Date(e.event_date);
+        const dateStr = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        const isPast = d < now;
+        const scopeClass = `scope-${e.scope}`;
+
+        return `
         <div class="event-card">
           <div class="event-header">
             <h3>${e.event_name}</h3>
             <span class="credits">+${e.credits} cr</span>
           </div>
-
-          <span class="scope-badge ${scopeClass}">${scopeLabel}</span>
-
+          <span class="scope-badge ${scopeClass}">
+            ${e.scope.toUpperCase()}
+          </span>
           <p class="desc">${e.description || 'No description provided.'}</p>
-
           <div class="details">
             <p>📅 ${dateStr}</p>
             <p>⏰ ${e.start_time} – ${e.end_time}</p>
             <p>📍 ${e.venue || 'TBD'}</p>
           </div>
-
-          ${hasConflict ? `
+          ${e.has_conflict ? `
             <div class="conflict-alert show">
               ⚠️ This event conflicts with a scheduled lecture
             </div>` : ''}
-
           <button
             class="card-btn ${isPast ? 'btn-conflict' : 'btn-view'}"
-            onclick="${isPast ? '' : `showModal(${e.event_id})`}">
+            onclick="${!isPast ? `showModal(${e.event_id})` : ''}">
             ${isPast ? 'Event Ended' : 'View Details'}
           </button>
         </div>`;
-    }).join('');
-  };
+      }).join('');
+    };
 
-  // ── Show modal ────────────────────────────────────────────────────────────
-  window.showModal = (eventId) => {
-    const e = allEvents.find(ev => ev.event_id === eventId);
-    if (!e) return;
+    // ── Show modal ─────────────────────────────────────────────────────────
+    window.showModal = (eventId) => {
+      const e = allEvents.find(ev => ev.event_id === eventId);
+      if (!e) return;
 
-    const eventDate = new Date(e.event_date);
-    const dateStr   = `${eventDate.getDate()} ${months[eventDate.getMonth()]} ${eventDate.getFullYear()}`;
-    const scopeLabel = e.scope.charAt(0).toUpperCase() + e.scope.slice(1);
+      const d = new Date(e.event_date);
+      const dateStr = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+      const scopeLabel = e.scope.charAt(0).toUpperCase() + e.scope.slice(1);
 
-    document.getElementById('modalTitle').textContent   = e.event_name;
-    document.getElementById('modalDesc').textContent    = e.description || 'No description.';
-    document.getElementById('modalDate').textContent    = dateStr;
-    document.getElementById('modalTime').textContent    = `${e.start_time} – ${e.end_time}`;
-    document.getElementById('modalVenue').textContent   = e.venue || 'TBD';
-    document.getElementById('modalCredits').textContent = `${e.credits} credit${e.credits !== 1 ? 's' : ''}`;
-    document.getElementById('modalScope').textContent   = scopeLabel;
+      document.getElementById('modalTitle').textContent = e.event_name;
+      document.getElementById('modalDesc').textContent = e.description || 'No description.';
+      document.getElementById('modalDate').textContent = dateStr;
+      document.getElementById('modalTime').textContent = `${e.start_time} – ${e.end_time}`;
+      document.getElementById('modalVenue').textContent = e.venue || 'TBD';
+      document.getElementById('modalCredits').textContent =
+        `${e.credits} credit${e.credits !== 1 ? 's' : ''}`;
+      document.getElementById('modalScope').textContent = scopeLabel;
+      document.getElementById('modalOverlay').classList.add('show');
+    };
 
-    document.getElementById('modalOverlay').classList.add('show');
-  };
-
-  // ── Close modal ───────────────────────────────────────────────────────────
-  window.closeModal = (e) => {
-    if (!e || e.target === document.getElementById('modalOverlay')) {
-      document.getElementById('modalOverlay').classList.remove('show');
-    }
-  };
-
-  // ── Fetch events ──────────────────────────────────────────────────────────
-  const fetchEvents = async () => {
-    try {
-      const res  = await fetch(`${BASE_URL}/events`, {
-        headers:     { 'Authorization': `Bearer ${token}` },
-        credentials: 'include',
-      });
-      const data = await res.json();
-
-      if (data.success && data.data.length > 0) {
-        allEvents = data.data;
-        renderEvents(allEvents);
-      } else {
-        loadSample();
+    // ── Close modal ────────────────────────────────────────────────────────
+    window.closeModal = (e) => {
+      if (!e || e.target === document.getElementById('modalOverlay')) {
+        document.getElementById('modalOverlay').classList.remove('show');
       }
+    };
 
-    } catch (err) {
-      console.error('Events fetch error:', err);
-      loadSample();
-    }
-  };
+    // ── Fetch events ───────────────────────────────────────────────────────
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/events/teacher`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+          credentials: 'include',
+        });
+        const data = await res.json();
 
-  // ── Sample data while backend not ready ───────────────────────────────────
-  const loadSample = () => {
-    allEvents = [
-      {
-        event_id:    1,
-        event_name:  'National Science Seminar',
-        description: 'Annual seminar on emerging science and technology trends.',
-        event_date:  '2026-04-10',
-        start_time:  '10:00',
-        end_time:    '13:00',
-        venue:       'Main Auditorium',
-        credits:     2,
-        scope:       'university',
-        has_conflict: false,
-      },
-      {
-        event_id:    2,
-        event_name:  'AI & Machine Learning Workshop',
-        description: 'Hands-on workshop on neural networks and deep learning.',
-        event_date:  '2026-04-12',
-        start_time:  '09:00',
-        end_time:    '12:00',
-        venue:       'Computer Lab B',
-        credits:     3,
-        scope:       'branch',
-        has_conflict: true,
-      },
-      {
-        event_id:    3,
-        event_name:  'Guest Lecture: Industry Insights',
-        description: 'Talk by industry experts on career opportunities.',
-        event_date:  '2026-04-15',
-        start_time:  '14:00',
-        end_time:    '16:00',
-        venue:       'Seminar Hall 2',
-        credits:     1,
-        scope:       'section',
-        has_conflict: false,
-      },
-      {
-        event_id:    4,
-        event_name:  'Hackathon 2026',
-        description: '24-hour coding competition for all students.',
-        event_date:  '2026-04-20',
-        start_time:  '08:00',
-        end_time:    '08:00',
-        venue:       'Innovation Centre',
-        credits:     5,
-        scope:       'university',
-        has_conflict: false,
-      },
-      {
-        event_id:    5,
-        event_name:  'Cultural Fest',
-        description: 'Annual cultural festival with performances and competitions.',
-        event_date:  '2026-03-01',
-        start_time:  '10:00',
-        end_time:    '18:00',
-        venue:       'Open Grounds',
-        credits:     2,
-        scope:       'university',
-        has_conflict: false,
-      },
-      {
-        event_id:    6,
-        event_name:  'DBMS Practical Workshop',
-        description: 'Hands-on session on database design and SQL.',
-        event_date:  '2026-04-18',
-        start_time:  '11:00',
-        end_time:    '13:00',
-        venue:       'Lab C',
-        credits:     1,
-        scope:       'section',
-        has_conflict: false,
-      },
-    ];
+        if (data.success) {
+          allEvents = data.data;
+          renderEvents(allEvents);
+        } else {
+          renderEvents([]);
+        }
 
-    renderEvents(allEvents);
-  };
+      } catch (err) {
+        console.error('Events fetch error:', err);
+        renderEvents([]);
+      }
+    };
 
-  fetchEvents();
-
-</script>
+    fetchEvents();
+  </script>
 </body>
+
 </html>

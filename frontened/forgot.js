@@ -24,7 +24,7 @@ window.sendOTP = async () => {
 // ── VERIFY OTP ─────────────────────────────────────────────────────────────
 window.verifyOTP = async () => {
   const email = sessionStorage.getItem('resetEmail');
-  const otp   = document.getElementById('otp').value.trim();
+  const otp = document.getElementById('otp').value.trim();
 
   if (!otp) {
     alert('Please enter the OTP');
@@ -51,10 +51,10 @@ window.verifyOTP = async () => {
 
 // ── RESET PASSWORD ─────────────────────────────────────────────────────────
 window.resetPassword = async () => {
-  const email       = sessionStorage.getItem('resetEmail');
-  const otp         = sessionStorage.getItem('resetOTP');
+  const email = sessionStorage.getItem('resetEmail');
+  const otp = sessionStorage.getItem('resetOTP');
   const newPassword = document.getElementById('newPassword').value.trim();
-  const confirm     = document.getElementById('confirmPassword').value.trim();
+  const confirm = document.getElementById('confirmPassword').value.trim();
 
   if (!newPassword || !confirm) {
     alert('Please fill all fields');

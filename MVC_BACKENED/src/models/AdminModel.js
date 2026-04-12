@@ -169,6 +169,46 @@ const AdminModel = {
     return rows;
   },
 
+  // ── Create student (admin only) ───────────────────────────────────────
+createStudent: async ({ name, email, hashedPassword, enrollment, department, sectionId }) => {
+  const db = (await import('../config/db.js')).default;
+
+  const [result] = await db.query(
+    `INSERT INTO users (name, email, password, role)
+     VALUES (?, ?, ?, 'student')`,
+    [name, email, hashedPassword]
+  );
+  const userId = result.insertId;
+
+  await db.query(
+    `INSERT INTO students (student_id, section_id, enrollment, department)
+     VALUES (?, ?, ?, ?)`,
+    [userId, sectionId, enrollment, department]
+  );
+
+  return userId;
+},
+
+// ── Create teacher (admin only) ───────────────────────────────────────
+createTeacher: async ({ name, email, hashedPassword, department, designation }) => {
+  const db = (await import('../config/db.js')).default;
+
+  const [result] = await db.query(
+    `INSERT INTO users (name, email, password, role)
+     VALUES (?, ?, ?, 'teacher')`,
+    [name, email, hashedPassword]
+  );
+  const userId = result.insertId;
+
+  await db.query(
+    `INSERT INTO teachers (teacher_id, department, designation)
+     VALUES (?, ?, ?)`,
+    [userId, department, designation]
+  );
+
+  return userId;
+},
+
 };
 
 export default AdminModel;

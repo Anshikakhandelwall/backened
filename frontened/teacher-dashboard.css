@@ -5,7 +5,9 @@
   font-family: Arial, sans-serif;
 }
 
-body { background: #f4f7fc; }
+body {
+  background: #f4f7fc;
+}
 
 .container {
   display: flex;
@@ -23,7 +25,11 @@ body { background: #f4f7fc; }
   justify-content: space-between;
 }
 
-.logo { display: flex; gap: 10px; margin-bottom: 30px; }
+.logo {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+}
 
 .profile {
   display: flex;
@@ -51,7 +57,9 @@ body { background: #f4f7fc; }
   font-size: 12px;
 }
 
-.menu { list-style: none; }
+.menu {
+  list-style: none;
+}
 
 .menu li {
   padding: 12px;
@@ -68,10 +76,18 @@ body { background: #f4f7fc; }
   padding: 12px;
 }
 
-.menu li:hover { background: #5484b1; }
-.active { background: #449bed; }
+.menu li:hover {
+  background: #5484b1;
+}
 
-.logout { margin-top: 20px; cursor: pointer; }
+.active {
+  background: #449bed;
+}
+
+.logout {
+  margin-top: 20px;
+  cursor: pointer;
+}
 
 .logout a {
   display: block;
@@ -85,10 +101,15 @@ body { background: #f4f7fc; }
   transition: 0.3s;
 }
 
-.logout a:hover { background: #25639c; }
+.logout a:hover {
+  background: #25639c;
+}
 
 /* MAIN */
-.main { flex: 1; padding: 30px; }
+.main {
+  flex: 1;
+  padding: 30px;
+}
 
 .header {
   display: flex;
@@ -97,14 +118,21 @@ body { background: #f4f7fc; }
   margin-bottom: 25px;
 }
 
-.header h2 { font-size: 28px; color: #111827; }
-.subtitle { color: #6b7280; margin-top: 5px; }
+.header h2 {
+  font-size: 28px;
+  color: #111827;
+}
+
+.subtitle {
+  color: #6b7280;
+  margin-top: 5px;
+}
 
 #date {
   background: white;
   padding: 10px 18px;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   color: #374151;
 }
 
@@ -120,18 +148,33 @@ body { background: #f4f7fc; }
   margin-bottom: 25px;
 }
 
-.welcome h1 { font-size: 28px; margin-bottom: 8px; }
-.day { font-size: 14px; letter-spacing: 2px; margin-bottom: 10px; opacity: 0.8; }
+.welcome h1 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.day {
+  font-size: 14px;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
 
 .class-count {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255, 255, 255, 0.15);
   padding: 20px 30px;
   border-radius: 15px;
   text-align: center;
 }
 
-.class-count h2 { font-size: 36px; }
-.class-count p  { font-size: 14px; letter-spacing: 1px; }
+.class-count h2 {
+  font-size: 36px;
+}
+
+.class-count p {
+  font-size: 14px;
+  letter-spacing: 1px;
+}
 
 /* STATS */
 .stats {
@@ -145,15 +188,28 @@ body { background: #f4f7fc; }
   background: white;
   padding: 20px;
   border-radius: 18px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.07);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
   text-align: center;
 }
 
-.stat-card h3 { color: #6b7280; font-size: 13px; margin-bottom: 10px; }
-.stat-card p  { font-size: 28px; font-weight: bold; color: #1c3557; }
+.stat-card h3 {
+  color: #6b7280;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.stat-card p {
+  font-size: 28px;
+  font-weight: bold;
+  color: #1c3557;
+}
 
 /* TODAY LECTURES */
-.section-title { margin-bottom: 18px; color: #111827; font-size: 18px; }
+.section-title {
+  margin-bottom: 18px;
+  color: #111827;
+  font-size: 18px;
+}
 
 .lecture {
   background: white;
@@ -163,13 +219,25 @@ body { background: #f4f7fc; }
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-.time { font-weight: bold; color: #2563eb; width: 90px; font-size: 14px; }
+.time {
+  font-weight: bold;
+  color: #2563eb;
+  width: 90px;
+  font-size: 14px;
+}
 
-.details h4 { color: #111827; margin-bottom: 4px; }
-.details p  { color: #6b7280; font-size: 13px; }
+.details h4 {
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.details p {
+  color: #6b7280;
+  font-size: 13px;
+}
 
 .status {
   padding: 8px 14px;
@@ -178,9 +246,20 @@ body { background: #f4f7fc; }
   font-weight: bold;
 }
 
-.conducted  { background: #dcfce7; color: #15803d; }
-.pending    { background: #dbeafe; color: #1d4ed8; }
-.cancelled  { background: #fee2e2; color: #dc2626; }
+.conducted {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.pending {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.cancelled {
+  background: #fee2e2;
+  color: #dc2626;
+}
 
 .mark-btn {
   background: #2563eb;
@@ -193,11 +272,26 @@ body { background: #f4f7fc; }
   transition: 0.3s;
 }
 
-.mark-btn:hover { background: #1d4ed8; }
+.mark-btn:hover {
+  background: #1d4ed8;
+}
 
 @media (max-width: 900px) {
-  .container  { flex-direction: column; }
-  .sidebar    { width: 100%; }
-  .welcome    { flex-direction: column; gap: 20px; }
-  .lecture    { flex-direction: column; gap: 12px; }
+  .container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+
+  .welcome {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .lecture {
+    flex-direction: column;
+    gap: 12px;
+  }
 }

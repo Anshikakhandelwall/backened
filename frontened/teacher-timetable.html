@@ -1,165 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teacher Timetable</title>
   <link rel="stylesheet" href="teacher-timetable.css">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1c3557">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SmartTimetable">
+  <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
+
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <div class="sidebar">
-    <div>
-      <div class="logo">🎓
-        <div><h3>SmartTimetable</h3><p>Alert System</p></div>
-      </div>
-      <div class="profile">
-        <div class="avatar" id="avatarLetter">T</div>
-        <div>
-          <h4 id="teacherName">Teacher</h4>
-          <span class="role">Teacher</span>
+    <div class="sidebar">
+      <div>
+        <div class="logo">🎓
+          <div>
+            <h3>SmartTimetable</h3>
+            <p>Alert System</p>
+          </div>
         </div>
+        <div class="profile">
+          <div class="avatar" id="avatarLetter">T</div>
+          <div>
+            <h4 id="teacherName">Teacher</h4>
+            <span class="role">Teacher</span>
+          </div>
+        </div>
+        <ul class="menu">
+          <li><a href="teacher-dashboard.html">Dashboard</a></li>
+          <li class="active"><a href="teacher-timetable.html">My Timetable</a></li>
+          <li><a href="teacher-mark-lecture.html">Mark Lecture</a></li>
+          <li><a href="teacher-substitutions.html">Substitutions</a></li>
+          <li><a href="teacher-events.html">Events</a></li>
+          <li><a href="changepassword.html">Change Password</a></li>
+        </ul>
       </div>
-      <ul class="menu">
-        <li><a href="teacher-dashboard.html">Dashboard</a></li>
-        <li class="active"><a href="teacher-timetable.html">My Timetable</a></li>
-        <li><a href="teacher-mark-lecture.html">Mark Lecture</a></li>
-        <li><a href="teacher-substitutions.html">Substitutions</a></li>
-        <li><a href="teacher-events.html">Events</a></li>
-        <li><a href="changepassword.html">Change Password</a></li>
-      </ul>
-    </div>
-    <div class="logout">
-      <a href="#" onclick="handleLogout()">Sign Out</a>
-    </div>
-  </div>
-
-  <div class="main">
-    <div class="header">
-      <h2>My Timetable</h2>
-      <span id="date"></span>
+      <div class="logout">
+        <a href="#" onclick="handleLogout()">Sign Out</a>
+      </div>
     </div>
 
-    <h1>Weekly Schedule</h1>
-    <p class="subtitle">Your complete weekly lecture timetable</p>
+    <div class="main">
+      <div class="header">
+        <h2>My Timetable</h2>
+        <span id="date"></span>
+      </div>
 
-    <div class="table-container">
-      <table id="timetableTable">
-        <thead>
-          <tr>
-            <th>Day</th>
-            <th>9:20 - 10:10</th>
-            <th>10:10 - 11:00</th>
-            <th>11:00 - 11:50</th>
-            <th>11:50 - 12:40</th>
-            <th>12:40 - 1:40</th>
-            <th>1:40 - 2:30</th>
-            <th>2:30 - 3:20</th>
-          </tr>
-        </thead>
-        <tbody id="timetableBody">
-          <!-- Filled by JS -->
-        </tbody>
-      </table>
+      <h1>Weekly Schedule</h1>
+      <p class="subtitle">Your complete weekly lecture timetable</p>
+
+      <div class="table-container">
+        <table id="timetableTable">
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>9:20 - 10:10</th>
+              <th>10:10 - 11:00</th>
+              <th>11:00 - 11:50</th>
+              <th>11:50 - 12:40</th>
+              <th>12:40 - 1:40</th>
+              <th>1:40 - 2:30</th>
+              <th>2:30 - 3:20</th>
+            </tr>
+          </thead>
+          <tbody id="timetableBody">
+            <!-- Filled by JS -->
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-</div>
 
-<script type="module">
-  const BASE_URL = 'http://localhost:5000/api';
-  const token    = localStorage.getItem('accessToken');
-  const userName = localStorage.getItem('userName') || 'Teacher';
-  const userRole = localStorage.getItem('userRole');
+  <script type="module">
+    const BASE_URL = 'http://localhost:5000/api';
+    const token = localStorage.getItem('accessToken');
+    const userName = localStorage.getItem('userName') || 'Teacher';
 
-  if (!token || userRole !== 'teacher') window.location.href = 'signin.html';
-
-  window.handleLogout = async () => {
-    await fetch(`${BASE_URL}/auth/logout`, { method:'POST', credentials:'include' });
-    localStorage.clear();
-    window.location.href = 'signin.html';
-  };
-
-  document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
-  document.getElementById('teacherName').textContent  = userName;
-
-  const now    = new Date();
-  const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  document.getElementById('date').textContent =
-    `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-
-  const colors   = ['c1','c2','c3','c4','c5'];
-  const colorMap = {};
-  let   colorIdx = 0;
-
-  const getColor = (subject) => {
-    if (!colorMap[subject]) {
-      colorMap[subject] = colors[colorIdx % colors.length];
-      colorIdx++;
+    if (!token || localStorage.getItem('userRole') !== 'teacher') {
+      window.location.href = 'signin.html';
     }
-    return colorMap[subject];
-  };
 
-  const slots = ['09:20','10:10','11:00','11:50','12:40','13:40','14:30'];
-  const weekDays = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    window.handleLogout = async () => {
+      await fetch(`${BASE_URL}/auth/logout`, { method: 'POST', credentials: 'include' });
+      localStorage.clear(); window.location.href = 'signin.html';
+    };
 
-  const fetchTimetable = async () => {
-    try {
-      const res = await fetch(`${BASE_URL}/timetable/teacher/weekly`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-        credentials: 'include',
-      });
-      const data = await res.json();
-      if (data.success) renderTimetable(data.data);
-      else renderSample();
-    } catch (err) {
-      console.error('Timetable fetch error:', err);
-      renderSample();
-    }
-  };
+    const avatarEl = document.getElementById('avatarLetter');
+    const nameEl = document.getElementById('teacherName');
+    if (avatarEl) avatarEl.textContent = userName.charAt(0).toUpperCase();
+    if (nameEl) nameEl.textContent = userName;
 
-  const renderTimetable = (lectures) => {
-    const body = document.getElementById('timetableBody');
-    body.innerHTML = weekDays.map(day => {
-      const cells = slots.map((start, i) => {
-        if (start === '12:40') return `<td class="break">Break</td>`;
-        const end     = slots[i + 1] || '15:20';
-        const lecture = lectures.find(l =>
-          l.day_of_week === day &&
-          l.start_time.slice(0,5) === start
-        );
-        if (lecture) {
-          const c = getColor(lecture.subject_name);
-          return `<td>
+    const now = new Date();
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dateEl = document.getElementById('date');
+    if (dateEl)
+      dateEl.textContent =
+        `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+    // ── Color map ──────────────────────────────────────────────────────────
+    const colorClasses = ['c1', 'c2', 'c3', 'c4', 'c5'];
+    const colorMap = {};
+    let colorIdx = 0;
+
+    const getColor = (subject) => {
+      if (!colorMap[subject]) {
+        colorMap[subject] = colorClasses[colorIdx % colorClasses.length];
+        colorIdx++;
+      }
+      return colorMap[subject];
+    };
+
+    const timeSlots = ['09:20', '10:10', '11:00', '11:50', '12:40', '13:40', '14:30'];
+    const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    // ── Fetch weekly timetable ─────────────────────────────────────────────
+    const fetchWeekly = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/timetable/teacher/weekly`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+          credentials: 'include',
+        });
+        const data = await res.json();
+
+        if (data.success && data.data.length > 0) {
+          renderTimetable(data.data);
+        } else {
+          document.getElementById('timetableBody').innerHTML =
+            `<tr><td colspan="8"
+            style="text-align:center;padding:30px;color:#6b7280">
+            No timetable assigned yet. Contact admin.
+          </td></tr>`;
+        }
+
+      } catch (err) {
+        console.error('Timetable fetch error:', err);
+        document.getElementById('timetableBody').innerHTML =
+          `<tr><td colspan="8"
+          style="text-align:center;padding:30px;color:#6b7280">
+          Could not load timetable.
+        </td></tr>`;
+      }
+    };
+
+    // ── Render timetable ───────────────────────────────────────────────────
+    const renderTimetable = (lectures) => {
+      const body = document.getElementById('timetableBody');
+
+      body.innerHTML = weekDays.map(day => {
+        const cells = timeSlots.map(startTime => {
+          if (startTime === '12:40')
+            return `<td class="break">Break</td>`;
+
+          const lecture = lectures.find(l =>
+            l.day_of_week === day &&
+            l.start_time.slice(0, 5) === startTime
+          );
+
+          if (lecture) {
+            const c = getColor(lecture.subject_name);
+            return `<td>
             <div class="subject-card ${c}">
               <h4>${lecture.subject_name}</h4>
-              <p>${lecture.section_name} | ${lecture.room || 'TBD'}</p>
+              <p>${lecture.section_name}</p>
+              <p>${lecture.room || 'TBD'}</p>
             </div>
           </td>`;
-        }
-        return `<td class="free">-</td>`;
-      });
-      return `<tr><td class="day">${day}</td>${cells.join('')}</tr>`;
-    }).join('');
-  };
+          }
 
-  // Sample data while backend not ready
-  const renderSample = () => {
-    const sample = [
-      { day_of_week:'Monday',    start_time:'09:20', subject_name:'Machine Learning', section_name:'CS-A', room:'Room 301' },
-      { day_of_week:'Monday',    start_time:'10:10', subject_name:'DBMS',             section_name:'CS-B', room:'Lab C'    },
-      { day_of_week:'Tuesday',   start_time:'09:20', subject_name:'DBMS',             section_name:'CS-A', room:'Lab C'    },
-      { day_of_week:'Tuesday',   start_time:'11:00', subject_name:'Machine Learning', section_name:'CS-B', room:'Room 301' },
-      { day_of_week:'Wednesday', start_time:'10:10', subject_name:'Machine Learning', section_name:'CS-A', room:'Room 301' },
-      { day_of_week:'Thursday',  start_time:'09:20', subject_name:'DBMS',             section_name:'CS-B', room:'Lab C'    },
-      { day_of_week:'Friday',    start_time:'13:40', subject_name:'Machine Learning', section_name:'CS-A', room:'Room 301' },
-    ];
-    renderTimetable(sample);
-  };
+          return `<td class="free">—</td>`;
+        });
 
-  fetchTimetable();
-</script>
+        return `<tr><td class="day">${day}</td>${cells.join('')}</tr>`;
+      }).join('');
+    };
+
+    fetchWeekly();
+  </script>
+  </script>
 </body>
+
 </html>

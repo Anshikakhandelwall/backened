@@ -1,258 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="admin.css">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1c3557">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SmartTimetable">
+  <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
+
 <body>
-<div class="container">
+  <div class="container">
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div>
-      <div class="logo">
-        🎓
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div>
+        <div class="logo">
+          🎓
+          <div>
+            <h3>SmartTimetable</h3>
+            <p>Admin Panel</p>
+          </div>
+        </div>
+        <div class="profile">
+          <div class="avatar" id="avatarLetter">A</div>
+          <div class="profile-info">
+            <h4 id="adminName">Admin</h4>
+            <span class="role-badge">Admin</span>
+          </div>
+        </div>
+        <ul class="menu">
+          <li class="active"><a href="admin-dashboard.html"><span class="menu-icon">📊</span>Dashboard</a></li>
+          <li><a href="admin-timetable.html"><span class="menu-icon">📅</span>Timetable</a></li>
+          <li><a href="admin-substitutions.html"><span class="menu-icon">🔁</span>Substitutions</a></li>
+          <li><a href="admin-attendance.html"><span class="menu-icon">👁</span>Attendance</a></li>
+          <li><a href="admin-events.html"><span class="menu-icon">🎉</span>Events</a></li>
+          <li><a href="admin-users.html"><span class="menu-icon">👥</span>Users</a></li>
+          <li><a href="admin-manage.html"><span class="menu-icon">🏫</span>Manage Structure</a></li>
+          <li><a href="admin-manage-students.html"><span class="menu-icon">🎓</span>Manage Students</a></li>
+          <li><a href="admin-manage-teachers.html"><span class="menu-icon">👨‍🏫</span>Manage Teachers</a></li>
+          <li><a href="changepassword.html"><span class="menu-icon">🔒</span>Change Password</a></li>
+        </ul>
+      </div>
+      <div class="logout"><a href="#" onclick="handleLogout()">Sign Out</a></div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <div class="page-header">
+        <div class="page-header-left">
+          <h2>Admin Dashboard</h2>
+          <p id="greetingText">Welcome back!</p>
+        </div>
+        <span id="date"></span>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-card blue">
+          <h3>Total Students</h3>
+          <p id="totalStudents">—</p>
+          <span>Registered</span>
+        </div>
+        <div class="stat-card green">
+          <h3>Total Teachers</h3>
+          <p id="totalTeachers">—</p>
+          <span>Active</span>
+        </div>
+        <div class="stat-card amber">
+          <h3>Today's Lectures</h3>
+          <p id="todayLectures">—</p>
+          <span>Scheduled</span>
+        </div>
+        <div class="stat-card red">
+          <h3>Absent Today</h3>
+          <p id="absentToday">—</p>
+          <span>Teachers absent</span>
+        </div>
+        <div class="stat-card purple">
+          <h3>Upcoming Events</h3>
+          <p id="upcomingEvents">—</p>
+          <span>This month</span>
+        </div>
+      </div>
+
+      <!-- ABSENT LECTURES ALERT -->
+      <div id="absentAlert" style="display:none" class="alert-box alert-red">
+        ⚠️ <span id="absentAlertText"></span> — Check Attendance Monitor
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+
+        <!-- RECENT ABSENT LECTURES -->
         <div>
-          <h3>SmartTimetable</h3>
-          <p>Admin Panel</p>
+          <div class="section-title">
+            Today's Absent Lectures
+            <a href="admin-attendance.html" style="font-size:13px;color:#449bed;text-decoration:none">View all →</a>
+          </div>
+          <div class="table-box">
+            <table>
+              <thead>
+                <tr>
+                  <th>Teacher</th>
+                  <th>Subject</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody id="absentTable">
+                <tr>
+                  <td colspan="3" style="text-align:center;color:#6b7280;padding:20px">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-      <div class="profile">
-        <div class="avatar" id="avatarLetter">A</div>
-        <div class="profile-info">
-          <h4 id="adminName">Admin</h4>
-          <span class="role-badge">Admin</span>
+
+        <!-- UPCOMING EVENTS -->
+        <div>
+          <div class="section-title">
+            Upcoming Events
+            <a href="admin-events.html" style="font-size:13px;color:#449bed;text-decoration:none">Manage →</a>
+          </div>
+          <div class="table-box">
+            <table>
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>Date</th>
+                  <th>Scope</th>
+                </tr>
+              </thead>
+              <tbody id="eventsTable">
+                <tr>
+                  <td colspan="3" style="text-align:center;color:#6b7280;padding:20px">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
+
       </div>
-      <ul class="menu">
-        <li class="active"><a href="admin-dashboard.html"><span class="menu-icon">📊</span>Dashboard</a></li>
-        <li><a href="admin-timetable.html"><span class="menu-icon">📅</span>Timetable</a></li>
-        <li><a href="admin-substitutions.html"><span class="menu-icon">🔁</span>Substitutions</a></li>
-        <li><a href="admin-attendance.html"><span class="menu-icon">👁</span>Attendance</a></li>
-        <li><a href="admin-events.html"><span class="menu-icon">🎉</span>Events</a></li>
-        <li><a href="admin-users.html"><span class="menu-icon">👥</span>Users</a></li>
-        <li><a href="changepassword.html"><span class="menu-icon">🔒</span>Change Password</a></li>
-      </ul>
+
     </div>
-    <div class="logout"><a href="#" onclick="handleLogout()">Sign Out</a></div>
   </div>
 
-  <!-- MAIN -->
-  <div class="main">
+  <script type="module">
+    const BASE_URL = 'http://localhost:5000/api';
+    const token = localStorage.getItem('accessToken');
+    const userName = localStorage.getItem('userName') || 'Admin';
+    const userRole = localStorage.getItem('userRole');
 
-    <div class="page-header">
-      <div class="page-header-left">
-        <h2>Admin Dashboard</h2>
-        <p id="greetingText">Welcome back!</p>
-      </div>
-      <span id="date"></span>
-    </div>
+    if (!token || userRole !== 'admin') window.location.href = 'signin.html';
 
-    <!-- STATS -->
-    <div class="stats-grid">
-      <div class="stat-card blue">
-        <h3>Total Students</h3>
-        <p id="totalStudents">—</p>
-        <span>Registered</span>
-      </div>
-      <div class="stat-card green">
-        <h3>Total Teachers</h3>
-        <p id="totalTeachers">—</p>
-        <span>Active</span>
-      </div>
-      <div class="stat-card amber">
-        <h3>Today's Lectures</h3>
-        <p id="todayLectures">—</p>
-        <span>Scheduled</span>
-      </div>
-      <div class="stat-card red">
-        <h3>Absent Today</h3>
-        <p id="absentToday">—</p>
-        <span>Teachers absent</span>
-      </div>
-      <div class="stat-card purple">
-        <h3>Upcoming Events</h3>
-        <p id="upcomingEvents">—</p>
-        <span>This month</span>
-      </div>
-    </div>
+    window.handleLogout = async () => {
+      await fetch(`${BASE_URL}/auth/logout`, { method: 'POST', credentials: 'include' });
+      localStorage.clear();
+      window.location.href = 'signin.html';
+    };
 
-    <!-- ABSENT LECTURES ALERT -->
-    <div id="absentAlert" style="display:none" class="alert-box alert-red">
-      ⚠️ <span id="absentAlertText"></span> — Check Attendance Monitor
-    </div>
+    document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
+    document.getElementById('adminName').textContent = userName;
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+    const now = new Date();
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    document.getElementById('date').textContent =
+      `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+    const hour = now.getHours();
+    const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
+    document.getElementById('greetingText').textContent = `${greeting}, ${userName.split(' ')[0]}!`;
 
-      <!-- RECENT ABSENT LECTURES -->
-      <div>
-        <div class="section-title">
-          Today's Absent Lectures
-          <a href="admin-attendance.html" style="font-size:13px;color:#449bed;text-decoration:none">View all →</a>
-        </div>
-        <div class="table-box">
-          <table>
-            <thead>
-              <tr>
-                <th>Teacher</th>
-                <th>Subject</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-            <tbody id="absentTable">
-              <tr><td colspan="3" style="text-align:center;color:#6b7280;padding:20px">Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    // ── Fetch dashboard stats ──────────────────────────────────────────────
+    const fetchStats = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/admin/stats`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+          credentials: 'include',
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('totalStudents').textContent = data.data.total_students;
+          document.getElementById('totalTeachers').textContent = data.data.total_teachers;
+          document.getElementById('todayLectures').textContent = data.data.today_lectures;
+          document.getElementById('absentToday').textContent = data.data.absent_today;
+          document.getElementById('upcomingEvents').textContent = data.data.upcoming_events;
 
-      <!-- UPCOMING EVENTS -->
-      <div>
-        <div class="section-title">
-          Upcoming Events
-          <a href="admin-events.html" style="font-size:13px;color:#449bed;text-decoration:none">Manage →</a>
-        </div>
-        <div class="table-box">
-          <table>
-            <thead>
-              <tr>
-                <th>Event</th>
-                <th>Date</th>
-                <th>Scope</th>
-              </tr>
-            </thead>
-            <tbody id="eventsTable">
-              <tr><td colspan="3" style="text-align:center;color:#6b7280;padding:20px">Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-</div>
-
-<script type="module">
-  const BASE_URL = 'http://localhost:5000/api';
-  const token    = localStorage.getItem('accessToken');
-  const userName = localStorage.getItem('userName') || 'Admin';
-  const userRole = localStorage.getItem('userRole');
-
-  if (!token || userRole !== 'admin') window.location.href = 'signin.html';
-
-  window.handleLogout = async () => {
-    await fetch(`${BASE_URL}/auth/logout`, { method:'POST', credentials:'include' });
-    localStorage.clear();
-    window.location.href = 'signin.html';
-  };
-
-  document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
-  document.getElementById('adminName').textContent    = userName;
-
-  const now    = new Date();
-  const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  document.getElementById('date').textContent =
-    `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-  const hour = now.getHours();
-  const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
-  document.getElementById('greetingText').textContent = `${greeting}, ${userName.split(' ')[0]}!`;
-
-  // ── Fetch dashboard stats ──────────────────────────────────────────────
-  const fetchStats = async () => {
-    try {
-      const res  = await fetch(`${BASE_URL}/admin/stats`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-        credentials: 'include',
-      });
-      const data = await res.json();
-      if (data.success) {
-        document.getElementById('totalStudents').textContent  = data.data.total_students;
-        document.getElementById('totalTeachers').textContent  = data.data.total_teachers;
-        document.getElementById('todayLectures').textContent  = data.data.today_lectures;
-        document.getElementById('absentToday').textContent    = data.data.absent_today;
-        document.getElementById('upcomingEvents').textContent = data.data.upcoming_events;
-
-        if (data.data.absent_today > 0) {
-          document.getElementById('absentAlert').style.display = 'block';
-          document.getElementById('absentAlertText').textContent =
-            `${data.data.absent_today} teacher(s) absent today`;
+          if (data.data.absent_today > 0) {
+            document.getElementById('absentAlert').style.display = 'block';
+            document.getElementById('absentAlertText').textContent =
+              `${data.data.absent_today} teacher(s) absent today`;
+          }
         }
-      }
-    } catch { loadSampleStats(); }
-  };
+      } catch { loadSampleStats(); }
+    };
 
-  const loadSampleStats = () => {
-    document.getElementById('totalStudents').textContent  = '120';
-    document.getElementById('totalTeachers').textContent  = '18';
-    document.getElementById('todayLectures').textContent  = '24';
-    document.getElementById('absentToday').textContent    = '2';
-    document.getElementById('upcomingEvents').textContent = '5';
-    document.getElementById('absentAlert').style.display  = 'block';
-    document.getElementById('absentAlertText').textContent = '2 teacher(s) absent today';
-  };
+    const loadSampleStats = () => {
+      document.getElementById('totalStudents').textContent = '120';
+      document.getElementById('totalTeachers').textContent = '18';
+      document.getElementById('todayLectures').textContent = '24';
+      document.getElementById('absentToday').textContent = '2';
+      document.getElementById('upcomingEvents').textContent = '5';
+      document.getElementById('absentAlert').style.display = 'block';
+      document.getElementById('absentAlertText').textContent = '2 teacher(s) absent today';
+    };
 
-  // ── Fetch absent lectures ──────────────────────────────────────────────
-  const fetchAbsent = async () => {
-    try {
-      const res  = await fetch(`${BASE_URL}/attendance/admin/absent-today`, {
-        headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include',
-      });
-      const data = await res.json();
-      const tbody = document.getElementById('absentTable');
-      if (data.success && data.data.length) {
-        tbody.innerHTML = data.data.map(r => `
+    // ── Fetch absent lectures ──────────────────────────────────────────────
+    const fetchAbsent = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/attendance/admin/absent-today`, {
+          headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include',
+        });
+        const data = await res.json();
+        const tbody = document.getElementById('absentTable');
+        if (data.success && data.data.length) {
+          tbody.innerHTML = data.data.map(r => `
           <tr>
             <td>${r.teacher_name}</td>
             <td>${r.subject_name}</td>
             <td>${r.start_time}–${r.end_time}</td>
           </tr>`).join('');
-      } else {
-        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#6b7280;padding:20px">No absences today</td></tr>`;
-      }
-    } catch {
-      document.getElementById('absentTable').innerHTML = `
+        } else {
+          tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#6b7280;padding:20px">No absences today</td></tr>`;
+        }
+      } catch {
+        document.getElementById('absentTable').innerHTML = `
         <tr><td>Dr. Sharma</td><td>DBMS</td><td>10:10–11:00</td></tr>
         <tr><td>Prof. Gupta</td><td>Maths</td><td>11:00–11:50</td></tr>`;
-    }
-  };
+      }
+    };
 
-  // ── Fetch upcoming events ──────────────────────────────────────────────
-  const fetchEvents = async () => {
-    try {
-      const res  = await fetch(`${BASE_URL}/events/teacher`, {
-        headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include',
-      });
-      const data = await res.json();
-      const tbody = document.getElementById('eventsTable');
-      if (data.success && data.data.length) {
-        const upcoming = data.data.filter(e => new Date(e.event_date) >= new Date()).slice(0, 5);
-        tbody.innerHTML = upcoming.map(e => {
-          const d = new Date(e.event_date);
-          const scopeClass = e.scope === 'university' ? 'badge-blue'
-                           : e.scope === 'branch'     ? 'badge-green' : 'badge-amber';
-          return `<tr>
+    // ── Fetch upcoming events ──────────────────────────────────────────────
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/events/teacher`, {
+          headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include',
+        });
+        const data = await res.json();
+        const tbody = document.getElementById('eventsTable');
+        if (data.success && data.data.length) {
+          const upcoming = data.data.filter(e => new Date(e.event_date) >= new Date()).slice(0, 5);
+          tbody.innerHTML = upcoming.map(e => {
+            const d = new Date(e.event_date);
+            const scopeClass = e.scope === 'university' ? 'badge-blue'
+              : e.scope === 'branch' ? 'badge-green' : 'badge-amber';
+            return `<tr>
             <td>${e.event_name}</td>
             <td>${d.getDate()} ${months[d.getMonth()]}</td>
             <td><span class="badge ${scopeClass}">${e.scope}</span></td>
           </tr>`;
-        }).join('');
-      } else {
-        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#6b7280;padding:20px">No upcoming events</td></tr>`;
-      }
-    } catch {
-      document.getElementById('eventsTable').innerHTML = `
+          }).join('');
+        } else {
+          tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#6b7280;padding:20px">No upcoming events</td></tr>`;
+        }
+      } catch {
+        document.getElementById('eventsTable').innerHTML = `
         <tr><td>AI Workshop</td><td>10 Apr</td><td><span class="badge badge-blue">university</span></td></tr>
         <tr><td>Hackathon 2026</td><td>20 Apr</td><td><span class="badge badge-blue">university</span></td></tr>`;
-    }
-  };
+      }
+    };
 
-  fetchStats();
-  fetchAbsent();
-  fetchEvents();
-</script>
+    fetchStats();
+    fetchAbsent();
+    fetchEvents();
+  </script>
 </body>
+
 </html>

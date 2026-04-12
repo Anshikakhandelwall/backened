@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Structure</title>
+    <link rel="stylesheet" href="admin.css">
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1c3557">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SmartTimetable">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <style>
+        .tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            padding: 9px 18px;
+            border: 0.5px solid #d1d5db;
+            border-radius: 10px;
+            background: white;
+            color: #6b7280;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #1c3557;
+            color: white;
+            border-color: #1c3557;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #f3f4f6;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .add-form {
+            background: white;
+            border-radius: 16px;
+            padding: 22px 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+            margin-bottom: 24px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .add-form .form-group {
+            flex: 1;
+            min-width: 160px;
+            margin-bottom: 0;
+        }
+
+        .add-form .form-group label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .add-form .form-group input,
+        .add-form .form-group select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .add-form .form-group input:focus,
+        .add-form .form-group select:focus {
+            border-color: #449bed;
+        }
+
+        .count-badge {
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .flow-hint {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #0369a1;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div>
+                <div class="logo">🎓<div>
+                        <h3>SmartTimetable</h3>
+                        <p>Admin Panel</p>
+                    </div>
+                </div>
+                <div class="profile">
+                    <div class="avatar" id="avatarLetter">A</div>
+                    <div class="profile-info">
+                        <h4 id="adminName">Admin</h4><span class="role-badge">Admin</span>
+                    </div>
+                </div>
+                <ul class="menu">
+                    <li><a href="admin-dashboard.html"><span class="menu-icon">📊</span>Dashboard</a></li>
+                    <li><a href="admin-timetable.html"><span class="menu-icon">📅</span>Timetable</a></li>
+                    <li><a href="admin-substitutions.html"><span class="menu-icon">🔁</span>Substitutions</a></li>
+                    <li><a href="admin-attendance.html"><span class="menu-icon">👁</span>Attendance</a></li>
+                    <li><a href="admin-events.html"><span class="menu-icon">🎉</span>Events</a></li>
+                    <li><a href="admin-users.html"><span class="menu-icon">👥</span>Users</a></li>
+                    <li class="active"><a href="admin-manage.html"><span class="menu-icon">🏫</span>Manage Structure</a>
+                    </li>
+                    <li><a href="admin-manage-students.html"><span class="menu-icon">🎓</span>Manage Students</a></li>
+                    <li><a href="admin-manage-teachers.html"><span class="menu-icon">👨‍🏫</span>Manage Teachers</a>
+                    </li>
+                    <li><a href="changepassword.html"><span class="menu-icon">🔒</span>Change Password</a></li>
+                </ul>
+            </div>
+            <div class="logout"><a href="#" onclick="handleLogout()">Sign Out</a></div>
+        </div>
+
+        <!-- MAIN -->
+        <div class="main">
+
+            <div class="page-header">
+                <div class="page-header-left">
+                    <h2>Manage Structure</h2>
+                    <p>Create schools, courses, branches, semesters, sections and subjects</p>
+                </div>
+            </div>
+
+            <!-- FLOW HINT -->
+            <div class="flow-hint">
+                ℹ️ Follow this order when setting up for the first time:
+                <strong>School → Course → Branch → Semester → Section → Subject</strong>.
+                Each step depends on the one before it.
+            </div>
+
+            <!-- TABS -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('schools', this)">🏫 Schools</button>
+                <button class="tab-btn" onclick="switchTab('courses', this)">📚 Courses</button>
+                <button class="tab-btn" onclick="switchTab('branches', this)">🌿 Branches</button>
+                <button class="tab-btn" onclick="switchTab('semesters', this)">📆 Semesters</button>
+                <button class="tab-btn" onclick="switchTab('sections', this)">👥 Sections</button>
+                <button class="tab-btn" onclick="switchTab('subjects', this)">📖 Subjects</button>
+            </div>
+
+            <!-- ── SCHOOLS ──────────────────────────────────────────────────── -->
+            <div class="tab-panel active" id="panel-schools">
+                <div class="add-form">
+                    <div class="form-group">
+                        <label>School Name</label>
+                        <input type="text" id="schoolName" placeholder="e.g. School of Engineering">
+                    </div>
+                    <button class="btn btn-primary" onclick="addSchool()">+ Add School</button>
+                </div>
+                <div class="section-title">
+                    All Schools
+                    <span class="count-badge" id="count-schools">0</span>
+                </div>
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>School Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-schools">
+                            <tr>
+                                <td colspan="3" style="text-align:center;padding:20px;color:#6b7280">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── COURSES ──────────────────────────────────────────────────── -->
+            <div class="tab-panel" id="panel-courses">
+                <div class="add-form">
+                    <div class="form-group">
+                        <label>Course Name</label>
+                        <input type="text" id="courseName" placeholder="e.g. Bachelor of Technology">
+                    </div>
+                    <div class="form-group">
+                        <label>School</label>
+                        <select id="courseSchool"></select>
+                    </div>
+                    <button class="btn btn-primary" onclick="addCourse()">+ Add Course</button>
+                </div>
+                <div class="section-title">
+                    All Courses
+                    <span class="count-badge" id="count-courses">0</span>
+                </div>
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Course Name</th>
+                                <th>School</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-courses">
+                            <tr>
+                                <td colspan="4" style="text-align:center;padding:20px;color:#6b7280">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── BRANCHES ─────────────────────────────────────────────────── -->
+            <div class="tab-panel" id="panel-branches">
+                <div class="add-form">
+                    <div class="form-group">
+                        <label>Branch Name</label>
+                        <input type="text" id="branchName" placeholder="e.g. Computer Science Engineering">
+                    </div>
+                    <div class="form-group">
+                        <label>Course</label>
+                        <select id="branchCourse"></select>
+                    </div>
+                    <button class="btn btn-primary" onclick="addBranch()">+ Add Branch</button>
+                </div>
+                <div class="section-title">
+                    All Branches
+                    <span class="count-badge" id="count-branches">0</span>
+                </div>
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Branch Name</th>
+                                <th>Course</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-branches">
+                            <tr>
+                                <td colspan="4" style="text-align:center;padding:20px;color:#6b7280">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── SEMESTERS ────────────────────────────────────────────────── -->
+            <div class="tab-panel" id="panel-semesters">
+                <div class="add-form">
+                    <div class="form-group">
+                        <label>Semester Number</label>
+                        <select id="semNumber">
+                            <option value="1">Semester 1</option>
+                            <option value="2">Semester 2</option>
+                            <option value="3">Semester 3</option>
+                            <option value="4">Semester 4</option>
+                            <option value="5">Semester 5</option>
+                            <option value="6">Semester 6</option>
+                            <option value="7">Semester 7</option>
+                            <option value="8">Semester 8</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Branch</label>
+                        <select id="semBranch"></select>
+                    </div>
+                    <button class="btn btn-primary" onclick="addSemester()">+ Add Semester</button>
+                </div>
+                <div class="section-title">
+                    All Semesters
+                    <span class="count-badge" id="count-semesters">0</span>
+                </div>
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Semester</th>
+                                <th>Branch</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-semesters">
+                            <tr>
+                                <td colspan="4" style="text-align:center;padding:20px;color:#6b7280">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── SECTIONS ─────────────────────────────────────────────────── -->
+            <div class="tab-panel" id="panel-sections">
+                <div class="add-form">
+                    <div class="form-group">
+                        <label>Section Name</label>
+                        <input type="text" id="sectionName" placeholder="e.g. CS-A or A">
+                    </div>
+                    <div class="form-group">
+                        <label>Semester</label>
+                        <select id="sectionSem"></select>
+                    </div>
+                    <button class="btn btn-primary" onclick="addSection()">+ Add Section</button>
+                </div>
+                <div class="section-title">
+                    All Sections
+                    <span class="count-badge" id="count-sections">0</span>
+                </div>
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Section</th>
+                                <th>Semester</th>
+                                <th>Branch</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-sections">
+                            <tr>
+                                <td colspan="5" style="text-align:center;padding:20px;color:#6b7280">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── SUBJECTS ─────────────────────────────────────────────────── -->
+            <div class="tab-panel" id="panel-subjects">
+                <div class="add-form">
+                    <div class="form-group">
+                        <label>Subject Name</label>
+                        <input type="text" id="subjectName" placeholder="e.g. Machine Learning">
+                    </div>
+                    <div class="form-group">
+                        <label>Subject Code</label>
+                        <input type="text" id="subjectCode" placeholder="e.g. CS501">
+                    </div>
+                    <div class="form-group">
+                        <label>Branch</label>
+                        <select id="subjectBranch"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Semester</label>
+                        <select id="subjectSem"></select>
+                    </div>
+                    <button class="btn btn-primary" onclick="addSubject()">+ Add Subject</button>
+                </div>
+                <div class="section-title">
+                    All Subjects
+                    <span class="count-badge" id="count-subjects">0</span>
+                </div>
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Subject Name</th>
+                                <th>Code</th>
+                                <th>Branch</th>
+                                <th>Semester</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-subjects">
+                            <tr>
+                                <td colspan="6" style="text-align:center;padding:20px;color:#6b7280">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="module">
+        const BASE = 'http://localhost:5000/api/manage';
+        const token = localStorage.getItem('accessToken');
+        const userName = localStorage.getItem('userName') || 'Admin';
+
+        if (!token || localStorage.getItem('userRole') !== 'admin') {
+            window.location.href = 'signin.html';
+        }
+
+        window.handleLogout = async () => {
+            await fetch('http://localhost:5000/api/auth/logout', {
+                method: 'POST', credentials: 'include'
+            });
+            localStorage.clear();
+            window.location.href = 'signin.html';
+        };
+
+        document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
+        document.getElementById('adminName').textContent = userName;
+
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        };
+
+        // ── Tab switching ──────────────────────────────────────────────────────
+        window.switchTab = (tab, btn) => {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`panel-${tab}`).classList.add('active');
+            btn.classList.add('active');
+            loadTab(tab);
+        };
+
+        // ── Generic fetch ──────────────────────────────────────────────────────
+        const apiFetch = async (url, method = 'GET', body = null) => {
+            const opts = { method, headers, credentials: 'include' };
+            if (body) opts.body = JSON.stringify(body);
+            const res = await fetch(url, opts);
+            return res.json();
+        };
+
+        // ── Populate dropdown ──────────────────────────────────────────────────
+        const populateSelect = (selectId, items, valueKey, labelFn) => {
+            const sel = document.getElementById(selectId);
+            if (!sel) return;
+            sel.innerHTML = items.map(i =>
+                `<option value="${i[valueKey]}">${labelFn(i)}</option>`
+            ).join('');
+        };
+
+        // ── Load tab data ──────────────────────────────────────────────────────
+        const loadTab = async (tab) => {
+            switch (tab) {
+                case 'schools': loadSchools(); break;
+                case 'courses': loadCourses(); break;
+                case 'branches': loadBranches(); break;
+                case 'semesters': loadSemesters(); break;
+                case 'sections': loadSections(); break;
+                case 'subjects': loadSubjects(); break;
+            }
+        };
+
+        // ── SCHOOLS ────────────────────────────────────────────────────────────
+        const loadSchools = async () => {
+            const data = await apiFetch(`${BASE}/schools`);
+            const tbody = document.getElementById('table-schools');
+            document.getElementById('count-schools').textContent = data.data?.length || 0;
+            if (!data.success || !data.data.length) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;padding:20px;color:#6b7280">No schools yet. Add one above.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = data.data.map(s => `
+      <tr>
+        <td>${s.school_id}</td>
+        <td>${s.school_name}</td>
+       <td><button class="btn btn-danger btn-sm"
+          onclick="deleteItem('schools', ${s.school_id}, 'loadSchools')">Delete</button></td>
+      </tr>`).join('');
+        };
+
+        window.addSchool = async () => {
+            const name = document.getElementById('schoolName').value.trim();
+            if (!name) { alert('Please enter school name'); return; }
+            const data = await apiFetch(`${BASE}/schools`, 'POST', { school_name: name });
+            if (data.success) {
+                document.getElementById('schoolName').value = '';
+                loadSchools();
+            } else {
+                alert(data.message || 'Failed');
+            }
+        };
+
+        // ── COURSES ────────────────────────────────────────────────────────────
+        const loadCourses = async () => {
+            const [courses, schools] = await Promise.all([
+                apiFetch(`${BASE}/courses`),
+                apiFetch(`${BASE}/schools`),
+            ]);
+            populateSelect('courseSchool', schools.data || [], 'school_id', s => s.school_name);
+            const tbody = document.getElementById('table-courses');
+            document.getElementById('count-courses').textContent = courses.data?.length || 0;
+            if (!courses.success || !courses.data.length) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:20px;color:#6b7280">No courses yet.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = courses.data.map(c => `
+      <tr>
+        <td>${c.course_id}</td>
+        <td>${c.course_name}</td>
+        <td>${c.school_name}</td>
+<td><button class="btn btn-danger btn-sm"
+          onclick="deleteItem('courses', ${c.course_id}, 'loadCourses')">Delete</button></td>
+      </tr>`).join('');
+        };
+
+        window.addCourse = async () => {
+            const name = document.getElementById('courseName').value.trim();
+            const schoolId = document.getElementById('courseSchool').value;
+            if (!name || !schoolId) { alert('Please fill all fields'); return; }
+            const data = await apiFetch(`${BASE}/courses`, 'POST', {
+                course_name: name, school_id: schoolId
+            });
+            if (data.success) {
+                document.getElementById('courseName').value = '';
+                loadCourses();
+            } else {
+                alert(data.message || 'Failed');
+            }
+        };
+
+        // ── BRANCHES ───────────────────────────────────────────────────────────
+        const loadBranches = async () => {
+            const [branches, courses] = await Promise.all([
+                apiFetch(`${BASE}/branches`),
+                apiFetch(`${BASE}/courses`),
+            ]);
+            populateSelect('branchCourse', courses.data || [], 'course_id', c => c.course_name);
+            const tbody = document.getElementById('table-branches');
+            document.getElementById('count-branches').textContent = branches.data?.length || 0;
+            if (!branches.success || !branches.data.length) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:20px;color:#6b7280">No branches yet.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = branches.data.map(b => `
+      <tr>
+        <td>${b.branch_id}</td>
+        <td>${b.branch_name}</td>
+        <td>${b.course_name}</td>
+        <td><button class="btn btn-danger btn-sm"
+          onclick="deleteItem('branches', ${b.branch_id}, 'loadBranches')">Delete</button></td>
+      </tr>`).join('');
+        };
+
+        window.addBranch = async () => {
+            const name = document.getElementById('branchName').value.trim();
+            const courseId = document.getElementById('branchCourse').value;
+            if (!name || !courseId) { alert('Please fill all fields'); return; }
+            const data = await apiFetch(`${BASE}/branches`, 'POST', {
+                branch_name: name, course_id: courseId
+            });
+            if (data.success) {
+                document.getElementById('branchName').value = '';
+                loadBranches();
+            } else {
+                alert(data.message || 'Failed');
+            }
+        };
+
+        // ── SEMESTERS ──────────────────────────────────────────────────────────
+        const loadSemesters = async () => {
+            const [sems, branches] = await Promise.all([
+                apiFetch(`${BASE}/semesters`),
+                apiFetch(`${BASE}/branches`),
+            ]);
+            populateSelect('semBranch', branches.data || [], 'branch_id', b => b.branch_name);
+            const tbody = document.getElementById('table-semesters');
+            document.getElementById('count-semesters').textContent = sems.data?.length || 0;
+            if (!sems.success || !sems.data.length) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:20px;color:#6b7280">No semesters yet.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = sems.data.map(s => `
+      <tr>
+        <td>${s.sem_id}</td>
+        <td>Semester ${s.sem_number}</td>
+        <td>${s.branch_name}</td>
+      <td><button class="btn btn-danger btn-sm"
+          onclick="deleteItem('semesters', ${s.sem_id}, 'loadSemesters')">Delete</button></td>
+      </tr>`).join('');
+        };
+
+        window.addSemester = async () => {
+            const semNum = document.getElementById('semNumber').value;
+            const branchId = document.getElementById('semBranch').value;
+            if (!branchId) { alert('Please select a branch'); return; }
+            const data = await apiFetch(`${BASE}/semesters`, 'POST', {
+                sem_number: semNum, branch_id: branchId
+            });
+            if (data.success) {
+                loadSemesters();
+            } else {
+                alert(data.message || 'Failed');
+            }
+        };
+
+        // ── SECTIONS ───────────────────────────────────────────────────────────
+        const loadSections = async () => {
+            const [sections, sems] = await Promise.all([
+                apiFetch(`${BASE}/sections`),
+                apiFetch(`${BASE}/semesters`),
+            ]);
+            populateSelect('sectionSem', sems.data || [], 'sem_id',
+                s => `Sem ${s.sem_number} — ${s.branch_name}`);
+            const tbody = document.getElementById('table-sections');
+            document.getElementById('count-sections').textContent = sections.data?.length || 0;
+            if (!sections.success || !sections.data.length) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;color:#6b7280">No sections yet.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = sections.data.map(s => `
+      <tr>
+        <td>${s.section_id}</td>
+        <td><strong>${s.section_name}</strong></td>
+        <td>Semester ${s.sem_number}</td>
+        <td>${s.branch_name}</td>
+     <td><button class="btn btn-danger btn-sm"
+          onclick="deleteItem('sections', ${s.section_id}, 'loadSections')">Delete</button></td>  
+    
+      </tr>`).join('');
+        };
+
+        window.addSection = async () => {
+            const name = document.getElementById('sectionName').value.trim();
+            const semId = document.getElementById('sectionSem').value;
+            if (!name || !semId) { alert('Please fill all fields'); return; }
+            const data = await apiFetch(`${BASE}/sections`, 'POST', {
+                section_name: name, sem_id: semId
+            });
+            if (data.success) {
+                document.getElementById('sectionName').value = '';
+                loadSections();
+            } else {
+                alert(data.message || 'Failed');
+            }
+        };
+
+        // ── SUBJECTS ───────────────────────────────────────────────────────────
+        const loadSubjects = async () => {
+            const [subjects, branches, sems] = await Promise.all([
+                apiFetch(`${BASE}/subjects`),
+                apiFetch(`${BASE}/branches`),
+                apiFetch(`${BASE}/semesters`),
+            ]);
+            populateSelect('subjectBranch', branches.data || [], 'branch_id', b => b.branch_name);
+            populateSelect('subjectSem', sems.data || [], 'sem_id',
+                s => `Sem ${s.sem_number} — ${s.branch_name}`);
+            const tbody = document.getElementById('table-subjects');
+            document.getElementById('count-subjects').textContent = subjects.data?.length || 0;
+            if (!subjects.success || !subjects.data.length) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;color:#6b7280">No subjects yet.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = subjects.data.map(s => `
+      <tr>
+        <td>${s.subject_id}</td>
+        <td>${s.subject_name}</td>
+        <td><span class="badge badge-blue">${s.subject_code}</span></td>
+        <td>${s.branch_name || '—'}</td>
+        <td>${s.sem_number ? 'Sem ' + s.sem_number : '—'}</td>
+       <td><button class="btn btn-danger btn-sm"
+          onclick="deleteItem('subjects', ${s.subject_id}, 'loadSubjects')">Delete</button></td>
+      </tr>`).join('');
+        };
+
+        window.addSubject = async () => {
+            const name = document.getElementById('subjectName').value.trim();
+            const code = document.getElementById('subjectCode').value.trim();
+            const branchId = document.getElementById('subjectBranch').value;
+            const semId = document.getElementById('subjectSem').value;
+            if (!name || !code) { alert('Subject name and code are required'); return; }
+            const data = await apiFetch(`${BASE}/subjects`, 'POST', {
+                subject_name: name, subject_code: code,
+                branch_id: branchId || null, sem_id: semId || null,
+            });
+            if (data.success) {
+                document.getElementById('subjectName').value = '';
+                document.getElementById('subjectCode').value = '';
+                loadSubjects();
+            } else {
+                alert(data.message || 'Failed');
+            }
+        };
+
+        // ── Generic delete ─────────────────────────────────────────────────────
+
+        window.deleteItem = async (entity, id, reloadName) => {
+            if (!confirm(`Delete this ${entity.slice(0, -1)}? This may affect related data.`)) return;
+            const data = await apiFetch(`${BASE}/${entity}/${id}`, 'DELETE');
+            if (data.success) {
+                const reloadMap = {
+                    loadSchools,
+                    loadCourses,
+                    loadBranches,
+                    loadSemesters,
+                    loadSections,
+                    loadSubjects,
+                };
+                if (reloadMap[reloadName]) reloadMap[reloadName]();
+            } else {
+                alert(data.message || 'Could not delete. It may have related data.');
+            }
+        };
+
+        // ── Initial load ───────────────────────────────────────────────────────
+        loadSchools();
+    </script>
+</body>
+
+</html>

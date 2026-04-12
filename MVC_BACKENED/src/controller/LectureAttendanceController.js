@@ -68,6 +68,39 @@ export const getTeacherHistory = async (req, res) => {
     sendError(res, 500, 'Could not fetch attendance history');
   }
 };
+export const getByDate = async (req, res) => {
+  try {
+    const { date } = req.query;
+    const queryDate = date || new Date().toISOString().split('T')[0];
+
+    const [rows] = await (await import('../config/db.js')).default.query(
+      `SELECT
+         la.*,
+         ts.start_time,
+         ts.end_time,
+         ts.room,
+         s.subject_name,
+         sec.section_name,
+         u.name  AS teacher_name,
+         u.email AS teacher_email
+       FROM lecture_attendance la
+       JOIN timetable_slots ts  ON la.slot_id    = ts.slot_id
+       JOIN subjects         s  ON ts.subject_id = s.subject_id
+       JOIN sections         sec ON ts.section_id = sec.section_id
+       JOIN teachers         t  ON ts.teacher_id = t.teacher_id
+       JOIN users            u  ON t.teacher_id  = u.user_id
+       WHERE la.lecture_date = ?
+       ORDER BY ts.start_time ASC`,
+      [queryDate]
+    );
+
+    res.status(200).json({ success: true, data: rows });
+
+  } catch (err) {
+    console.error('getByDate error:', err);
+    res.status(500).json({ success: false, message: 'Could not fetch records' });
+  }
+};
 
 // ── Get today's absent lectures (admin only) ─────────────────────────────
 export const getTodayAbsent = async (req, res) => {

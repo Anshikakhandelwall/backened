@@ -93,20 +93,20 @@ body {
 }
 
 
-.logout a{
-display:block;
-padding:12px;
-background:#1c4c7a;
-color:white;
-text-decoration:none;
-border-radius:8px;
-text-align:center;
-font-weight:bold;
-transition:0.3s;
+.logout a {
+    display: block;
+    padding: 12px;
+    background: #1c4c7a;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+    transition: 0.3s;
 }
 
-.logout a:hover{
-background:#25639c;
+.logout a:hover {
+    background: #25639c;
 }
 
 
@@ -127,7 +127,7 @@ background:#25639c;
     background: white;
     padding: 20px 25px;
     border-radius: 18px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
 .header h2 {
@@ -171,7 +171,7 @@ background:#25639c;
     padding: 25px;
     border-radius: 18px;
     flex: 1;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     transition: 0.3s;
     position: relative;
     overflow: hidden;
@@ -209,7 +209,7 @@ background:#25639c;
     padding: 25px;
     border-radius: 18px;
     margin-bottom: 30px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
 .progress-header {
@@ -259,7 +259,7 @@ background:#25639c;
     background: white;
     padding: 25px;
     border-radius: 18px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
 }
 
 .history h3 {

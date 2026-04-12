@@ -1,160 +1,160 @@
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial, Helvetica, sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-body{
-height:100vh;
+body {
+    height: 100vh;
 }
 
-.container{
-display:flex;
-height:100vh;
+.container {
+    display: flex;
+    height: 100vh;
 }
 
 /* LEFT SIDE */
 
-.left{
-flex:1;
-background:linear-gradient(135deg,#0b3c5d,#0f5f82);
-color:white;
-padding:60px;
-display:flex;
-flex-direction:column;
-justify-content:center;
+.left {
+    flex: 1;
+    background: linear-gradient(135deg, #0b3c5d, #0f5f82);
+    color: white;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-.logo{
-font-size:18px;
-margin-bottom:40px;
+.logo {
+    font-size: 18px;
+    margin-bottom: 40px;
 }
 
-h1{
-font-size:40px;
-margin-bottom:20px;
+h1 {
+    font-size: 40px;
+    margin-bottom: 20px;
 }
 
-.description{
-max-width:500px;
-margin-bottom:40px;
-opacity:0.9;
+.description {
+    max-width: 500px;
+    margin-bottom: 40px;
+    opacity: 0.9;
 }
 
 /* Feature Cards */
 
-.features{
-display:grid;
-grid-template-columns:repeat(2,200px);
-gap:20px;
+.features {
+    display: grid;
+    grid-template-columns: repeat(2, 200px);
+    gap: 20px;
 }
 
-.card{
-background:rgba(255,255,255,0.1);
-padding:20px;
-border-radius:10px;
+.card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
 }
 
-.card h3{
-margin-bottom:5px;
+.card h3 {
+    margin-bottom: 5px;
 }
 
-footer{
-position:absolute;
-bottom:20px;
-left:60px;
-font-size:14px;
-opacity:0.8;
+footer {
+    position: absolute;
+    bottom: 20px;
+    left: 60px;
+    font-size: 14px;
+    opacity: 0.8;
 }
 
 
 /* RIGHT SIDE */
 
-.right{
-flex:1;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#f3f3f3;
+.right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f3f3;
 }
 
-.login-box{
-width:350px;
+.login-box {
+    width: 350px;
 }
 
-.login-box h2{
-font-size:30px;
-margin-bottom:10px;
+.login-box h2 {
+    font-size: 30px;
+    margin-bottom: 10px;
 }
 
-.subtitle{
-margin-bottom:30px;
-color:#666;
+.subtitle {
+    margin-bottom: 30px;
+    color: #666;
 }
 
-label{
-display:block;
-margin:10px 0 5px;
+label {
+    display: block;
+    margin: 10px 0 5px;
 }
 
-input{
-width:100%;
-padding:12px;
-border-radius:8px;
-border:1px solid #ccc;
+input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
 }
 
-.password-field{
-position:relative;
+.password-field {
+    position: relative;
 }
 
-.password-field span{
-position:absolute;
-right:10px;
-top:10px;
-cursor:pointer;
+.password-field span {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
 }
 
-button{
-width:100%;
-margin-top:20px;
-padding:12px;
-background:#0f5f82;
-color:white;
-border:none;
-border-radius:8px;
-font-size:16px;
-cursor:pointer;
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    background: #0f5f82;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
-button:hover{
-background:#094864;
+button:hover {
+    background: #094864;
 }
 
-.signup{
-text-align:center;
-margin-top:20px;
+.signup {
+    text-align: center;
+    margin-top: 20px;
 }
 
-.signup a{
-color:#0f5f82;
-text-decoration:none;
-font-weight:bold;
+.signup a {
+    color: #0f5f82;
+    text-decoration: none;
+    font-weight: bold;
 }
 
-.forgot-password{
-margin:10px 0 20px;
-text-align:right;
+.forgot-password {
+    margin: 10px 0 20px;
+    text-align: right;
 }
 
-.forgot-password a{
-text-decoration:none;
-color:#1c4c7a;
-font-size:14px;
-font-weight:500;
+.forgot-password a {
+    text-decoration: none;
+    color: #1c4c7a;
+    font-size: 14px;
+    font-weight: 500;
 }
 
-.forgot-password a:hover{
-text-decoration:underline;
+.forgot-password a:hover {
+    text-decoration: underline;
 }

@@ -2,203 +2,333 @@
 <html lang="en">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Events</title>
-<link rel="stylesheet" href="events.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events</title>
+  <link rel="stylesheet" href="events.css">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1c3557">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SmartTimetable">
+  <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
 
 <body>
 
-<div class="container">
+  <div class="container">
 
-<!-- SIDEBAR -->
+    <!-- SIDEBAR -->
 
-<div class="sidebar">
+    <div class="sidebar">
 
-<div class="logo">
-🎓
-<div>
-<h3>SmartTimetable</h3>
-<p>Alert System</p>
-</div>
-</div>
+      <div class="logo">
+        🎓
+        <div>
+          <h3>SmartTimetable</h3>
+          <p>Alert System</p>
+        </div>
+      </div>
 
-<div class="profile">
-<div class="avatar">I</div>
-<div>
-<h4>levi ackerman</h4>
-<span class="role">Student</span>
-</div>
-</div>
+      <div class="profile">
+        <div class="avatar">I</div>
+        <div>
+          <h4>levi ackerman</h4>
+          <span class="role">Student</span>
+        </div>
+      </div>
 
 
-<ul class="menu">
-<li><a href="dashboard.html">Dashboard</a></li>
-<li><a href="mytimetable.html">My Timetable</a></li>
-<li><a href="iks.html">IKS Credits</a></li>
-<li class="active"><a href="events.html">Events</a></li>
-<li><a href="changepassword.html">Change Password </a></li>
-</ul>
+      <ul class="menu">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="mytimetable.html">My Timetable</a></li>
+        <li><a href="iks.html">IKS Credits</a></li>
+        <li class="active"><a href="events.html">Events</a></li>
+        <li><a href="changepassword.html">Change Password </a></li>
+      </ul>
 
-<div class="logout">
-  <a href="signin.html">Sign Out</a>
-</div>
+      <div class="logout">
+        <a href="signin.html">Sign Out</a>
+      </div>
 
 
-</div>
+    </div>
 
 
-<!-- MAIN CONTENT -->
+    <!-- MAIN CONTENT -->
 
-<div class="main">
+    <div class="main">
 
-<div class="header">
-<h2>Events</h2>
-<span id="date"></span>
-</div>
+      <div class="header">
+        <h2>Events</h2>
+        <span id="date"></span>
+      </div>
 
-<h1>Events</h1>
-<p class="subtitle">Attend events to earn IKS credits.</p>
+      <h1>Events</h1>
+      <p class="subtitle">Attend events to earn IKS credits.</p>
 
 
-<!-- EVENTS GRID -->
+      <!-- EVENTS GRID -->
 
-<div class="events-grid">
+      <div class="events-grid">
 
-<!-- EVENT 1 -->
+        <!-- EVENT 1 -->
 
-<div class="event-card">
+        <div class="event-card">
 
-<div class="event-header">
-<h3>IKS Yoga Workshop</h3>
-<span class="credits">2</span>
-</div>
+          <div class="event-header">
+            <h3>IKS Yoga Workshop</h3>
+            <span class="credits">2</span>
+          </div>
 
-<p class="desc">Traditional yoga and meditation session</p>
+          <p class="desc">Traditional yoga and meditation session</p>
 
-<div class="details">
-<p>📅 22 February 2026</p>
-<p>⏰ 10:00 – 12:00</p>
-<p>📍 Auditorium</p>
-</div>
+          <div class="details">
+            <p>📅 22 February 2026</p>
+            <p>⏰ 10:00 – 12:00</p>
+            <p>📍 Auditorium</p>
+          </div>
 
-<button class="ended">Event Ended</button>
+          <button class="ended">Event Ended</button>
 
-</div>
+        </div>
 
 
-<!-- EVENT 2 -->
+        <!-- EVENT 2 -->
 
-<div class="event-card">
+        <div class="event-card">
 
-<div class="event-header">
-<h3>Tech Talk: AI in Education</h3>
-<span class="credits">3</span>
-</div>
+          <div class="event-header">
+            <h3>Tech Talk: AI in Education</h3>
+            <span class="credits">3</span>
+          </div>
 
-<p class="desc">Guest lecture on AI applications</p>
+          <p class="desc">Guest lecture on AI applications</p>
 
-<div class="details">
-<p>📅 23 February 2026</p>
-<p>⏰ 14:00 – 16:00</p>
-<p>📍 Seminar Hall</p>
-</div>
+          <div class="details">
+            <p>📅 23 February 2026</p>
+            <p>⏰ 14:00 – 16:00</p>
+            <p>📍 Seminar Hall</p>
+          </div>
 
-<button class="ended">Event Ended</button>
+          <button class="ended">Event Ended</button>
 
-</div>
+        </div>
 
 
-<!-- EVENT 3 -->
+        <!-- EVENT 3 -->
 
-<div class="event-card">
+        <div class="event-card">
 
-<div class="event-header">
-<h3>Cultural Fest Rehearsal</h3>
-<span class="credits">1</span>
-</div>
+          <div class="event-header">
+            <h3>Cultural Fest Rehearsal</h3>
+            <span class="credits">1</span>
+          </div>
 
-<p class="desc">Annual cultural fest preparation</p>
+          <p class="desc">Annual cultural fest preparation</p>
 
-<div class="details">
-<p>📅 24 February 2026</p>
-<p>⏰ 09:00 – 13:00</p>
-<p>📍 Open Ground</p>
-</div>
+          <div class="details">
+            <p>📅 24 February 2026</p>
+            <p>⏰ 09:00 – 13:00</p>
+            <p>📍 Open Ground</p>
+          </div>
 
-<button class="ended">Event Ended</button>
+          <button class="ended">Event Ended</button>
 
-</div>
+        </div>
 
 
-<!-- EVENT 4 -->
+        <!-- EVENT 4 -->
 
-<div class="event-card">
+        <div class="event-card">
 
-<div class="event-header">
-<h3>IKS Sanskrit Recitation</h3>
-<span class="credits">2</span>
-</div>
+          <div class="event-header">
+            <h3>IKS Sanskrit Recitation</h3>
+            <span class="credits">2</span>
+          </div>
 
-<p class="desc">Sanskrit shloka competition</p>
+          <p class="desc">Sanskrit shloka competition</p>
 
-<div class="details">
-<p>📅 25 February 2026</p>
-<p>⏰ 11:00 – 13:00</p>
-<p>📍 Room 301</p>
-</div>
+          <div class="details">
+            <p>📅 25 February 2026</p>
+            <p>⏰ 11:00 – 13:00</p>
+            <p>📍 Room 301</p>
+          </div>
 
-<button class="ended">Event Ended</button>
+          <button class="ended">Event Ended</button>
 
-</div>
+        </div>
 
 
-<!-- EVENT 5 -->
+        <!-- EVENT 5 -->
 
-<div class="event-card">
+        <div class="event-card">
 
-<div class="event-header">
-<h3>Hackathon 2026</h3>
-<span class="credits">5</span>
-</div>
+          <div class="event-header">
+            <h3>Hackathon 2026</h3>
+            <span class="credits">5</span>
+          </div>
 
-<p class="desc">Annual coding competition</p>
+          <p class="desc">Annual coding competition</p>
 
-<div class="details">
-<p>📅 28 February 2026</p>
-<p>⏰ 09:00 – 18:00</p>
-<p>📍 CS Lab Complex</p>
-</div>
+          <div class="details">
+            <p>📅 28 February 2026</p>
+            <p>⏰ 09:00 – 18:00</p>
+            <p>📍 CS Lab Complex</p>
+          </div>
 
-<button class="ended">Event Ended</button>
+          <button class="ended">Event Ended</button>
 
-</div>
+        </div>
 
 
-<!-- EVENT 6 -->
+        <!-- EVENT 6 -->
 
-<div class="event-card">
+        <div class="event-card">
 
-<div class="event-header">
-<h3>IKS Vedic Mathematics</h3>
-<span class="credits">2</span>
-</div>
+          <div class="event-header">
+            <h3>IKS Vedic Mathematics</h3>
+            <span class="credits">2</span>
+          </div>
 
-<p class="desc">Workshop on ancient math techniques</p>
+          <p class="desc">Workshop on ancient math techniques</p>
 
-<div class="details">
-<p>📅 1 March 2026</p>
-<p>⏰ 10:00 – 12:00</p>
-<p>📍 Room 201</p>
-</div>
+          <div class="details">
+            <p>📅 1 March 2026</p>
+            <p>⏰ 10:00 – 12:00</p>
+            <p>📍 Room 201</p>
+          </div>
 
-<button class="ended">Event Ended</button>
+          <button class="ended">Event Ended</button>
 
-</div>
-
-</div>
-
-</div>
-
-</div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script type="module">
+    const BASE_URL = 'http://localhost:5000/api/student';
+    const token = localStorage.getItem('accessToken');
+    const userName = localStorage.getItem('userName') || 'Student';
+
+    if (!token || localStorage.getItem('userRole') !== 'student') {
+      window.location.href = 'signin.html';
+    }
+
+    window.logoutUser = async () => {
+      await fetch('http://localhost:5000/api/auth/logout', { method: 'POST', credentials: 'include' });
+      localStorage.clear(); window.location.href = 'signin.html';
+    };
+
+    const avatarEl = document.querySelector('.avatar');
+    const nameEl = document.querySelector('.profile h4');
+    if (avatarEl) avatarEl.textContent = userName.charAt(0).toUpperCase();
+    if (nameEl) nameEl.textContent = userName;
+
+    const now = new Date();
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dateEl = document.getElementById('date');
+    if (dateEl)
+      dateEl.textContent =
+        `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+    let allEvents = [];
+
+    window.filterEvents = (scope, btn) => {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      renderEvents(scope === 'all' ? allEvents : allEvents.filter(e => e.scope === scope));
+    };
+
+    const renderEvents = (events) => {
+      const grid = document.querySelector('.events-grid');
+      if (!grid) return;
+
+      if (!events.length) {
+        grid.innerHTML = `
+        <div style="text-align:center;padding:60px;color:#6b7280;
+                    background:white;border-radius:18px;grid-column:1/-1">
+          <h3 style="margin-bottom:10px;color:#374151">No events found</h3>
+          <p>No events available for this category.</p>
+        </div>`;
+        return;
+      }
+
+      grid.innerHTML = events.map(e => {
+        const d = new Date(e.event_date);
+        const dateStr = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        const isPast = d < now;
+        const isAttended = !!e.attended_at;
+
+        const scopeColor = e.scope === 'university' ? '#dbeafe' : e.scope === 'branch' ? '#dcfce7' : '#fef3c7';
+        const scopeText = e.scope === 'university' ? '#1d4ed8' : e.scope === 'branch' ? '#15803d' : '#d97706';
+
+        // Status label — NO attendance button for students
+        let statusLabel = '';
+        let statusStyle = '';
+        if (isAttended) {
+          statusLabel = '✓ Attendance Marked';
+          statusStyle = 'background:#dcfce7;color:#15803d;';
+        } else if (isPast) {
+          statusLabel = 'Event Ended';
+          statusStyle = 'background:#f3f4f6;color:#9ca3af;';
+        } else {
+          statusLabel = 'Upcoming';
+          statusStyle = 'background:#dbeafe;color:#1d4ed8;';
+        }
+
+        return `
+        <div class="event-card">
+          <div class="event-header">
+            <h3>${e.event_name}</h3>
+            <span class="credits">+${e.credits} cr</span>
+          </div>
+          <span style="display:inline-block;margin:12px 20px 0;padding:3px 12px;
+                       border-radius:20px;font-size:11px;font-weight:bold;
+                       background:${scopeColor};color:${scopeText}">
+            ${e.scope.toUpperCase()}
+          </span>
+          <p class="desc">${e.description || 'No description provided.'}</p>
+          <div class="details">
+            <p>📅 ${dateStr}</p>
+            <p>⏰ ${e.start_time} – ${e.end_time}</p>
+            <p>📍 ${e.venue || 'TBD'}</p>
+          </div>
+          <!-- NO self-attendance button — admin marks attendance via Excel -->
+          <div style="margin:0 20px 20px;padding:10px 14px;border-radius:10px;
+                      font-size:13px;font-weight:bold;text-align:center;${statusStyle}">
+            ${statusLabel}
+          </div>
+        </div>`;
+      }).join('');
+    };
+
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/events`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+          credentials: 'include',
+        });
+        const data = await res.json();
+        if (data.success) {
+          allEvents = data.data;
+          renderEvents(allEvents);
+        } else {
+          renderEvents([]);
+        }
+      } catch (err) {
+        console.error('Fetch events error:', err);
+        renderEvents([]);
+      }
+    };
+
+    fetchEvents();
+  </script>
+</body>
+
+</html>

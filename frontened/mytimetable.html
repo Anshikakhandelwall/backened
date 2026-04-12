@@ -1,49 +1,57 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Timetable</title>
-   <link rel="stylesheet" href="mytimetable.css">
+  <link rel="stylesheet" href="mytimetable.css">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1c3557">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SmartTimetable">
+  <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
+
 <body>
 
   <div class="container">
 
-<!-- SIDEBAR -->
+    <!-- SIDEBAR -->
 
-<div class="sidebar">
+    <div class="sidebar">
 
-<div class="logo">
-🎓 <div>
-<h3>SmartTimetable</h3>
-<p>Alert System</p>
-</div>
-</div>
+      <div class="logo">
+        🎓 <div>
+          <h3>SmartTimetable</h3>
+          <p>Alert System</p>
+        </div>
+      </div>
 
-<div class="profile">
-<div class="avatar">I</div>
-<div>
-<h4>levi ackerman</h4>
-<span class="role">Student</span>
-</div>
-</div>
+      <div class="profile">
+        <div class="avatar">I</div>
+        <div>
+          <h4>levi ackerman</h4>
+          <span class="role">Student</span>
+        </div>
+      </div>
 
 
-<ul class="menu">
-<li class="active"><a href="dashboard.html">Dashboard</a></li>
-<li><a href="mytimetable.html">My Timetable</a></li>
-<li><a href="iks.html">IKS Credits</a></li>
-<li><a href="events.html">Events</a></li>
-<li><a href="changepassword.html">Change Password </a></li>
-</ul>
+      <ul class="menu">
+        <li class="active"><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="mytimetable.html">My Timetable</a></li>
+        <li><a href="iks.html">IKS Credits</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="changepassword.html">Change Password </a></li>
+      </ul>
 
-<div class="logout">
+      <div class="logout">
         <a href="signin.html" onclick="logoutUser()">Sign Out</a>
       </div>
 
-</div>
+    </div>
 
 
     <!-- MAIN CONTENT -->
@@ -88,248 +96,248 @@
       <!-- TIMETABLE TABLE -->
       <div class="table-container">
         <table>
-    <thead>
-      <tr>
-        <th>Day</th>
-        <th>9:20 - 10:10</th>
-        <th>10:10 - 11:00</th>
-        <th>11:00 - 11:50</th>
-        <th>11:50 - 12:40</th>
-        <th>12:40 - 1:40</th>
-        <th>1:40 - 2:30</th>
-        <th>2:30 - 3:20</th>
-      </tr>
-    </thead>
+          <thead>
+            <tr>
+              <th>Day</th>
+              <th>9:20 - 10:10</th>
+              <th>10:10 - 11:00</th>
+              <th>11:00 - 11:50</th>
+              <th>11:50 - 12:40</th>
+              <th>12:40 - 1:40</th>
+              <th>1:40 - 2:30</th>
+              <th>2:30 - 3:20</th>
+            </tr>
+          </thead>
 
-    <tbody>
-      <tr>
-        <td class="day">Monday</td>
+          <tbody>
+            <tr>
+              <td class="day">Monday</td>
 
-        <td>
-          <div class="subject-card ml">
-            <h4>Machine Learning</h4>
-            <p>Room 301</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card ml">
+                  <h4>Machine Learning</h4>
+                  <p>Room 301</p>
+                </div>
+              </td>
 
-        <td>
-          <div class="subject-card dbms">
-            <h4>DBMS</h4>
-            <p>Lab C</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card dbms">
+                  <h4>DBMS</h4>
+                  <p>Lab C</p>
+                </div>
+              </td>
 
-        <td>
-          <div class="subject-card maths">
-            <h4>Mathematics</h4>
-            <p>Room 102</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card maths">
+                  <h4>Mathematics</h4>
+                  <p>Room 102</p>
+                </div>
+              </td>
 
-        <td>
-          <div class="subject-card english">
-            <h4>English</h4>
-            <p>Room 204</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card english">
+                  <h4>English</h4>
+                  <p>Room 204</p>
+                </div>
+              </td>
 
-        <td class="break">Break</td>
+              <td class="break">Break</td>
 
-        <td>
-          <div class="subject-card lab">
-            <h4>Computer Lab</h4>
-            <p>Lab A</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card lab">
+                  <h4>Computer Lab</h4>
+                  <p>Lab A</p>
+                </div>
+              </td>
 
-        <td>-</td>
-      </tr>
+              <td>-</td>
+            </tr>
 
-      <tr>
-        <td class="day">Tuesday</td>
+            <tr>
+              <td class="day">Tuesday</td>
 
-        <td>
-          <div class="subject-card dbms">
-            <h4>DBMS</h4>
-            <p>Lab C</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card dbms">
+                  <h4>DBMS</h4>
+                  <p>Lab C</p>
+                </div>
+              </td>
 
-        <td>
-          <div class="subject-card ml">
-            <h4>Machine Learning</h4>
-            <p>Room 301</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card ml">
+                  <h4>Machine Learning</h4>
+                  <p>Room 301</p>
+                </div>
+              </td>
 
-        <td>-</td>
+              <td>-</td>
 
-        <td>
-          <div class="subject-card maths">
-            <h4>Mathematics</h4>
-            <p>Room 102</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card maths">
+                  <h4>Mathematics</h4>
+                  <p>Room 102</p>
+                </div>
+              </td>
 
-        <td class="break">Break</td>
+              <td class="break">Break</td>
 
-        <td>
-          <div class="subject-card english">
-            <h4>English</h4>
-            <p>Room 204</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card english">
+                  <h4>English</h4>
+                  <p>Room 204</p>
+                </div>
+              </td>
 
-        <td>
-          <div class="subject-card lab">
-            <h4>Computer Lab</h4>
-            <p>Lab A</p>
-          </div>
-        </td>
-      </tr>
+              <td>
+                <div class="subject-card lab">
+                  <h4>Computer Lab</h4>
+                  <p>Lab A</p>
+                </div>
+              </td>
+            </tr>
 
-      <tr>
-        <td class="day">Wednesday</td>
+            <tr>
+              <td class="day">Wednesday</td>
 
-        <td>
-          <div class="subject-card maths">
-            <h4>Mathematics</h4>
-            <p>Room 102</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card maths">
+                  <h4>Mathematics</h4>
+                  <p>Room 102</p>
+                </div>
+              </td>
 
-        <td>
-          <div class="subject-card english">
-            <h4>English</h4>
-            <p>Room 204</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card english">
+                  <h4>English</h4>
+                  <p>Room 204</p>
+                </div>
+              </td>
 
-        <td>
-          <div class="subject-card ml">
-            <h4>Machine Learning</h4>
-            <p>Room 301</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card ml">
+                  <h4>Machine Learning</h4>
+                  <p>Room 301</p>
+                </div>
+              </td>
 
-        <td>-</td>
+              <td>-</td>
 
-        <td class="break">Break</td>
+              <td class="break">Break</td>
 
-        <td>
-          <div class="subject-card dbms">
-            <h4>DBMS</h4>
-            <p>Lab C</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card dbms">
+                  <h4>DBMS</h4>
+                  <p>Lab C</p>
+                </div>
+              </td>
 
-        <td>
-          <div class="subject-card lab">
-            <h4>Computer Lab</h4>
-            <p>Lab A</p>
-          </div>
-        </td>
-      </tr>
+              <td>
+                <div class="subject-card lab">
+                  <h4>Computer Lab</h4>
+                  <p>Lab A</p>
+                </div>
+              </td>
+            </tr>
 
-      <tr>
-        <td class="day">Thursday</td>
+            <tr>
+              <td class="day">Thursday</td>
 
-        <td>
-          <div class="subject-card ml">
-            <h4>Machine Learning</h4>
-            <p>Room 301</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card ml">
+                  <h4>Machine Learning</h4>
+                  <p>Room 301</p>
+                </div>
+              </td>
 
-        <td>
-          <div class="subject-card maths">
-            <h4>Mathematics</h4>
-            <p>Room 102</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card maths">
+                  <h4>Mathematics</h4>
+                  <p>Room 102</p>
+                </div>
+              </td>
 
-        <td>
-          <div class="subject-card dbms">
-            <h4>DBMS</h4>
-            <p>Lab C</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card dbms">
+                  <h4>DBMS</h4>
+                  <p>Lab C</p>
+                </div>
+              </td>
 
-        <td>-</td>
+              <td>-</td>
 
-        <td class="break">Break</td>
+              <td class="break">Break</td>
 
-        <td>
-          <div class="subject-card english">
-            <h4>English</h4>
-            <p>Room 204</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card english">
+                  <h4>English</h4>
+                  <p>Room 204</p>
+                </div>
+              </td>
 
-        <td>
-          <div class="subject-card lab">
-            <h4>Computer Lab</h4>
-            <p>Lab A</p>
-          </div>
-        </td>
-      </tr>
+              <td>
+                <div class="subject-card lab">
+                  <h4>Computer Lab</h4>
+                  <p>Lab A</p>
+                </div>
+              </td>
+            </tr>
 
-      <tr>
-        <td class="day">Friday</td>
+            <tr>
+              <td class="day">Friday</td>
 
-        <td>
-          <div class="subject-card english">
-            <h4>English</h4>
-            <p>Room 204</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card english">
+                  <h4>English</h4>
+                  <p>Room 204</p>
+                </div>
+              </td>
 
-        <td>
-          <div class="subject-card lab">
-            <h4>Computer Lab</h4>
-            <p>Lab A</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card lab">
+                  <h4>Computer Lab</h4>
+                  <p>Lab A</p>
+                </div>
+              </td>
 
-        <td>
-          <div class="subject-card maths">
-            <h4>Mathematics</h4>
-            <p>Room 102</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card maths">
+                  <h4>Mathematics</h4>
+                  <p>Room 102</p>
+                </div>
+              </td>
 
-        <td>
-          <div class="subject-card ml">
-            <h4>Machine Learning</h4>
-            <p>Room 301</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card ml">
+                  <h4>Machine Learning</h4>
+                  <p>Room 301</p>
+                </div>
+              </td>
 
-        <td class="break">Break</td>
+              <td class="break">Break</td>
 
-        <td>
-          <div class="subject-card dbms">
-            <h4>DBMS</h4>
-            <p>Lab C</p>
-          </div>
-        </td>
+              <td>
+                <div class="subject-card dbms">
+                  <h4>DBMS</h4>
+                  <p>Lab C</p>
+                </div>
+              </td>
 
-        <td>-</td>
-      </tr>
+              <td>-</td>
+            </tr>
 
-      <tr>
-        <td class="day">Saturday</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
-        <td class="break">Break</td>
-        <td>-</td>
-        <td>-</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+            <tr>
+              <td class="day">Saturday</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td class="break">Break</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
 
 
@@ -345,4 +353,181 @@
     </div>
 
   </div>
-  
+
+  <script type="module">
+    const BASE_URL = 'http://localhost:5000/api/student';
+    const UPLOAD_URL = 'http://localhost:5000/api/upload';
+    const token = localStorage.getItem('accessToken');
+    const userName = localStorage.getItem('userName') || 'Student';
+
+    if (!token || localStorage.getItem('userRole') !== 'student') {
+      window.location.href = 'signin.html';
+    }
+
+    window.logoutUser = async () => {
+      await fetch('http://localhost:5000/api/auth/logout', { method: 'POST', credentials: 'include' });
+      localStorage.clear(); window.location.href = 'signin.html';
+    };
+
+    const avatarEl = document.querySelector('.avatar');
+    const nameEl = document.querySelector('.profile h4');
+    if (avatarEl) avatarEl.textContent = userName.charAt(0).toUpperCase();
+    if (nameEl) nameEl.textContent = userName;
+
+    const now = new Date();
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dateEl = document.getElementById('date');
+    if (dateEl)
+      dateEl.textContent =
+        `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+    const authFetch = (url) => fetch(url, {
+      headers: { 'Authorization': `Bearer ${token}` },
+      credentials: 'include',
+    });
+
+    // ── Fetch student's section_id from profile ────────────────────────────
+    const fetchProfile = async () => {
+      try {
+        const res = await authFetch(`${BASE_URL}/profile`);
+        const data = await res.json();
+        if (data.success && data.data.section_id) {
+          loadUploadedTimetable(data.data.section_id);
+        }
+      } catch (err) {
+        console.error('Profile fetch error:', err);
+      }
+    };
+
+    // ── Check if admin uploaded a timetable image/PDF ──────────────────────
+    const loadUploadedTimetable = async (sectionId) => {
+      try {
+        const res = await authFetch(`${UPLOAD_URL}/timetable/section/${sectionId}`);
+        const data = await res.json();
+
+        if (data.success && data.data) {
+          // Show uploaded timetable at the top
+          const container = document.querySelector('.table-container') ||
+            document.querySelector('.main');
+
+          const uploadedDiv = document.createElement('div');
+          uploadedDiv.style.cssText = `
+          background:white;border-radius:18px;padding:20px;
+          box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-bottom:24px;`;
+
+          uploadedDiv.innerHTML = `
+          <h3 style="font-size:16px;color:#1c3557;margin-bottom:14px">
+            📅 Official Timetable
+          </h3>`;
+
+          if (data.data.file_type === 'pdf') {
+            uploadedDiv.innerHTML += `
+            <iframe src="http://localhost:5000/uploads/timetables/${data.data.file_path}"
+              style="width:100%;height:500px;border:none;border-radius:10px"></iframe>`;
+          } else {
+            uploadedDiv.innerHTML += `
+            <img src="http://localhost:5000/uploads/timetables/${data.data.file_path}"
+              alt="Timetable" style="width:100%;border-radius:10px;max-height:600px;object-fit:contain">`;
+          }
+
+          // Insert before the existing table
+          const tableBox = document.querySelector('.table-container');
+          if (tableBox) {
+            tableBox.parentNode.insertBefore(uploadedDiv, tableBox);
+          }
+        }
+      } catch (err) {
+        console.error('Uploaded timetable fetch error:', err);
+      }
+    };
+
+    // ── Color map ──────────────────────────────────────────────────────────
+    const colorClasses = ['ml', 'dbms', 'maths', 'english', 'lab'];
+    const colorMap = {};
+    let colorIdx = 0;
+
+    const getColor = (subjectName) => {
+      if (!colorMap[subjectName]) {
+        colorMap[subjectName] = colorClasses[colorIdx % colorClasses.length];
+        colorIdx++;
+      }
+      return colorMap[subjectName];
+    };
+
+    const timeSlots = ['09:20', '10:10', '11:00', '11:50', '12:40', '13:40', '14:30'];
+    const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    // ── Fetch weekly timetable ─────────────────────────────────────────────
+    const fetchWeekly = async () => {
+      try {
+        const res = await authFetch(`${BASE_URL}/timetable/weekly`);
+        const data = await res.json();
+
+        if (data.success && data.data.length > 0) {
+          renderTimetable(data.data);
+
+          // Update summary cards
+          const uniqueSubjects = [...new Set(data.data.map(l => l.subject_name))];
+          const labs = data.data.filter(l => l.slot_type === 'lab').length;
+          const totalSubEl = document.querySelector('.summary-card:nth-child(1) p');
+          const totalLecEl = document.querySelector('.summary-card:nth-child(2) p');
+          const labEl = document.querySelector('.summary-card:nth-child(3) p');
+          if (totalSubEl) totalSubEl.textContent = uniqueSubjects.length;
+          if (totalLecEl) totalLecEl.textContent = data.data.length;
+          if (labEl) labEl.textContent = labs;
+
+        } else {
+          // No slots — show message in table body
+          const tbody = document.getElementById('timetableBody');
+          if (tbody)
+            tbody.innerHTML = `<tr><td colspan="8"
+            style="text-align:center;padding:30px;color:#6b7280">
+            No timetable slots assigned yet. Check with your admin.
+          </td></tr>`;
+        }
+
+      } catch (err) {
+        console.error('Fetch timetable error:', err);
+      }
+    };
+
+    // ── Render timetable table ─────────────────────────────────────────────
+    const renderTimetable = (lectures) => {
+      const tbody = document.getElementById('timetableBody');
+      if (!tbody) return;
+
+      tbody.innerHTML = weekDays.map(day => {
+        const cells = timeSlots.map(startTime => {
+          if (startTime === '12:40')
+            return `<td class="break">Break</td>`;
+
+          const lecture = lectures.find(l =>
+            l.day_of_week === day &&
+            l.start_time.slice(0, 5) === startTime
+          );
+
+          if (lecture) {
+            const colorClass = getColor(lecture.subject_name);
+            return `<td>
+            <div class="subject-card ${colorClass}">
+              <h4>${lecture.subject_name}</h4>
+              <p>${lecture.teacher_name}</p>
+              <p>${lecture.room || 'TBD'}</p>
+            </div>
+          </td>`;
+          }
+
+          return `<td>-</td>`;
+        });
+
+        return `<tr><td class="day">${day}</td>${cells.join('')}</tr>`;
+      }).join('');
+    };
+
+    fetchProfile();
+    fetchWeekly();
+  </script>
+</body>
+
+</html>

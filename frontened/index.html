@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartTimetable — Intelligent University Alert System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0d1b2a;
+            --blue: #1a56db;
+            --teal: #0d9488;
+            --sky: #38bdf8;
+            --light: #f0f7ff;
+            --white: #ffffff;
+            --gray: #64748b;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--navy);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* ── NOISE TEXTURE ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 18px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(13, 27, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-logo span {
+            color: var(--sky);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-nav-ghost {
+            padding: 9px 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.8);
+            font-family: 'Sora', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-nav-ghost:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: white;
+        }
+
+        .btn-nav-solid {
+            padding: 9px 22px;
+            border: none;
+            border-radius: 8px;
+            background: var(--blue);
+            color: white;
+            font-family: 'Sora', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-nav-solid:hover {
+            background: #1e40af;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 40px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Animated gradient orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--blue);
+            top: -100px;
+            left: -100px;
+            animation: drift 8s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--teal);
+            bottom: -50px;
+            right: -50px;
+            animation: drift 10s ease-in-out infinite reverse;
+        }
+
+        .orb-3 {
+            width: 300px;
+            height: 300px;
+            background: var(--sky);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse-orb 6s ease-in-out infinite;
+        }
+
+        @keyframes drift {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(40px, 30px);
+            }
+        }
+
+        @keyframes pulse-orb {
+
+            0%,
+            100% {
+                opacity: 0.08;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            50% {
+                opacity: 0.15;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 13px;
+            color: var(--sky);
+            font-weight: 500;
+            margin-bottom: 28px;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .hero-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--sky);
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        h1 {
+            font-size: clamp(42px, 7vw, 78px);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -2px;
+            margin-bottom: 24px;
+            animation: fadeUp 0.7s ease 0.1s both;
+        }
+
+        h1 .accent {
+            background: linear-gradient(135deg, var(--sky), var(--teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 560px;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            font-weight: 300;
+            animation: fadeUp 0.7s ease 0.2s both;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeUp 0.7s ease 0.3s both;
+        }
+
+        .btn-primary-lg {
+            padding: 15px 32px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Sora', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary-lg:hover {
+            background: #1e40af;
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost-lg {
+            padding: 15px 32px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            font-family: 'Sora', sans-serif;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-ghost-lg:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: white;
+        }
+
+        /* Stats row */
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 64px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+            animation: fadeUp 0.7s ease 0.4s both;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--sky);
+            letter-spacing: -1px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 4px;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── ROLES SECTION ── */
+        .section {
+            padding: 100px 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--teal);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+            line-height: 1.15;
+        }
+
+        .section-sub {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.5);
+            max-width: 500px;
+            line-height: 1.7;
+            font-weight: 300;
+            margin-bottom: 56px;
+        }
+
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .role-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 32px;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .role-card:hover {
+            background: rgba(255, 255, 255, 0.07);
+            transform: translateY(-4px);
+        }
+
+        .role-card:hover::before {
+            opacity: 1;
+        }
+
+        .role-card.student::before {
+            background: linear-gradient(90deg, var(--blue), var(--sky));
+        }
+
+        .role-card.teacher::before {
+            background: linear-gradient(90deg, var(--teal), #34d399);
+        }
+
+        .role-card.admin::before {
+            background: linear-gradient(90deg, #f59e0b, #ef4444);
+        }
+
+        .role-icon {
+            font-size: 36px;
+            margin-bottom: 18px;
+        }
+
+        .role-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .role-desc {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .role-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .role-features li {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .role-features li::before {
+            content: '✓';
+            font-size: 11px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .role-card.student .role-features li::before {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--sky);
+        }
+
+        .role-card.teacher .role-features li::before {
+            background: rgba(13, 148, 136, 0.15);
+            color: #34d399;
+        }
+
+        .role-card.admin .role-features li::before {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+        }
+
+        /* ── FEATURES SECTION ── */
+        .features-section {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .feature-card {
+            padding: 28px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 16px;
+            transition: 0.3s;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+
+        .feature-icon {
+            font-size: 28px;
+            margin-bottom: 14px;
+        }
+
+        .feature-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.45);
+            line-height: 1.6;
+        }
+
+        /* ── HOW IT WORKS ── */
+        .steps-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            position: relative;
+            margin-top: 56px;
+        }
+
+        .steps-row::before {
+            content: '';
+            position: absolute;
+            top: 28px;
+            left: 12.5%;
+            right: 12.5%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+        }
+
+        .step-item {
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .step-num {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(26, 86, 219, 0.2);
+            border: 1px solid rgba(26, 86, 219, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--sky);
+            margin: 0 auto 18px;
+            position: relative;
+            z-index: 1;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .step-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .step-desc {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.45);
+            line-height: 1.6;
+        }
+
+        /* ── NOTIFICATION PREVIEW ── */
+        .notif-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .notif-left h2 {
+            margin-bottom: 16px;
+        }
+
+        .notif-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .notif-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .notif-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .notif-phone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .phone-frame {
+            width: 280px;
+            background: #1a1a2e;
+            border-radius: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.12);
+            padding: 20px 16px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        .phone-top {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .phone-notch {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 3px;
+        }
+
+        .push-notification {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 10px;
+            animation: slideInNotif 0.5s ease both;
+        }
+
+        .push-notification:nth-child(2) {
+            animation-delay: 0.8s;
+            opacity: 0;
+            animation-fill-mode: both;
+        }
+
+        .push-notification:nth-child(3) {
+            animation-delay: 1.6s;
+            opacity: 0;
+            animation-fill-mode: both;
+        }
+
+        @keyframes slideInNotif {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .push-notif-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .push-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            background: var(--blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .push-app {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+        }
+
+        .push-time {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.3);
+            margin-left: auto;
+        }
+
+        .push-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .push-body {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.55);
+            line-height: 1.4;
+        }
+
+        /* ── CTA SECTION ── */
+        .cta-section {
+            text-align: center;
+            padding: 100px 60px;
+            background: linear-gradient(180deg, transparent, rgba(26, 86, 219, 0.08));
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(28px, 4vw, 48px);
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            font-size: 17px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 36px;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 30px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.35);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1024px) {
+            .roles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .steps-row {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+
+            .steps-row::before {
+                display: none;
+            }
+
+            .notif-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 16px 24px;
+            }
+
+            .section {
+                padding: 70px 24px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-row {
+                grid-template-columns: 1fr;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            h1 {
+                letter-spacing: -1px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav>
+        <div class="nav-logo">
+            🎓 <span>Smart</span>Timetable
+        </div>
+        <div class="nav-actions">
+            <a href="signin.html" class="btn-nav-ghost">Sign In</a>
+            <a href="signup.html" class="btn-nav-solid">Get Started →</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+
+        <div class="hero-badge">
+            <span class="dot"></span>
+            Real-time University Alert System
+        </div>
+
+        <h1>
+            Never Miss a<br>
+            <span class="accent">Lecture Again</span>
+        </h1>
+
+        <p class="hero-sub">
+            Smart timetable management with 5-minute push alerts,
+            teacher presence tracking, substitution management,
+            and IKS credit tracking — all in one platform.
+        </p>
+
+        <div class="hero-cta">
+            <a href="signin.html" class="btn-primary-lg">
+                Sign In to Portal →
+            </a>
+            <a href="#how-it-works" class="btn-ghost-lg">
+                See how it works
+            </a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-num">5 min</div>
+                <div class="stat-label">Before lecture alerts</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">3</div>
+                <div class="stat-label">User roles supported</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">100%</div>
+                <div class="stat-label">Real-time updates</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">PWA</div>
+                <div class="stat-label">Installable as app</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHO CAN ACCESS -->
+    <section class="section" id="roles">
+        <div class="section-label">Who uses SmartTimetable</div>
+        <h2 class="section-title">Built for everyone<br>in your university</h2>
+        <p class="section-sub">Three dedicated portals — each designed for exactly what that role needs.</p>
+
+        <div class="roles-grid">
+
+            <div class="role-card student">
+                <div class="role-icon">🎓</div>
+                <div class="role-title">Student</div>
+                <p class="role-desc">Stay on top of your schedule, track IKS credits, and get push alerts before every
+                    lecture starts.</p>
+                <ul class="role-features">
+                    <li>View daily & weekly timetable</li>
+                    <li>5-minute lecture push notifications</li>
+                    <li>See substitution updates instantly</li>
+                    <li>Track IKS event credits</li>
+                    <li>Report teacher absence</li>
+                    <li>View & attend university events</li>
+                </ul>
+            </div>
+
+            <div class="role-card teacher">
+                <div class="role-icon">👨‍🏫</div>
+                <div class="role-title">Teacher</div>
+                <p class="role-desc">Manage your lectures, mark attendance status, and stay informed about substitutions
+                    assigned to you.</p>
+                <ul class="role-features">
+                    <li>View personal weekly timetable</li>
+                    <li>Mark lectures as conducted / cancelled</li>
+                    <li>Report delays or absences</li>
+                    <li>View substitution assignments</li>
+                    <li>See upcoming events</li>
+                    <li>Get alerts before your classes</li>
+                </ul>
+            </div>
+
+            <div class="role-card admin">
+                <div class="role-icon">⚙️</div>
+                <div class="role-title">Admin</div>
+                <p class="role-desc">Full control over the system — manage structure, users, timetables, events and
+                    monitor everything in real time.</p>
+                <ul class="role-features">
+                    <li>Build university structure</li>
+                    <li>Register students & teachers</li>
+                    <li>Create & manage timetable slots</li>
+                    <li>Assign substitute teachers</li>
+                    <li>Upload timetable images / PDFs</li>
+                    <li>Create events & mark attendance</li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section features-section" id="features">
+        <div class="section-label">Platform features</div>
+        <h2 class="section-title">Everything in one place</h2>
+        <p class="section-sub">Eight intelligent modules covering every aspect of university scheduling.</p>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📅</div>
+                <div class="feature-title">Smart Timetable</div>
+                <p class="feature-desc">Section-wise weekly schedules, slot management, and image/PDF timetable uploads
+                    per section.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔔</div>
+                <div class="feature-title">Push Alerts</div>
+                <p class="feature-desc">Automatic push notifications 5 minutes before every lecture — delivered to phone
+                    home screen.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👁</div>
+                <div class="feature-title">Presence Monitoring</div>
+                <p class="feature-desc">Track whether lectures are conducted, cancelled, delayed, or teacher is absent —
+                    in real time.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔁</div>
+                <div class="feature-title">Substitutions</div>
+                <p class="feature-desc">Admin assigns substitute teachers instantly. Students and teachers notified
+                    automatically.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎉</div>
+                <div class="feature-title">IKS Events</div>
+                <p class="feature-desc">Manage university, branch, and section-level events. Auto-detect conflicts with
+                    lectures.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎓</div>
+                <div class="feature-title">Credit Tracking</div>
+                <p class="feature-desc">Students earn credits for attending IKS events. Progress tracked with a visual
+                    indicator.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Excel Import</div>
+                <p class="feature-desc">Bulk upload students and mark event attendance using Excel sheets — no manual
+                    entry needed.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <div class="feature-title">Installable PWA</div>
+                <p class="feature-desc">Install as a native-like app on Android and iPhone. Works offline and sends
+                    background alerts.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section" id="how-it-works">
+        <div class="section-label">How it works</div>
+        <h2 class="section-title">Simple for everyone</h2>
+        <p class="section-sub">From admin setup to student notifications in just a few steps.</p>
+
+        <div class="steps-row">
+            <div class="step-item">
+                <div class="step-num">01</div>
+                <div class="step-title">Admin sets up structure</div>
+                <p class="step-desc">Create schools, branches, semesters, sections, subjects and upload the timetable.
+                </p>
+            </div>
+            <div class="step-item">
+                <div class="step-num">02</div>
+                <div class="step-title">Students & teachers registered</div>
+                <p class="step-desc">Admin registers users and assigns them to their sections. Login credentials shared.
+                </p>
+            </div>
+            <div class="step-item">
+                <div class="step-num">03</div>
+                <div class="step-title">Install the app</div>
+                <p class="step-desc">Users open the link, log in, allow notifications, and install it to their home
+                    screen.</p>
+            </div>
+            <div class="step-item">
+                <div class="step-num">04</div>
+                <div class="step-title">Alerts sent automatically</div>
+                <p class="step-desc">Every day, 5 minutes before each lecture — students and teachers get a push
+                    notification.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- NOTIFICATION PREVIEW -->
+    <section class="section" style="padding-top:0">
+        <div class="notif-section">
+            <div class="notif-left">
+                <div class="section-label">Push notifications</div>
+                <h2 class="section-title">Alerts that<br>actually reach you</h2>
+                <p class="section-sub">Notifications appear on the phone home screen — even when the app is closed.</p>
+
+                <div class="notif-list">
+                    <div class="notif-item">
+                        <div class="notif-dot" style="background:var(--sky)"></div>
+                        5 minutes before every lecture — guaranteed
+                    </div>
+                    <div class="notif-item">
+                        <div class="notif-dot" style="background:#34d399"></div>
+                        Instant alert when substitute teacher is assigned
+                    </div>
+                    <div class="notif-item">
+                        <div class="notif-dot" style="background:#fbbf24"></div>
+                        Event conflict alerts when class is replaced
+                    </div>
+                    <div class="notif-item">
+                        <div class="notif-dot" style="background:#f87171"></div>
+                        Cancellation alerts when lecture is cancelled
+                    </div>
+                </div>
+            </div>
+
+            <div class="notif-phone">
+                <div class="phone-frame">
+                    <div class="phone-top">
+                        <div class="phone-notch"></div>
+                    </div>
+
+                    <div class="push-notification">
+                        <div class="push-notif-header">
+                            <div class="push-icon">⏰</div>
+                            <div class="push-app">SmartTimetable</div>
+                            <div class="push-time">now</div>
+                        </div>
+                        <div class="push-title">Class in 5 minutes</div>
+                        <div class="push-body">Machine Learning — Room 301 | Dr. Mehta</div>
+                    </div>
+
+                    <div class="push-notification">
+                        <div class="push-notif-header">
+                            <div class="push-icon">🔁</div>
+                            <div class="push-app">SmartTimetable</div>
+                            <div class="push-time">9:15 AM</div>
+                        </div>
+                        <div class="push-title">Teacher Change</div>
+                        <div class="push-body">DBMS at 10:10 — Dr. Kumar will substitute for Dr. Sharma</div>
+                    </div>
+
+                    <div class="push-notification">
+                        <div class="push-notif-header">
+                            <div class="push-icon">🎉</div>
+                            <div class="push-app">SmartTimetable</div>
+                            <div class="push-time">8:50 AM</div>
+                        </div>
+                        <div class="push-title">Class Replaced by Event</div>
+                        <div class="push-body">Maths at 11:00 replaced by: AI Workshop 2026</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <h2>Ready to get started?</h2>
+        <p>Sign in to your portal or contact your admin for access.</p>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+            <a href="signin.html" class="btn-primary-lg">Sign In →</a>
+            <a href="#roles" class="btn-ghost-lg">Learn more</a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div>🎓 <strong>SmartTimetable</strong> Alert System</div>
+        <div>© 2026 — Built for universities</div>
+    </footer>
+
+</body>
+
+</html>

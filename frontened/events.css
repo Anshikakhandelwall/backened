@@ -87,25 +87,25 @@ body {
     background: #449bed;
 }
 
-.logout{
-margin-top:20px;
-cursor:pointer;
+.logout {
+    margin-top: 20px;
+    cursor: pointer;
 }
 
-.logout a{
-display:block;
-padding:12px;
-background:#1c4c7a;
-color:white;
-text-decoration:none;
-border-radius:8px;
-text-align:center;
-font-weight:bold;
-transition:0.3s;
+.logout a {
+    display: block;
+    padding: 12px;
+    background: #1c4c7a;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+    transition: 0.3s;
 }
 
-.logout a:hover{
-background:#25639c;
+.logout a:hover {
+    background: #25639c;
 }
 
 
@@ -127,7 +127,7 @@ background:#25639c;
     background: white;
     padding: 20px 25px;
     border-radius: 18px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
 .header h2 {
@@ -172,7 +172,7 @@ background:#25639c;
     background: white;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
     transition: 0.3s ease;
     position: relative;
 }
@@ -209,7 +209,7 @@ background:#25639c;
 }
 
 .credits {
-    background: rgba(255,255,255,0.25);
+    background: rgba(255, 255, 255, 0.25);
     color: white;
     padding: 7px 12px;
     border-radius: 20px;

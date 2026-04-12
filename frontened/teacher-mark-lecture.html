@@ -1,152 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mark Lecture</title>
   <link rel="stylesheet" href="teacher-mark-lecture.css">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1c3557">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SmartTimetable">
+  <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
+
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <div class="sidebar">
-    <div>
-      <div class="logo">🎓
-        <div><h3>SmartTimetable</h3><p>Alert System</p></div>
-      </div>
-      <div class="profile">
-        <div class="avatar" id="avatarLetter">T</div>
-        <div>
-          <h4 id="teacherName">Teacher</h4>
-          <span class="role">Teacher</span>
-        </div>
-      </div>
-      <ul class="menu">
-        <li><a href="teacher-dashboard.html">Dashboard</a></li>
-        <li><a href="teacher-timetable.html">My Timetable</a></li>
-        <li class="active"><a href="teacher-mark-lecture.html">Mark Lecture</a></li>
-        <li><a href="teacher-substitutions.html">Substitutions</a></li>
-        <li><a href="teacher-events.html">Events</a></li>
-        <li><a href="changepassword.html">Change Password</a></li>
-      </ul>
-    </div>
-    <div class="logout">
-      <a href="#" onclick="handleLogout()">Sign Out</a>
-    </div>
-  </div>
-
-  <div class="main">
-    <div class="header">
+    <div class="sidebar">
       <div>
-        <h2>Mark Lecture Status</h2>
-        <p class="subtitle">Update today's lecture attendance</p>
+        <div class="logo">🎓
+          <div>
+            <h3>SmartTimetable</h3>
+            <p>Alert System</p>
+          </div>
+        </div>
+        <div class="profile">
+          <div class="avatar" id="avatarLetter">T</div>
+          <div>
+            <h4 id="teacherName">Teacher</h4>
+            <span class="role">Teacher</span>
+          </div>
+        </div>
+        <ul class="menu">
+          <li><a href="teacher-dashboard.html">Dashboard</a></li>
+          <li><a href="teacher-timetable.html">My Timetable</a></li>
+          <li class="active"><a href="teacher-mark-lecture.html">Mark Lecture</a></li>
+          <li><a href="teacher-substitutions.html">Substitutions</a></li>
+          <li><a href="teacher-events.html">Events</a></li>
+          <li><a href="changepassword.html">Change Password</a></li>
+        </ul>
       </div>
-      <span id="date"></span>
+      <div class="logout">
+        <a href="#" onclick="handleLogout()">Sign Out</a>
+      </div>
     </div>
 
-    <div id="lectureList">
-      <p style="color:#6b7280">Loading today's lectures...</p>
+    <div class="main">
+      <div class="header">
+        <div>
+          <h2>Mark Lecture Status</h2>
+          <p class="subtitle">Update today's lecture attendance</p>
+        </div>
+        <span id="date"></span>
+      </div>
+
+      <div id="lectureList">
+        <p style="color:#6b7280">Loading today's lectures...</p>
+      </div>
     </div>
   </div>
-</div>
 
-<script type="module">
-  const BASE_URL = 'http://localhost:5000/api';
-  const token    = localStorage.getItem('accessToken');
-  const userName = localStorage.getItem('userName') || 'Teacher';
-  const userRole = localStorage.getItem('userRole');
+  <script type="module">
+    const BASE_URL = 'http://localhost:5000/api';
+    const token = localStorage.getItem('accessToken');
+    const userName = localStorage.getItem('userName') || 'Teacher';
 
-  if (!token || userRole !== 'teacher') window.location.href = 'signin.html';
+    if (!token || localStorage.getItem('userRole') !== 'teacher') {
+      window.location.href = 'signin.html';
+    }
 
-  window.handleLogout = async () => {
-    await fetch(`${BASE_URL}/auth/logout`, { method:'POST', credentials:'include' });
-    localStorage.clear();
-    window.location.href = 'signin.html';
-  };
+    window.handleLogout = async () => {
+      await fetch(`${BASE_URL}/auth/logout`, { method: 'POST', credentials: 'include' });
+      localStorage.clear(); window.location.href = 'signin.html';
+    };
 
-  document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
-  document.getElementById('teacherName').textContent  = userName;
+    const avatarEl = document.getElementById('avatarLetter');
+    const nameEl = document.getElementById('teacherName');
+    if (avatarEl) avatarEl.textContent = userName.charAt(0).toUpperCase();
+    if (nameEl) nameEl.textContent = userName;
 
-  const now    = new Date();
-  const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  document.getElementById('date').textContent =
-    `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+    const now = new Date();
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dateEl = document.getElementById('date');
+    if (dateEl)
+      dateEl.textContent =
+        `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 
-  // ── Mark status ──────────────────────────────────────────────────────────
-  window.markStatus = async (slotId, status, btn) => {
-    try {
-      const res = await fetch(`${BASE_URL}/attendance/mark`, {
-        method:  'POST',
-        headers: {
-          'Content-Type':  'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          slot_id:      slotId,
-          lecture_date: now.toISOString().split('T')[0],
-          status,
-        }),
-      });
+    const todayDate = now.toISOString().split('T')[0];
 
-      const data = await res.json();
+    // ── Mark lecture status ────────────────────────────────────────────────
+    window.markStatus = async (slotId, status, btn) => {
+      try {
+        const res = await fetch(`${BASE_URL}/attendance/mark`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            slot_id: slotId,
+            lecture_date: todayDate,
+            status,
+          }),
+        });
 
-      if (data.success) {
-        // Update UI
+        const data = await res.json();
+
+        if (data.success) {
+          // Update status label in UI
+          const card = btn.closest('.lecture-card');
+          const statusEl = card.querySelector('.current-status');
+          const colorMap = {
+            conducted: { bg: '#dcfce7', color: '#15803d' },
+            cancelled: { bg: '#fee2e2', color: '#dc2626' },
+            delayed: { bg: '#fef3c7', color: '#d97706' },
+            teacher_absent: { bg: '#e0e7ff', color: '#4338ca' },
+          };
+          const labelMap = {
+            conducted: 'Conducted',
+            cancelled: 'Cancelled',
+            delayed: 'Delayed',
+            teacher_absent: 'Marked Absent',
+          };
+
+          if (statusEl) {
+            statusEl.textContent = `✓ ${labelMap[status]}`;
+            statusEl.style.background = colorMap[status].bg;
+            statusEl.style.color = colorMap[status].color;
+            statusEl.style.padding = '6px 14px';
+            statusEl.style.borderRadius = '20px';
+            statusEl.style.fontSize = '12px';
+            statusEl.style.fontWeight = 'bold';
+          }
+
+        } else {
+          alert(data.message || 'Could not update status');
+        }
+
+      } catch (err) {
+        console.error('Mark status error:', err);
+        // Show UI update even if backend not connected
         const card = btn.closest('.lecture-card');
         const statusEl = card.querySelector('.current-status');
-        const colors = {
-          conducted:      '#dcfce7',
-          cancelled:      '#fee2e2',
-          delayed:        '#fef3c7',
-          teacher_absent: '#e0e7ff',
-        };
-        const labels = {
-          conducted:      'Conducted',
-          cancelled:      'Cancelled',
-          delayed:        'Delayed',
-          teacher_absent: 'Marked Absent',
-        };
-        statusEl.textContent         = `✓ ${labels[status]}`;
-        statusEl.style.background    = colors[status];
-        statusEl.style.padding       = '6px 14px';
-        statusEl.style.borderRadius  = '20px';
-        statusEl.style.fontSize      = '12px';
-        statusEl.style.fontWeight    = 'bold';
-      } else {
-        alert(data.message || 'Could not update status');
+        if (statusEl) {
+          statusEl.textContent = `✓ ${status}`;
+          statusEl.style.background = '#dcfce7';
+          statusEl.style.color = '#15803d';
+          statusEl.style.padding = '6px 14px';
+          statusEl.style.borderRadius = '20px';
+          statusEl.style.fontSize = '12px';
+          statusEl.style.fontWeight = 'bold';
+        }
       }
+    };
 
-    } catch (err) {
-      console.error('Mark status error:', err);
-      // Show UI update even if backend not ready
-      const card   = btn.closest('.lecture-card');
-      const statusEl = card.querySelector('.current-status');
-      statusEl.textContent      = `✓ ${status.charAt(0).toUpperCase() + status.slice(1)}`;
-      statusEl.style.background = '#dcfce7';
-      statusEl.style.padding    = '6px 14px';
-      statusEl.style.borderRadius = '20px';
-      statusEl.style.fontSize   = '12px';
-      statusEl.style.fontWeight = 'bold';
-    }
-  };
+    // ── Fetch today's lectures ─────────────────────────────────────────────
+    const fetchLectures = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/timetable/teacher/today`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+          credentials: 'include',
+        });
+        const data = await res.json();
 
-  // ── Render lectures ──────────────────────────────────────────────────────
-  const renderLectures = (lectures) => {
-    const container = document.getElementById('lectureList');
+        if (data.success && data.data.length > 0) {
+          renderLectures(data.data);
+        } else {
+          document.getElementById('lectureList').innerHTML = `
+          <div class="empty-state">
+            <h3>No lectures today</h3>
+            <p>You have no scheduled lectures for today.</p>
+          </div>`;
+        }
 
-    if (!lectures.length) {
-      container.innerHTML = `
+      } catch (err) {
+        console.error('Fetch lectures error:', err);
+        document.getElementById('lectureList').innerHTML = `
         <div class="empty-state">
-          <h3>No lectures today</h3>
-          <p>You have no scheduled lectures for today.</p>
+          <h3>Could not load lectures</h3>
+          <p>Check your connection and try again.</p>
         </div>`;
-      return;
-    }
+      }
+    };
 
-    container.innerHTML = lectures.map(l => `
+    // ── Render lectures ────────────────────────────────────────────────────
+    const renderLectures = (lectures) => {
+      document.getElementById('lectureList').innerHTML = lectures.map(l => `
       <div class="lecture-card">
         <div class="lec-time">${l.start_time} – ${l.end_time}</div>
         <div class="lec-info">
@@ -174,37 +218,18 @@
         <div class="current-status"
           style="background:${l.status ? '#dcfce7' : '#f3f4f6'};
                  color:${l.status ? '#15803d' : '#9ca3af'};
-                 padding:6px 14px; border-radius:20px;
-                 font-size:12px; font-weight:bold;">
-          ${l.status ? l.status.charAt(0).toUpperCase() + l.status.slice(1) : 'Not Marked'}
+                 padding:6px 14px;border-radius:20px;
+                 font-size:12px;font-weight:bold;">
+          ${l.status
+          ? '✓ ' + l.status.charAt(0).toUpperCase() + l.status.slice(1).replace('_', ' ')
+          : 'Not Marked'}
         </div>
       </div>`
-    ).join('');
-  };
+      ).join('');
+    };
 
-  // ── Fetch or use sample ──────────────────────────────────────────────────
-  try {
-    const res  = await fetch(`${BASE_URL}/timetable/teacher/today`, {
-      headers: { 'Authorization': `Bearer ${token}` },
-      credentials: 'include',
-    });
-    const data = await res.json();
-    if (data.success) renderLectures(data.data);
-    else renderLectures(getSample());
-  } catch {
-    renderLectures(getSample());
-  }
-
-  function getSample() {
-    return [
-      { slot_id:1, start_time:'09:20', end_time:'10:10',
-        subject_name:'Machine Learning', section_name:'CS-A', room:'Room 301', status:null },
-      { slot_id:2, start_time:'10:10', end_time:'11:00',
-        subject_name:'DBMS',             section_name:'CS-B', room:'Lab C',    status:'conducted' },
-      { slot_id:3, start_time:'11:00', end_time:'11:50',
-        subject_name:'Mathematics',      section_name:'CS-A', room:'Room 102', status:null },
-    ];
-  }
-</script>
+    fetchLectures();
+  </script>
 </body>
+
 </html>

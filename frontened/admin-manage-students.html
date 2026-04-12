@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Students</title>
+    <link rel="stylesheet" href="admin.css">
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1c3557">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SmartTimetable">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <style>
+        .section-selector {
+            background: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+            margin-bottom: 24px
+        }
+
+        .section-selector h3 {
+            font-size: 16px;
+            color: #1c3557;
+            margin-bottom: 16px
+        }
+
+        .section-path {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center
+        }
+
+        .section-path select {
+            padding: 9px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            min-width: 150px;
+            transition: 0.2s
+        }
+
+        .section-path select:focus {
+            border-color: #449bed
+        }
+
+        .path-arrow {
+            color: #9ca3af;
+            font-size: 18px
+        }
+
+        .selected-banner {
+            background: linear-gradient(135deg, #1c3557, #2563eb);
+            color: white;
+            border-radius: 14px;
+            padding: 18px 22px;
+            margin-bottom: 20px;
+            display: none;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .selected-banner h3 {
+            font-size: 18px;
+            margin-bottom: 4px
+        }
+
+        .selected-banner p {
+            font-size: 13px;
+            opacity: 0.85
+        }
+
+        .change-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px
+        }
+
+        .action-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px
+        }
+
+        .act-tab {
+            padding: 9px 20px;
+            border: 0.5px solid #d1d5db;
+            border-radius: 10px;
+            background: white;
+            color: #6b7280;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s
+        }
+
+        .act-tab.active {
+            background: #1c3557;
+            color: white;
+            border-color: #1c3557
+        }
+
+        .act-panel {
+            display: none
+        }
+
+        .act-panel.active {
+            display: block
+        }
+
+        .add-form-box {
+            background: white;
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+            margin-bottom: 20px
+        }
+
+        .excel-box {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+            margin-bottom: 20px
+        }
+
+        .excel-drop {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            background: #fafafa
+        }
+
+        .excel-drop:hover {
+            border-color: #449bed;
+            background: #eff6ff
+        }
+
+        .excel-drop p {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 6px
+        }
+
+        .student-card {
+            background: white;
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .s-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #dbeafe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 15px;
+            color: #1d4ed8;
+            flex-shrink: 0
+        }
+
+        .s-info {
+            flex: 1
+        }
+
+        .s-info h4 {
+            font-size: 14px;
+            color: #1c3557;
+            margin-bottom: 2px
+        }
+
+        .s-info p {
+            font-size: 12px;
+            color: #6b7280
+        }
+
+        .template-note {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #0369a1;
+            margin-bottom: 16px
+        }
+
+        .success-banner {
+            background: #dcfce7;
+            color: #15803d;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div>
+                <div class="logo">🎓<div>
+                        <h3>SmartTimetable</h3>
+                        <p>Admin Panel</p>
+                    </div>
+                </div>
+                <div class="profile">
+                    <div class="avatar" id="avatarLetter">A</div>
+                    <div class="profile-info">
+                        <h4 id="adminName">Admin</h4><span class="role-badge">Admin</span>
+                    </div>
+                </div>
+                <ul class="menu">
+                    <li><a href="admin-dashboard.html"><span class="menu-icon">📊</span>Dashboard</a></li>
+                    <li><a href="admin-timetable.html"><span class="menu-icon">📅</span>Timetable</a></li>
+                    <li><a href="admin-substitutions.html"><span class="menu-icon">🔁</span>Substitutions</a></li>
+                    <li><a href="admin-attendance.html"><span class="menu-icon">👁</span>Attendance</a></li>
+                    <li><a href="admin-events.html"><span class="menu-icon">🎉</span>Events</a></li>
+                    <li><a href="admin-users.html"><span class="menu-icon">👥</span>Users</a></li>
+                    <li><a href="admin-manage.html"><span class="menu-icon">🏫</span>Manage Structure</a></li>
+                    <li class="active"><a href="admin-manage-students.html"><span class="menu-icon">🎓</span>Manage
+                            Students</a></li>
+                    <li><a href="admin-manage-teachers.html"><span class="menu-icon">👨‍🏫</span>Manage Teachers</a>
+                    </li>
+                    <li><a href="changepassword.html"><span class="menu-icon">🔒</span>Change Password</a></li>
+                </ul>
+            </div>
+            <div class="logout"><a href="#" onclick="handleLogout()">Sign Out</a></div>
+        </div>
+        <div class="main">
+            <div class="page-header">
+                <div class="page-header-left">
+                    <h2>Manage Students</h2>
+                    <p>Select a section first, then add multiple students</p>
+                </div>
+            </div>
+            <div class="success-banner" id="successBanner"></div>
+            <!-- SECTION SELECTOR -->
+            <div class="section-selector" id="sectionSelector">
+                <h3>Step 1 — Select Section</h3>
+                <div class="section-path">
+                    <select id="selSchool" onchange="onSchoolChange()">
+                        <option value="">Select School</option>
+                    </select>
+                    <span class="path-arrow">›</span>
+                    <select id="selCourse" onchange="onCourseChange()" disabled>
+                        <option value="">Select Course</option>
+                    </select>
+                    <span class="path-arrow">›</span>
+                    <select id="selBranch" onchange="onBranchChange()" disabled>
+                        <option value="">Select Branch</option>
+                    </select>
+                    <span class="path-arrow">›</span>
+                    <select id="selSemester" onchange="onSemesterChange()" disabled>
+                        <option value="">Select Semester</option>
+                    </select>
+                    <span class="path-arrow">›</span>
+                    <select id="selSection" disabled>
+                        <option value="">Select Section</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="confirmSection()">Confirm →</button>
+                </div>
+            </div>
+            <!-- SELECTED BANNER -->
+            <div class="selected-banner" id="sectionBanner">
+                <div>
+                    <h3 id="bannerTitle">Section</h3>
+                    <p id="bannerSubtitle"></p>
+                </div>
+                <button class="change-btn" onclick="changeSection()">Change Section</button>
+            </div>
+            <!-- ACTIONS -->
+            <div id="studentActions" style="display:none">
+                <div class="action-tabs">
+                    <button class="act-tab active" onclick="switchActTab('manual',this)">➕ Add Manually</button>
+                    <button class="act-tab" onclick="switchActTab('excel',this)">📊 Upload Excel</button>
+                    <button class="act-tab" onclick="switchActTab('list',this)">👥 Section Students</button>
+                </div>
+                <!-- MANUAL -->
+                <div class="act-panel active" id="act-manual">
+                    <div class="add-form-box">
+                        <h4 style="font-size:15px;color:#1c3557;margin-bottom:16px">Add Student to Section</h4>
+                        <div class="form-row">
+                            <div class="form-group"><label>Full Name</label><input type="text" id="stuName"
+                                    placeholder="e.g. Raj Sharma"></div>
+                            <div class="form-group"><label>Email</label><input type="email" id="stuEmail"
+                                    placeholder="student@college.edu"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Password</label><input type="password" id="stuPassword"
+                                    placeholder="Min 8 characters"></div>
+                            <div class="form-group"><label>Enrollment Number</label><input type="text"
+                                    id="stuEnrollment" placeholder="e.g. EN2024001"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Department</label><input type="text" id="stuDepartment"
+                                    placeholder="e.g. Computer Science"></div>
+                        </div>
+                        <div style="margin-top:16px"><button class="btn btn-primary" onclick="addStudentManual()">+ Add
+                                Student</button></div>
+                    </div>
+                </div>
+                <!-- EXCEL -->
+                <div class="act-panel" id="act-excel">
+                    <div class="excel-box">
+                        <h4 style="font-size:15px;color:#1c3557;margin-bottom:12px">Upload Excel Sheet</h4>
+                        <div class="template-note">
+                            ℹ️ Excel columns required: <strong>Name, Email, Password, Enrollment,
+                                Department</strong><br>
+                            Default password <strong>Welcome@123</strong> used if Password column is empty.<br><br>
+                            <a href="#" onclick="downloadTemplate()"
+                                style="color:#0369a1;font-weight:bold;text-decoration:none">📥 Download Template</a>
+                        </div>
+                        <div class="excel-drop" onclick="document.getElementById('excelInput').click()">
+                            <div style="font-size:32px">📊</div>
+                            <strong style="font-size:14px;color:#1c3557">Click to select Excel file</strong>
+                            <p>Supports .xlsx and .xls</p>
+                        </div>
+                        <input type="file" id="excelInput" style="display:none" accept=".xlsx,.xls"
+                            onchange="handleExcelSelect(event)">
+                        <div id="excelInfo"
+                            style="display:none;margin-top:12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 16px;font-size:13px;color:#15803d">
+                        </div>
+                        <div style="margin-top:16px"><button class="btn btn-primary" id="importBtn"
+                                onclick="importExcel()" disabled>Import Students</button></div>
+                        <div id="importResult"
+                            style="display:none;margin-top:16px;background:white;border-radius:12px;padding:16px;box-shadow:0 3px 10px rgba(0,0,0,0.06)">
+                        </div>
+                    </div>
+                </div>
+                <!-- LIST -->
+                <div class="act-panel" id="act-list">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                        <div style="font-size:16px;font-weight:500;color:#1c3557">Students <span class="count-badge"
+                                id="secStuCount">0</span></div>
+                        <input type="text" id="stuSearch" placeholder="Search..." oninput="filterSecStudents()"
+                            style="padding:8px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:13px;outline:none;width:200px">
+                    </div>
+                    <div id="secStudentList">
+                        <p style="color:#6b7280">Loading...</p>
+                    </div>
+                </div>
+            </div>
+            <!-- ALL STUDENTS -->
+            <div style="margin-top:30px">
+                <div class="section-title" style="margin-bottom:16px">All Students <span class="count-badge"
+                        id="totalCount">0</span></div>
+                <div class="table-box">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Enrollment</th>
+                                <th>Department</th>
+                                <th>Section</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allStudentsTable">
+                            <tr>
+                                <td colspan="6" style="text-align:center;padding:20px;color:#6b7280">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        const BASE = 'http://localhost:5000/api';
+        const userName = localStorage.getItem('userName') || 'Admin';
+        if (!localStorage.getItem('accessToken') || localStorage.getItem('userRole') !== 'admin') window.location.href = 'signin.html';
+        window.handleLogout = async () => { await fetch(`${BASE}/auth/logout`, { method: 'POST', credentials: 'include' }); localStorage.clear(); window.location.href = 'signin.html'; };
+        document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
+        document.getElementById('adminName').textContent = userName;
+
+        const apiFetch = async (url, method = 'GET', body = null) => {
+            let tkn = localStorage.getItem('accessToken');
+            const mk = async (t) => { const o = { method, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${t}` }, credentials: 'include' }; if (body) o.body = JSON.stringify(body); return fetch(url, o); };
+            let res = await mk(tkn);
+            if (res.status === 401) { const r = await fetch(`${BASE}/auth/refresh`, { method: 'POST', credentials: 'include' }); const d = await r.json(); if (d.success) { localStorage.setItem('accessToken', d.accessToken); res = await mk(d.accessToken); } else { localStorage.clear(); window.location.href = 'signin.html'; return null; } }
+            return res.json();
+        };
+
+        let selSectionId = null, selSectionName = '', secStudents = [], allStudents = [];
+
+        window.switchActTab = (tab, btn) => {
+            document.querySelectorAll('.act-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.act-tab').forEach(b => b.classList.remove('active'));
+            document.getElementById(`act-${tab}`).classList.add('active'); btn.classList.add('active');
+            if (tab === 'list') loadSecStudents();
+        };
+
+        const init = async () => {
+            const d = await apiFetch(`${BASE}/manage/schools`);
+            if (d?.success) {
+                document.getElementById('selSchool').innerHTML = '<option value="">Select School</option>' + d.data.map(s => `<option value="${s.school_id}">${s.school_name}</option>`).join('');
+            }
+            fetchAllStudents();
+        };
+
+        window.onSchoolChange = async () => {
+            const id = document.getElementById('selSchool').value; resetFrom('course'); if (!id) return;
+            const d = await apiFetch(`${BASE}/manage/courses`);
+            const items = (d?.data || []).filter(c => String(c.school_id) === String(id));
+            const el = document.getElementById('selCourse');
+            el.innerHTML = '<option value="">Select Course</option>' + items.map(c => `<option value="${c.course_id}">${c.course_name}</option>`).join('');
+            el.disabled = false;
+        };
+        window.onCourseChange = async () => {
+            const id = document.getElementById('selCourse').value; resetFrom('branch'); if (!id) return;
+            const d = await apiFetch(`${BASE}/manage/branches`);
+            const items = (d?.data || []).filter(b => String(b.course_id) === String(id));
+            const el = document.getElementById('selBranch');
+            el.innerHTML = '<option value="">Select Branch</option>' + items.map(b => `<option value="${b.branch_id}">${b.branch_name}</option>`).join('');
+            el.disabled = false;
+        };
+        window.onBranchChange = async () => {
+            const id = document.getElementById('selBranch').value; resetFrom('semester'); if (!id) return;
+            const d = await apiFetch(`${BASE}/manage/semesters`);
+            const items = (d?.data || []).filter(s => String(s.branch_id) === String(id));
+            const el = document.getElementById('selSemester');
+            el.innerHTML = '<option value="">Select Semester</option>' + items.map(s => `<option value="${s.sem_id}">Semester ${s.sem_number}</option>`).join('');
+            el.disabled = false;
+        };
+        window.onSemesterChange = async () => {
+            const id = document.getElementById('selSemester').value; resetFrom('section'); if (!id) return;
+            const d = await apiFetch(`${BASE}/manage/sections`);
+            const items = (d?.data || []).filter(s => String(s.sem_id) === String(id));
+            const el = document.getElementById('selSection');
+            el.innerHTML = '<option value="">Select Section</option>' + items.map(s => `<option value="${s.section_id}">${s.section_name}</option>`).join('');
+            el.disabled = false;
+        };
+        const resetFrom = (level) => {
+            const order = ['course', 'branch', 'semester', 'section'];
+            order.slice(order.indexOf(level)).forEach(l => {
+                const el = document.getElementById(`sel${l.charAt(0).toUpperCase() + l.slice(1)}`);
+                if (el) { el.innerHTML = `<option value="">Select ${l.charAt(0).toUpperCase() + l.slice(1)}</option>`; el.disabled = true; }
+            });
+        };
+        window.confirmSection = () => {
+            const el = document.getElementById('selSection');
+            if (!el.value) { alert('Please select a section'); return; }
+            selSectionId = el.value; selSectionName = el.options[el.selectedIndex].text;
+            const br = document.getElementById('selBranch'); const sm = document.getElementById('selSemester');
+            document.getElementById('sectionSelector').style.display = 'none';
+            document.getElementById('sectionBanner').style.display = 'flex';
+            document.getElementById('studentActions').style.display = 'block';
+            document.getElementById('bannerTitle').textContent = selSectionName;
+            document.getElementById('bannerSubtitle').textContent = `${br.options[br.selectedIndex].text} — ${sm.options[sm.selectedIndex].text}`;
+        };
+        window.changeSection = () => {
+            selSectionId = null;
+            document.getElementById('sectionSelector').style.display = 'block';
+            document.getElementById('sectionBanner').style.display = 'none';
+            document.getElementById('studentActions').style.display = 'none';
+        };
+        window.addStudentManual = async () => {
+            const name = document.getElementById('stuName').value.trim();
+            const email = document.getElementById('stuEmail').value.trim();
+            const password = document.getElementById('stuPassword').value.trim();
+            const enrollment = document.getElementById('stuEnrollment').value.trim();
+            const department = document.getElementById('stuDepartment').value.trim();
+            if (!name || !email || !password) { alert('Name, email and password are required'); return; }
+            if (password.length < 8) { alert('Password must be at least 8 characters'); return; }
+            const d = await apiFetch(`${BASE}/admin/students/create`, 'POST', { name, email, password, enrollment, department, section_id: selSectionId });
+            if (!d) return;
+            if (d.success) { showBanner(`✓ "${name}" added to ${selSectionName}`);['stuName', 'stuEmail', 'stuPassword', 'stuEnrollment', 'stuDepartment'].forEach(id => document.getElementById(id).value = ''); fetchAllStudents(); }
+            else alert(d.message || 'Failed');
+        };
+        let excelFile = null;
+        window.handleExcelSelect = (e) => {
+            excelFile = e.target.files[0]; if (!excelFile) return;
+            const info = document.getElementById('excelInfo'); info.style.display = 'block';
+            info.textContent = `✓ ${excelFile.name} (${(excelFile.size / 1024 / 1024).toFixed(2)} MB)`;
+            document.getElementById('importBtn').disabled = false;
+        };
+        window.importExcel = async () => {
+            if (!excelFile || !selSectionId) return;
+            const fd = new FormData(); fd.append('students', excelFile); fd.append('section_id', selSectionId);
+            try {
+                const res = await fetch(`${BASE}/upload/students/excel`, { method: 'POST', headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }, credentials: 'include', body: fd });
+                const d = await res.json();
+                const result = document.getElementById('importResult'); result.style.display = 'block';
+                if (d.success) {
+                    result.innerHTML = `<div style="color:#15803d;font-weight:500">✓ ${d.imported} students imported</div>${d.failed > 0 ? `<div style="color:#dc2626;font-size:13px;margin-top:6px">✕ ${d.failed} failed</div>` : ''}`;
+                    fetchAllStudents(); showBanner(`✓ ${d.imported} students imported to ${selSectionName}`);
+                } else result.innerHTML = `<div style="color:#dc2626">${d.message || 'Import failed'}</div>`;
+            } catch (err) { console.error(err); alert('Import failed'); }
+        };
+        window.downloadTemplate = () => {
+            const csv = ['Name,Email,Password,Enrollment,Department', 'Raj Sharma,raj@college.edu,Pass@123,EN2024001,Computer Science'].join('\n');
+            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'student_template.csv'; a.click();
+        };
+        const loadSecStudents = async () => {
+            if (!selSectionId) return;
+            const d = await apiFetch(`${BASE}/admin/users`);
+            secStudents = (d?.data || []).filter(s => s.role === 'student' && String(s.section_id) === String(selSectionId));
+            document.getElementById('secStuCount').textContent = secStudents.length;
+            renderSecStudents(secStudents);
+        };
+        window.filterSecStudents = () => {
+            const q = document.getElementById('stuSearch').value.toLowerCase();
+            renderSecStudents(secStudents.filter(s => s.name.toLowerCase().includes(q) || s.email.toLowerCase().includes(q)));
+        };
+        const renderSecStudents = (students) => {
+            const list = document.getElementById('secStudentList');
+            if (!students.length) { list.innerHTML = `<div style="text-align:center;padding:30px;color:#6b7280"><h3>No students in this section yet</h3></div>`; return; }
+            list.innerHTML = students.map(s => `<div class="student-card"><div class="s-avatar">${s.name.charAt(0).toUpperCase()}</div><div class="s-info"><h4>${s.name}</h4><p>${s.email} | ${s.enrollment || '—'}</p></div><button class="btn btn-danger btn-sm" onclick="removeStudent(${s.user_id},'${s.name}')">Remove</button></div>`).join('');
+        };
+        const fetchAllStudents = async () => {
+            const d = await apiFetch(`${BASE}/admin/users/role/student`);
+            if (!d?.success) return;
+            allStudents = d.data || [];
+            document.getElementById('totalCount').textContent = allStudents.length;
+            const tbody = document.getElementById('allStudentsTable');
+            if (!allStudents.length) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;color:#6b7280">No students yet</td></tr>`; return; }
+            tbody.innerHTML = allStudents.map(s => `<tr><td>${s.name}</td><td style="color:#6b7280;font-size:13px">${s.email}</td><td>${s.enrollment || '—'}</td><td>${s.department || '—'}</td><td><span class="badge badge-blue">${s.section_name || '—'}</span></td><td><button class="btn btn-danger btn-sm" onclick="removeStudent(${s.user_id},'${s.name}')">Remove</button></td></tr>`).join('');
+        };
+        window.removeStudent = async (id, name) => {
+            if (!confirm(`Remove "${name}"?`)) return;
+            const d = await apiFetch(`${BASE}/admin/users/${id}`, 'DELETE');
+            if (d?.success) { fetchAllStudents(); if (selSectionId) loadSecStudents(); } else alert(d?.message || 'Failed');
+        };
+        const showBanner = (msg) => { const b = document.getElementById('successBanner'); b.textContent = msg; b.style.display = 'block'; setTimeout(() => b.style.display = 'none', 4000); };
+        init();
+    </script>
+</body>
+
+</html>

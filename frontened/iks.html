@@ -2,117 +2,269 @@
 <html lang="en">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IKS Credits</title>
-<link rel="stylesheet" href="iks.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IKS Credits</title>
+  <link rel="stylesheet" href="iks.css">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1c3557">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SmartTimetable">
+  <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
 
 <body>
 
-<div class="container">
+  <div class="container">
 
-<!-- SIDEBAR -->
+    <!-- SIDEBAR -->
 
-<div class="sidebar">
+    <div class="sidebar">
 
-<div class="logo">
-🎓 <div>
-<h3>SmartTimetable</h3>
-<p>Alert System</p>
-</div>
-</div>
+      <div class="logo">
+        🎓 <div>
+          <h3>SmartTimetable</h3>
+          <p>Alert System</p>
+        </div>
+      </div>
 
-<div class="profile">
-<div class="avatar">I</div>
-<div>
-<h4>levi ackerman</h4>
-<span class="role">Student</span>
-</div>
-</div>
-
-
-
-<ul class="menu">
-<li><a href="dashboard.html">Dashboard</a></li>
-<li><a href="mytimetable.html">My Timetable</a></li>
-<li class="active"><a href="iks.html">IKS Credits</a></li>
-<li><a href="events.html">Events</a></li>
-<li><a href="changepassword.html">Change Password </a></li>
-</ul>
-
-<div class="logout">
-  <a href="signin.html">Sign Out</a>
-</div>
-
-</div>
+      <div class="profile">
+        <div class="avatar">I</div>
+        <div>
+          <h4>levi ackerman</h4>
+          <span class="role">Student</span>
+        </div>
+      </div>
 
 
-<!-- MAIN CONTENT -->
 
-<div class="main">
+      <ul class="menu">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="mytimetable.html">My Timetable</a></li>
+        <li class="active"><a href="iks.html">IKS Credits</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="changepassword.html">Change Password </a></li>
+      </ul>
 
-<div class="header">
-<h2>IKS Credits</h2>
-<span id="date"></span>
-</div>
+      <div class="logout">
+        <a href="signin.html">Sign Out</a>
+      </div>
 
-<h1>IKS Credit Tracker</h1>
-<p class="subtitle">Track your Indian Knowledge Systems event credits.</p>
-
-
-<!-- CREDIT CARDS -->
-
-<div class="cards">
-
-<div class="card">
-<p>Earned Credits</p>
-<h2 id="earned">0</h2>
-</div>
-
-<div class="card">
-<p>Required Credits</p>
-<h2>10</h2>
-</div>
-
-<div class="card">
-<p>Remaining</p>
-<h2 id="remaining">10</h2>
-</div>
-
-</div>
+    </div>
 
 
-<!-- PROGRESS BAR -->
+    <!-- MAIN CONTENT -->
 
-<div class="progress-box">
+    <div class="main">
 
-<div class="progress-header">
-<p>Credit Progress</p>
-<span id="percent">0%</span>
-</div>
+      <div class="header">
+        <h2>IKS Credits</h2>
+        <span id="date"></span>
+      </div>
 
-<div class="progress-bar">
-<div class="progress" id="progress"></div>
-</div>
-
-<p id="message">10 more credits needed to complete the requirement.</p>
-
-</div>
+      <h1>IKS Credit Tracker</h1>
+      <p class="subtitle">Track your Indian Knowledge Systems event credits.</p>
 
 
-<!-- EVENT HISTORY -->
+      <!-- CREDIT CARDS -->
 
-<div class="history">
+      <div class="cards">
 
-<h3>Event Attendance History</h3>
+        <div class="card">
+          <p>Earned Credits</p>
+          <h2 id="earned">0</h2>
+        </div>
 
-<div class="empty">
-<p>No events attended yet.</p>
-</div>
+        <div class="card">
+          <p>Required Credits</p>
+          <h2>10</h2>
+        </div>
 
-</div>
+        <div class="card">
+          <p>Remaining</p>
+          <h2 id="remaining">10</h2>
+        </div>
 
-</div>
+      </div>
 
-</div>
+
+      <!-- PROGRESS BAR -->
+
+      <div class="progress-box">
+
+        <div class="progress-header">
+          <p>Credit Progress</p>
+          <span id="percent">0%</span>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress" id="progress"></div>
+        </div>
+
+        <p id="message">10 more credits needed to complete the requirement.</p>
+
+      </div>
+
+
+      <!-- EVENT HISTORY -->
+
+      <div class="history">
+
+        <h3>Event Attendance History</h3>
+
+        <div class="empty">
+          <p>No events attended yet.</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+  <script type="module">
+    const BASE_URL = 'http://localhost:5000/api/student';
+    const token = localStorage.getItem('accessToken');
+    const userName = localStorage.getItem('userName') || 'Student';
+
+    if (!token || localStorage.getItem('userRole') !== 'student') {
+      window.location.href = 'signin.html';
+    }
+
+    window.logoutUser = async () => {
+      await fetch('http://localhost:5000/api/auth/logout', { method: 'POST', credentials: 'include' });
+      localStorage.clear(); window.location.href = 'signin.html';
+    };
+
+    // ── Fill user info ─────────────────────────────────────────────────────
+    const avatarEl = document.querySelector('.avatar');
+    const nameEl = document.querySelector('.profile h4');
+    if (avatarEl) avatarEl.textContent = userName.charAt(0).toUpperCase();
+    if (nameEl) nameEl.textContent = userName;
+
+    // ── Date ───────────────────────────────────────────────────────────────
+    const now = new Date();
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dateEl = document.getElementById('date');
+    if (dateEl)
+      dateEl.textContent =
+        `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+    const REQUIRED_CREDITS = 10;
+
+    // ── Fetch credits ──────────────────────────────────────────────────────
+    const fetchCredits = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/credits`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+          credentials: 'include',
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          renderCredits(data.data);
+        } else {
+          renderCredits({
+            total_credits: 0, events_attended: 0,
+            required_credits: REQUIRED_CREDITS,
+            remaining: REQUIRED_CREDITS, history: [],
+          });
+        }
+
+      } catch (err) {
+        console.error('Fetch credits error:', err);
+        renderCredits({
+          total_credits: 0, events_attended: 0,
+          required_credits: REQUIRED_CREDITS,
+          remaining: REQUIRED_CREDITS, history: [],
+        });
+      }
+    };
+
+    // ── Render credits ─────────────────────────────────────────────────────
+    const renderCredits = (data) => {
+      const earned = data.total_credits || 0;
+      const required = data.required_credits || REQUIRED_CREDITS;
+      const remaining = data.remaining || Math.max(0, required - earned);
+      const attended = data.events_attended || 0;
+      const pct = Math.min(100, Math.round((earned / required) * 100));
+
+      // Stat cards
+      const earnedEl = document.getElementById('earned');
+      const remainingEl = document.getElementById('remaining');
+      if (earnedEl) earnedEl.textContent = earned;
+      if (remainingEl) remainingEl.textContent = remaining;
+
+      // Progress bar
+      const progressEl = document.getElementById('progress');
+      const percentEl = document.getElementById('percent');
+      const messageEl = document.getElementById('message');
+
+      if (progressEl) {
+        setTimeout(() => {
+          progressEl.style.width = pct + '%';
+        }, 300);
+      }
+      if (percentEl) percentEl.textContent = pct + '%';
+      if (messageEl) {
+        messageEl.textContent = earned >= required
+          ? '🎉 You have completed the IKS credit requirement!'
+          : `${remaining} more credit${remaining !== 1 ? 's' : ''} needed to complete the requirement.`;
+      }
+
+      // History
+      renderHistory(data.history || []);
+    };
+
+    // ── Render history ─────────────────────────────────────────────────────
+    const renderHistory = (history) => {
+      const historyEl = document.querySelector('.history');
+      if (!historyEl) return;
+
+      if (!history.length) {
+        historyEl.innerHTML = `
+        <h3>Event Attendance History</h3>
+        <div class="empty">
+          <p>No events attended yet.</p>
+          <p style="margin-top:8px;font-size:13px">
+            Attend events to earn IKS credits.
+          </p>
+        </div>`;
+        return;
+      }
+
+      historyEl.innerHTML = `
+      <h3>Event Attendance History</h3>
+      <div style="margin-top:16px">
+        ${history.map(h => {
+        const d = new Date(h.event_date);
+        const dateStr = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        return `
+            <div style="background:#f9fafb;border-radius:12px;
+                        padding:16px 20px;margin-bottom:12px;
+                        display:flex;justify-content:space-between;
+                        align-items:center;border-left:4px solid #1db5a5">
+              <div>
+                <h4 style="color:#1c3557;margin-bottom:4px">${h.event_name}</h4>
+                <p style="color:#6b7280;font-size:13px">
+                  📅 ${dateStr} &nbsp;|&nbsp; 📍 ${h.venue || 'TBD'}
+                </p>
+              </div>
+              <div style="text-align:center;min-width:60px">
+                <div style="font-size:22px;font-weight:bold;color:#1db5a5">
+                  +${h.credits_earned}
+                </div>
+                <div style="font-size:11px;color:#6b7280">credits</div>
+              </div>
+            </div>`;
+      }).join('')}
+      </div>`;
+    };
+
+    fetchCredits();
+  </script>
+</body>
+
+</html>

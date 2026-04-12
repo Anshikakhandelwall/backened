@@ -1,248 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Events Manager</title>
   <link rel="stylesheet" href="admin.css">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1c3557">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SmartTimetable">
+  <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
+
 <body>
-<div class="container">
+  <div class="container">
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div>
-      <div class="logo">🎓<div><h3>SmartTimetable</h3><p>Admin Panel</p></div></div>
-      <div class="profile">
-        <div class="avatar" id="avatarLetter">A</div>
-        <div class="profile-info"><h4 id="adminName">Admin</h4><span class="role-badge">Admin</span></div>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div>
+        <div class="logo">🎓<div>
+            <h3>SmartTimetable</h3>
+            <p>Admin Panel</p>
+          </div>
+        </div>
+        <div class="profile">
+          <div class="avatar" id="avatarLetter">A</div>
+          <div class="profile-info">
+            <h4 id="adminName">Admin</h4><span class="role-badge">Admin</span>
+          </div>
+        </div>
+        <ul class="menu">
+          <li><a href="admin-dashboard.html"><span class="menu-icon">📊</span>Dashboard</a></li>
+          <li><a href="admin-timetable.html"><span class="menu-icon">📅</span>Timetable</a></li>
+          <li><a href="admin-substitutions.html"><span class="menu-icon">🔁</span>Substitutions</a></li>
+          <li><a href="admin-attendance.html"><span class="menu-icon">👁</span>Attendance</a></li>
+          <li class="active"><a href="admin-events.html"><span class="menu-icon">🎉</span>Events</a></li>
+          <li><a href="admin-users.html"><span class="menu-icon">👥</span>Users</a></li>
+          <li><a href="admin-manage.html"><span class="menu-icon">🏫</span>Manage Structure</a></li>
+          <li><a href="admin-manage-students.html"><span class="menu-icon">🎓</span>Manage Students</a></li>
+          <li><a href="admin-manage-teachers.html"><span class="menu-icon">👨‍🏫</span>Manage Teachers</a></li>
+          <li><a href="changepassword.html"><span class="menu-icon">🔒</span>Change Password</a></li>
+        </ul>
       </div>
-      <ul class="menu">
-        <li><a href="admin-dashboard.html"><span class="menu-icon">📊</span>Dashboard</a></li>
-        <li><a href="admin-timetable.html"><span class="menu-icon">📅</span>Timetable</a></li>
-        <li><a href="admin-substitutions.html"><span class="menu-icon">🔁</span>Substitutions</a></li>
-        <li><a href="admin-attendance.html"><span class="menu-icon">👁</span>Attendance</a></li>
-        <li class="active"><a href="admin-events.html"><span class="menu-icon">🎉</span>Events</a></li>
-        <li><a href="admin-users.html"><span class="menu-icon">👥</span>Users</a></li>
-        <li><a href="changepassword.html"><span class="menu-icon">🔒</span>Change Password</a></li>
-      </ul>
+      <div class="logout"><a href="#" onclick="handleLogout()">Sign Out</a></div>
     </div>
-    <div class="logout"><a href="#" onclick="handleLogout()">Sign Out</a></div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <div class="page-header">
+        <div class="page-header-left">
+          <h2>Events Manager</h2>
+          <p>Create, edit and manage IKS events</p>
+        </div>
+        <button class="btn btn-primary" onclick="openCreateModal()">+ Create Event</button>
+      </div>
+
+      <!-- FILTER TABS -->
+      <div style="display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap">
+
+        <button class="btn btn-primary btn-sm" onclick="filterEvents('all',this)">All</button>
+
+        <button class="btn"
+          style="padding:6px 12px; font-size:12px; border-radius:8px; border:1px solid #d1d5db; cursor:pointer"
+          onclick="filterEvents('university',this)">University</button>
+
+        <button class="btn"
+          style="padding:6px 12px; font-size:12px; border-radius:8px; border:1px solid #d1d5db; cursor:pointer"
+          onclick="filterEvents('branch',this)">Branch</button>
+
+        <button class="btn"
+          style="padding:6px 12px; font-size:12px; border-radius:8px; border:1px solid #d1d5db; cursor:pointer"
+          onclick="filterEvents('section',this)">Section</button>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-box">
+        <table>
+          <thead>
+            <tr>
+              <th>Event Name</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Venue</th>
+              <th>Credits</th>
+              <th>Scope</th>
+              <th>Conflicts</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="eventsTable">
+            <tr>
+              <td colspan="8" style="text-align:center;padding:30px;color:#6b7280">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
   </div>
 
-  <!-- MAIN -->
-  <div class="main">
-
-    <div class="page-header">
-      <div class="page-header-left">
-        <h2>Events Manager</h2>
-        <p>Create, edit and manage IKS events</p>
+  <!-- CREATE / EDIT MODAL -->
+  <div class="modal-overlay" id="eventModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Create Event</h3>
+        <button class="modal-close-btn" onclick="closeModal()">✕</button>
       </div>
-      <button class="btn btn-primary" onclick="openCreateModal()">+ Create Event</button>
-    </div>
 
-    <!-- FILTER TABS -->
-    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
-      <button class="btn btn-primary btn-sm" onclick="filterEvents('all',this)">All</button>
-      <button class="btn"         style="padding:6px 12px;font-size:12px;border-radius:8px;border:1px solid #d1d5db;cursor:pointer" onclick="filterEvents('university',this)">University</button>
-      <button class="btn"         style="padding:6px 12px;font-size:12px;border-radius:8px;border:1px solid #d1d5db;cursor:pointer" onclick="filterEvents('branch',this)">Branch</button>
-      <button class="btn"         style="padding:6px 12px;font-size:12px;border-radius:8px;border:1px solid #d1d5db;cursor:pointer" onclick="filterEvents('section',this)">Section</button>
-    </div>
+      <input type="hidden" id="editEventId">
 
-    <!-- TABLE -->
-    <div class="table-box">
-      <table>
-        <thead>
-          <tr>
-            <th>Event Name</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Venue</th>
-            <th>Credits</th>
-            <th>Scope</th>
-            <th>Conflicts</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="eventsTable">
-          <tr><td colspan="8" style="text-align:center;padding:30px;color:#6b7280">Loading...</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-  </div>
-</div>
-
-<!-- CREATE / EDIT MODAL -->
-<div class="modal-overlay" id="eventModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="modalTitle">Create Event</h3>
-      <button class="modal-close-btn" onclick="closeModal()">✕</button>
-    </div>
-
-    <input type="hidden" id="editEventId">
-
-    <div class="form-group">
-      <label>Event Name</label>
-      <input type="text" id="evName" placeholder="e.g. AI Workshop 2026">
-    </div>
-    <div class="form-group">
-      <label>Description</label>
-      <textarea id="evDesc" placeholder="Brief description of the event"></textarea>
-    </div>
-    <div class="form-row">
       <div class="form-group">
-        <label>Date</label>
-        <input type="date" id="evDate">
+        <label>Event Name</label>
+        <input type="text" id="evName" placeholder="e.g. AI Workshop 2026">
       </div>
+
       <div class="form-group">
-        <label>Credits</label>
-        <input type="number" id="evCredits" value="1" min="1" max="10">
+        <label>Description</label>
+        <textarea id="evDesc" placeholder="Brief description of the event"></textarea>
       </div>
-    </div>
-    <div class="form-row">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="evDate">
+        </div>
+
+        <div class="form-group">
+          <label>Credits</label>
+          <input type="number" id="evCredits" value="1" min="1" max="10">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Start Time</label>
+          <input type="time" id="evStart">
+        </div>
+
+        <div class="form-group">
+          <label>End Time</label>
+          <input type="time" id="evEnd">
+        </div>
+      </div>
+
       <div class="form-group">
-        <label>Start Time</label>
-        <input type="time" id="evStart">
+        <label>Venue</label>
+        <input type="text" id="evVenue" placeholder="e.g. Main Auditorium">
       </div>
+
       <div class="form-group">
-        <label>End Time</label>
-        <input type="time" id="evEnd">
+        <label>Scope</label>
+        <select id="evScope" onchange="handleScopeChange()">
+          <option value="university">University-wide</option>
+          <option value="branch">Branch-wise</option>
+          <option value="section">Section-wise</option>
+        </select>
       </div>
-    </div>
-    <div class="form-group">
-      <label>Venue</label>
-      <input type="text" id="evVenue" placeholder="e.g. Main Auditorium">
-    </div>
-    <div class="form-group">
-      <label>Scope</label>
-      <select id="evScope" onchange="handleScopeChange()">
-        <option value="university">University-wide</option>
-        <option value="branch">Branch-wise</option>
-        <option value="section">Section-wise</option>
-      </select>
-    </div>
-    <div class="form-group" id="branchGroup" style="display:none">
-      <label>Branch</label>
-      <select id="evBranch"></select>
-    </div>
-    <div class="form-group" id="sectionGroup" style="display:none">
-      <label>Section</label>
-      <select id="evSection"></select>
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-primary" onclick="saveEvent()">Save Event</button>
-      <button class="btn btn-danger"  onclick="closeModal()">Cancel</button>
+
+      <div class="form-group" id="branchGroup" style="display:none">
+        <label>Branch</label>
+        <select id="evBranch"></select>
+      </div>
+
+      <div class="form-group" id="sectionGroup" style="display:none">
+        <label>Section</label>
+        <select id="evSection"></select>
+      </div>
+      
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="saveEvent()">Save Event</button>
+        <button class="btn btn-danger" onclick="closeModal()">Cancel</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script type="module">
-  const BASE_URL = 'http://localhost:5000/api';
-  const token    = localStorage.getItem('accessToken');
-  const userName = localStorage.getItem('userName') || 'Admin';
-  if (!token || localStorage.getItem('userRole') !== 'admin') window.location.href = 'signin.html';
+  <script type="module">
+    const BASE_URL = 'http://localhost:5000/api';
+    const token = localStorage.getItem('accessToken');
+    const userName = localStorage.getItem('userName') || 'Admin';
+    if (!token || localStorage.getItem('userRole') !== 'admin') window.location.href = 'signin.html';
 
-  window.handleLogout = async () => {
-    await fetch(`${BASE_URL}/auth/logout`,{method:'POST',credentials:'include'});
-    localStorage.clear(); window.location.href = 'signin.html';
-  };
+    window.handleLogout = async () => {
+      await fetch(`${BASE_URL}/auth/logout`, { method: 'POST', credentials: 'include' });
+      localStorage.clear(); window.location.href = 'signin.html';
+    };
 
-  document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
-  document.getElementById('adminName').textContent    = userName;
+    document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
+    document.getElementById('adminName').textContent = userName;
 
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  let allEvents = [];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    let allEvents = [];
 
-  // ── Modal helpers ──────────────────────────────────────────────────────
-  window.openCreateModal = () => {
-    document.getElementById('modalTitle').textContent = 'Create Event';
-    document.getElementById('editEventId').value = '';
-    document.getElementById('evName').value    = '';
-    document.getElementById('evDesc').value    = '';
-    document.getElementById('evDate').value    = '';
-    document.getElementById('evCredits').value = '1';
-    document.getElementById('evStart').value   = '';
-    document.getElementById('evEnd').value     = '';
-    document.getElementById('evVenue').value   = '';
-    document.getElementById('evScope').value   = 'university';
-    handleScopeChange();
-    loadScopeDropdowns();
-    document.getElementById('eventModal').classList.add('show');
-  };
+    // ── Modal helpers ──────────────────────────────────────────────────────
+    window.openCreateModal = () => {
+      document.getElementById('modalTitle').textContent = 'Create Event';
+      document.getElementById('editEventId').value = '';
+      document.getElementById('evName').value = '';
+      document.getElementById('evDesc').value = '';
+      document.getElementById('evDate').value = '';
+      document.getElementById('evCredits').value = '1';
+      document.getElementById('evStart').value = '';
+      document.getElementById('evEnd').value = '';
+      document.getElementById('evVenue').value = '';
+      document.getElementById('evScope').value = 'university';
+      handleScopeChange();
+      loadScopeDropdowns();
+      document.getElementById('eventModal').classList.add('show');
+    };
 
-  window.openEditModal = (eventId) => {
-    const e = allEvents.find(ev => ev.event_id === eventId);
-    if (!e) return;
-    document.getElementById('modalTitle').textContent = 'Edit Event';
-    document.getElementById('editEventId').value = e.event_id;
-    document.getElementById('evName').value    = e.event_name;
-    document.getElementById('evDesc').value    = e.description || '';
-    document.getElementById('evDate').value    = e.event_date;
-    document.getElementById('evCredits').value = e.credits;
-    document.getElementById('evStart').value   = e.start_time;
-    document.getElementById('evEnd').value     = e.end_time;
-    document.getElementById('evVenue').value   = e.venue || '';
-    document.getElementById('evScope').value   = e.scope;
-    handleScopeChange();
-    loadScopeDropdowns();
-    document.getElementById('eventModal').classList.add('show');
-  };
+    window.openEditModal = (eventId) => {
+      const e = allEvents.find(ev => ev.event_id === eventId);
+      if (!e) return;
+      document.getElementById('modalTitle').textContent = 'Edit Event';
+      document.getElementById('editEventId').value = e.event_id;
+      document.getElementById('evName').value = e.event_name;
+      document.getElementById('evDesc').value = e.description || '';
+      document.getElementById('evDate').value = e.event_date;
+      document.getElementById('evCredits').value = e.credits;
+      document.getElementById('evStart').value = e.start_time;
+      document.getElementById('evEnd').value = e.end_time;
+      document.getElementById('evVenue').value = e.venue || '';
+      document.getElementById('evScope').value = e.scope;
+      handleScopeChange();
+      loadScopeDropdowns();
+      document.getElementById('eventModal').classList.add('show');
+    };
 
-  window.closeModal = () => document.getElementById('eventModal').classList.remove('show');
+    window.closeModal = () => document.getElementById('eventModal').classList.remove('show');
 
-  // ── Scope change handler ───────────────────────────────────────────────
-  window.handleScopeChange = () => {
-    const scope = document.getElementById('evScope').value;
-    document.getElementById('branchGroup').style.display  = scope === 'branch'  ? 'block' : 'none';
-    document.getElementById('sectionGroup').style.display = scope === 'section' ? 'block' : 'none';
-  };
+    // ── Scope change handler ───────────────────────────────────────────────
+    window.handleScopeChange = () => {
+      const scope = document.getElementById('evScope').value;
+      document.getElementById('branchGroup').style.display = scope === 'branch' ? 'block' : 'none';
+      document.getElementById('sectionGroup').style.display = scope === 'section' ? 'block' : 'none';
+    };
 
-  // ── Load branch/section dropdowns ─────────────────────────────────────
-  const loadScopeDropdowns = async () => {
-    try {
-      const [brRes, secRes] = await Promise.all([
-        fetch(`${BASE_URL}/admin/branches`, { headers:{'Authorization':`Bearer ${token}`}, credentials:'include' }),
-        fetch(`${BASE_URL}/admin/sections`, { headers:{'Authorization':`Bearer ${token}`}, credentials:'include' }),
-      ]);
-      const [br, sec] = await Promise.all([brRes.json(), secRes.json()]);
-      if (br.success)  document.getElementById('evBranch').innerHTML  = br.data.map(b  => `<option value="${b.branch_id}">${b.branch_name}</option>`).join('');
-      if (sec.success) document.getElementById('evSection').innerHTML = sec.data.map(s => `<option value="${s.section_id}">${s.section_name}</option>`).join('');
-    } catch {}
-  };
+    // ── Load branch/section dropdowns ─────────────────────────────────────
+    const loadScopeDropdowns = async () => {
+      try {
+        const [brRes, secRes] = await Promise.all([
+          fetch(`${BASE_URL}/admin/branches`, { headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include' }),
+          fetch(`${BASE_URL}/admin/sections`, { headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include' }),
+        ]);
+        const [br, sec] = await Promise.all([brRes.json(), secRes.json()]);
+        if (br.success) document.getElementById('evBranch').innerHTML = br.data.map(b => `<option value="${b.branch_id}">${b.branch_name}</option>`).join('');
+        if (sec.success) document.getElementById('evSection').innerHTML = sec.data.map(s => `<option value="${s.section_id}">${s.section_name}</option>`).join('');
+      } catch { }
+    };
 
-  // ── Filter ──────────────────────────────────────────────────────────────
-  window.filterEvents = (scope, btn) => {
-    document.querySelectorAll('.main .btn').forEach(b => b.classList.remove('btn-primary'));
-    btn.classList.add('btn-primary');
-    const filtered = scope === 'all' ? allEvents : allEvents.filter(e => e.scope === scope);
-    renderEvents(filtered);
-  };
+    // ── Filter ──────────────────────────────────────────────────────────────
+    window.filterEvents = (scope, btn) => {
+      document.querySelectorAll('.main .btn').forEach(b => b.classList.remove('btn-primary'));
+      btn.classList.add('btn-primary');
+      const filtered = scope === 'all' ? allEvents : allEvents.filter(e => e.scope === scope);
+      renderEvents(filtered);
+    };
 
-  // ── Fetch events ───────────────────────────────────────────────────────
-  const fetchEvents = async () => {
-    try {
-      const res  = await fetch(`${BASE_URL}/events/teacher`, {
-        headers: {'Authorization':`Bearer ${token}`}, credentials:'include',
-      });
-      const data = await res.json();
-      allEvents  = data.success ? data.data : getSample();
-    } catch { allEvents = getSample(); }
-    renderEvents(allEvents);
-  };
+    // ── Fetch events ───────────────────────────────────────────────────────
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/events/teacher`, {
+          headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include',
+        });
+        const data = await res.json();
+        allEvents = data.success ? data.data : getSample();
+      } catch { allEvents = getSample(); }
+      renderEvents(allEvents);
+    };
 
-  // ── Render table ───────────────────────────────────────────────────────
-  const renderEvents = (events) => {
-    const tbody = document.getElementById('eventsTable');
-    if (!events.length) {
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#6b7280">No events found</td></tr>`;
-      return;
-    }
-    const scopeClass = { university:'badge-blue', branch:'badge-green', section:'badge-amber' };
-    tbody.innerHTML = events.map(e => {
-      const d = new Date(e.event_date);
-      return `<tr>
+    // ── Render table ───────────────────────────────────────────────────────
+    const renderEvents = (events) => {
+      const tbody = document.getElementById('eventsTable');
+      if (!events.length) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#6b7280">No events found</td></tr>`;
+        return;
+      }
+      const scopeClass = { university: 'badge-blue', branch: 'badge-green', section: 'badge-amber' };
+      tbody.innerHTML = events.map(e => {
+        const d = new Date(e.event_date);
+        return `<tr>
         <td><strong>${e.event_name}</strong></td>
         <td>${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}</td>
         <td>${e.start_time} – ${e.end_time}</td>
@@ -250,76 +290,177 @@
         <td><span class="badge badge-purple">+${e.credits} cr</span></td>
         <td><span class="badge ${scopeClass[e.scope] || 'badge-gray'}">${e.scope}</span></td>
         <td>${e.has_conflict
-          ? '<span class="badge badge-red">⚠️ Conflict</span>'
-          : '<span class="badge badge-green">Clear</span>'}</td>
+            ? '<span class="badge badge-red">⚠️ Conflict</span>'
+            : '<span class="badge badge-green">Clear</span>'}</td>
         <td style="display:flex;gap:6px">
           <button class="btn btn-amber btn-sm" onclick="openEditModal(${e.event_id})">Edit</button>
           <button class="btn btn-danger btn-sm" onclick="deleteEvent(${e.event_id})">Delete</button>
         </td>
       </tr>`;
-    }).join('');
-  };
-
-  // ── Save (create or update) ────────────────────────────────────────────
-  window.saveEvent = async () => {
-    const editId = document.getElementById('editEventId').value;
-    const scope  = document.getElementById('evScope').value;
-    const body   = {
-      event_name:  document.getElementById('evName').value,
-      description: document.getElementById('evDesc').value,
-      event_date:  document.getElementById('evDate').value,
-      start_time:  document.getElementById('evStart').value,
-      end_time:    document.getElementById('evEnd').value,
-      venue:       document.getElementById('evVenue').value,
-      credits:     parseInt(document.getElementById('evCredits').value) || 1,
-      scope,
-      branch_id:   scope === 'branch'  ? document.getElementById('evBranch').value  : null,
-      section_id:  scope === 'section' ? document.getElementById('evSection').value : null,
+      }).join('');
     };
-    if (!body.event_name || !body.event_date || !body.start_time || !body.end_time) {
-      alert('Please fill all required fields'); return;
-    }
-    try {
-      const url    = editId ? `${BASE_URL}/events/${editId}` : `${BASE_URL}/events`;
-      const method = editId ? 'PUT' : 'POST';
-      const res    = await fetch(url, {
-        method,
-        headers: { 'Content-Type':'application/json','Authorization':`Bearer ${token}` },
-        credentials: 'include',
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-      if (data.success) { closeModal(); fetchEvents(); alert(editId ? 'Event updated!' : 'Event created!'); }
-      else alert(data.message || 'Failed');
-    } catch { closeModal(); fetchEvents(); alert('Saved (sample mode)'); }
-  };
 
-  // ── Delete ─────────────────────────────────────────────────────────────
-  window.deleteEvent = async (eventId) => {
-    if (!confirm('Delete this event?')) return;
-    try {
-      const res  = await fetch(`${BASE_URL}/events/${eventId}`, {
-        method: 'DELETE',
-        headers: {'Authorization':`Bearer ${token}`},
-        credentials: 'include',
-      });
-      const data = await res.json();
-      if (data.success) { fetchEvents(); alert('Event deleted!'); }
-      else alert(data.message || 'Failed');
-    } catch {
-      allEvents = allEvents.filter(e => e.event_id !== eventId);
-      renderEvents(allEvents);
-    }
-  };
+    // ── Save (create or update) ────────────────────────────────────────────
+    window.saveEvent = async () => {
+      const editId = document.getElementById('editEventId').value;
+      const scope = document.getElementById('evScope').value;
+      const body = {
+        event_name: document.getElementById('evName').value,
+        description: document.getElementById('evDesc').value,
+        event_date: document.getElementById('evDate').value,
+        start_time: document.getElementById('evStart').value,
+        end_time: document.getElementById('evEnd').value,
+        venue: document.getElementById('evVenue').value,
+        credits: parseInt(document.getElementById('evCredits').value) || 1,
+        scope,
+        branch_id: scope === 'branch' ? document.getElementById('evBranch').value : null,
+        section_id: scope === 'section' ? document.getElementById('evSection').value : null,
+      };
+      if (!body.event_name || !body.event_date || !body.start_time || !body.end_time) {
+        alert('Please fill all required fields'); return;
+      }
+      try {
+        const url = editId ? `${BASE_URL}/events/${editId}` : `${BASE_URL}/events`;
+        const method = editId ? 'PUT' : 'POST';
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          credentials: 'include',
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+        if (data.success) { closeModal(); fetchEvents(); alert(editId ? 'Event updated!' : 'Event created!'); }
+        else alert(data.message || 'Failed');
+      } catch { closeModal(); fetchEvents(); alert('Saved (sample mode)'); }
+    };
 
-  const getSample = () => [
-    { event_id:1, event_name:'National Science Seminar', event_date:'2026-04-10', start_time:'10:00', end_time:'13:00', venue:'Main Auditorium',  credits:2, scope:'university', has_conflict:false },
-    { event_id:2, event_name:'AI & ML Workshop',         event_date:'2026-04-12', start_time:'09:00', end_time:'12:00', venue:'Computer Lab B',   credits:3, scope:'branch',     has_conflict:true  },
-    { event_id:3, event_name:'Guest Lecture',            event_date:'2026-04-15', start_time:'14:00', end_time:'16:00', venue:'Seminar Hall 2',   credits:1, scope:'section',    has_conflict:false },
-    { event_id:4, event_name:'Hackathon 2026',           event_date:'2026-04-20', start_time:'08:00', end_time:'20:00', venue:'Innovation Centre',credits:5, scope:'university', has_conflict:false },
-  ];
+    // ── Delete ─────────────────────────────────────────────────────────────
+    window.deleteEvent = async (eventId) => {
+      if (!confirm('Delete this event?')) return;
+      try {
+        const res = await fetch(`${BASE_URL}/events/${eventId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` },
+          credentials: 'include',
+        });
+        const data = await res.json();
+        if (data.success) { fetchEvents(); alert('Event deleted!'); }
+        else alert(data.message || 'Failed');
+      } catch {
+        allEvents = allEvents.filter(e => e.event_id !== eventId);
+        renderEvents(allEvents);
+      }
+    };
 
-  fetchEvents();
-</script>
+    const getSample = () => [
+      { event_id: 1, event_name: 'National Science Seminar', event_date: '2026-04-10', start_time: '10:00', end_time: '13:00', venue: 'Main Auditorium', credits: 2, scope: 'university', has_conflict: false },
+      { event_id: 2, event_name: 'AI & ML Workshop', event_date: '2026-04-12', start_time: '09:00', end_time: '12:00', venue: 'Computer Lab B', credits: 3, scope: 'branch', has_conflict: true },
+      { event_id: 3, event_name: 'Guest Lecture', event_date: '2026-04-15', start_time: '14:00', end_time: '16:00', venue: 'Seminar Hall 2', credits: 1, scope: 'section', has_conflict: false },
+      { event_id: 4, event_name: 'Hackathon 2026', event_date: '2026-04-20', start_time: '08:00', end_time: '20:00', venue: 'Innovation Centre', credits: 5, scope: 'university', has_conflict: false },
+    ];
+
+    fetchEvents();
+
+    // Attendance modal functions — add these to your existing script
+    window.showAttendanceUpload = () => {
+      // Populate event dropdown
+      const sel = document.getElementById('attEventSel');
+      sel.innerHTML = allEvents.map(e => `<option value="${e.event_id}">${e.event_name} (${e.event_date})</option>`).join('');
+      document.getElementById('attendanceModal').classList.add('show');
+    };
+
+    window.closeAttendanceModal = () => {
+      document.getElementById('attendanceModal').classList.remove('show');
+      document.getElementById('attFileInfo').style.display = 'none';
+      document.getElementById('attResult').style.display = 'none';
+      document.getElementById('attExcelInput').value = '';
+      document.getElementById('markAttBtn').disabled = true;
+      attExcelFile = null;
+    };
+
+    let attExcelFile = null;
+
+    window.handleAttExcel = (e) => {
+      attExcelFile = e.target.files[0];
+      if (!attExcelFile) return;
+      const info = document.getElementById('attFileInfo');
+      info.style.display = 'block';
+      info.textContent = `✓ ${attExcelFile.name}`;
+      document.getElementById('markAttBtn').disabled = false;
+    };
+
+    window.submitAttendance = async () => {
+      if (!attExcelFile) { alert('Please select a file'); return; }
+      const eventId = document.getElementById('attEventSel').value;
+      if (!eventId) { alert('Please select an event'); return; }
+
+      const formData = new FormData();
+      formData.append('attendance', attExcelFile);
+      formData.append('event_id', eventId);
+
+      try {
+        const res = await fetch('http://localhost:5000/api/upload/events/attendance/excel', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
+          credentials: 'include',
+          body: formData,
+        });
+        const data = await res.json();
+        const result = document.getElementById('attResult');
+        result.style.display = 'block';
+        if (data.success) {
+          result.innerHTML = `<div style="color:#15803d;font-weight:500">✓ ${data.marked} students marked as attended</div>${data.failed > 0 ? `<div style="color:#dc2626;margin-top:6px;font-size:12px">✕ ${data.failed} not found</div>` : ''}`;
+        } else {
+          result.innerHTML = `<div style="color:#dc2626">${data.message || 'Failed'}</div>`;
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Failed to upload');
+      }
+    };
+  </script>
+  <div class="modal-overlay" id="attendanceModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Mark Event Attendance via Excel</h3>
+        <button class="modal-close-btn" onclick="closeAttendanceModal()">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label>Select Event</label>
+        <select id="attEventSel"
+          style="width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;outline:none"></select>
+      </div>
+
+      <div
+        style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:12px 16px;font-size:13px;color:#0369a1;margin-bottom:16px">
+        ℹ️ Excel must have columns: <strong>Enrollment</strong> or <strong>Email</strong><br>
+        Students found in the sheet will have their attendance marked automatically.
+      </div>
+
+      <div
+        style="border:2px dashed #d1d5db;border-radius:12px;padding:24px;text-align:center;cursor:pointer;background:#fafafa"
+        onclick="document.getElementById('attExcelInput').click()">
+        <div style="font-size:28px">📊</div>
+        <strong style="font-size:14px;color:#1c3557">Click to select attendance Excel</strong>
+        <p style="font-size:13px;color:#6b7280;margin-top:4px">Supports .xlsx and .xls</p>
+      </div>
+      <input type="file" id="attExcelInput" style="display:none" accept=".xlsx,.xls" onchange="handleAttExcel(event)">
+
+      <div id="attFileInfo"
+        style="display:none;margin-top:12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 16px;font-size:13px;color:#15803d">
+      </div>
+
+      <div id="attResult"
+        style="display:none;margin-top:12px;background:white;border-radius:10px;padding:14px;border:1px solid #e5e7eb;font-size:13px">
+      </div>
+
+      <div class="form-actions" style="margin-top:16px">
+        <button class="btn btn-primary" id="markAttBtn" onclick="submitAttendance()" disabled>Mark Attendance</button>
+        <button class="btn btn-danger" onclick="closeAttendanceModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
 </body>
+
 </html>

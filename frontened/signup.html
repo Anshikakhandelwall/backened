@@ -2,223 +2,231 @@
 <html lang="en">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign Up</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1c3557">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SmartTimetable">
+  <link rel="apple-touch-icon" href="/icon-192.png">
 
-<style>
-select {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
-}
+  <style>
+    select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
 
-.extra-field {
-  display: none;
-}
+    .extra-field {
+      display: none;
+    }
 
-.extra-field.show {
-  display: block;
-}
-</style>
+    .extra-field.show {
+      display: block;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container">
+  <div class="container">
 
-  <!-- LEFT SIDE -->
-  <div class="left">
+    <!-- LEFT SIDE -->
+    <div class="left">
 
-    <div class="logo">
-      🎓 <span>SmartTimetable</span>
-    </div>
-
-    <h1>Create Your Account</h1>
-
-    <p class="description">
-      Join the Smart Classroom Management System to manage lectures,
-      alerts, and classroom activities efficiently.
-    </p>
-
-    <div class="features">
-      <div class="card">
-        <h3>Smart Alerts</h3>
-        <p>Never miss lectures</p>
-      </div>
-      <div class="card">
-        <h3>Teacher Tracking</h3>
-        <p>Real-time monitoring</p>
-      </div>
-      <div class="card">
-        <h3>Auto Substitution</h3>
-        <p>Instant replacement</p>
-      </div>
-      <div class="card">
-        <h3>Event Credits</h3>
-        <p>IKS tracking</p>
-      </div>
-    </div>
-
-    <footer>© 2026 Smart Timetable Alert System</footer>
-
-  </div>
-
-  <!-- RIGHT SIDE -->
-  <div class="right">
-    <div class="login-box">
-
-      <h2>Create Account</h2>
-      <p class="subtitle">Sign up to get started</p>
-
-      <!-- Full Name -->
-      <label>Full Name</label>
-      <input type="text" id="name" placeholder="Enter your name">
-
-      <!-- Email -->
-      <label>Email</label>
-      <input type="email" id="email" placeholder="you@college.edu">
-
-      <!-- Role -->
-      <label>Select Role</label>
-      <select id="role" onchange="handleRoleChange()">
-        <option value="">Choose Role</option>
-        <option value="student">Student</option>
-        <option value="teacher">Teacher</option>
-        <option value="admin">Admin</option>
-      </select>
-
-      <!-- Department (all roles) -->
-      <label>Department</label>
-      <input type="text" id="department" placeholder="Enter your department">
-
-      <!-- STUDENT ONLY -->
-      <div class="extra-field" id="field-enrollment">
-        <label>Enrollment Number</label>
-        <input type="text" id="enrollment" placeholder="Enter enrollment number">
+      <div class="logo">
+        🎓 <span>SmartTimetable</span>
       </div>
 
-      <!-- TEACHER ONLY -->
-      <div class="extra-field" id="field-designation">
-        <label>Designation</label>
-        <input type="text" id="designation" placeholder="e.g. Assistant Professor">
-      </div>
+      <h1>Create Your Account</h1>
 
-      <!-- ADMIN ONLY -->
-      <div class="extra-field" id="field-role-type">
-        <label>Admin Role Type</label>
-        <input type="text" id="roleType" placeholder="e.g. super_admin">
-      </div>
-
-      <!-- Password -->
-      <label>Password</label>
-      <input type="password" id="signupPassword" placeholder="Min 8 characters">
-
-      <!-- Button — FIXED: removed space in onclick -->
-      <button onclick="registerUser()">Create Account</button>
-
-      <p class="signup">
-        Already have an account? <a href="signin.html">Sign in</a>
+      <p class="description">
+        Join the Smart Classroom Management System to manage lectures,
+        alerts, and classroom activities efficiently.
       </p>
 
+      <div class="features">
+        <div class="card">
+          <h3>Smart Alerts</h3>
+          <p>Never miss lectures</p>
+        </div>
+        <div class="card">
+          <h3>Teacher Tracking</h3>
+          <p>Real-time monitoring</p>
+        </div>
+        <div class="card">
+          <h3>Auto Substitution</h3>
+          <p>Instant replacement</p>
+        </div>
+        <div class="card">
+          <h3>Event Credits</h3>
+          <p>IKS tracking</p>
+        </div>
+      </div>
+
+      <footer>© 2026 Smart Timetable Alert System</footer>
+
     </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right">
+      <div class="login-box">
+
+        <h2>Create Account</h2>
+        <p class="subtitle">Sign up to get started</p>
+
+        <!-- Full Name -->
+        <label>Full Name</label>
+        <input type="text" id="name" placeholder="Enter your name">
+
+        <!-- Email -->
+        <label>Email</label>
+        <input type="email" id="email" placeholder="you@college.edu">
+
+        <!-- Role -->
+        <label>Select Role</label>
+        <select id="role" onchange="handleRoleChange()">
+          <option value="">Choose Role</option>
+          <option value="student">Student</option>
+          <option value="teacher">Teacher</option>
+          <option value="admin">Admin</option>
+        </select>
+
+        <!-- Department (all roles) -->
+        <label>Department</label>
+        <input type="text" id="department" placeholder="Enter your department">
+
+        <!-- STUDENT ONLY -->
+        <div class="extra-field" id="field-enrollment">
+          <label>Enrollment Number</label>
+          <input type="text" id="enrollment" placeholder="Enter enrollment number">
+        </div>
+
+        <!-- TEACHER ONLY -->
+        <div class="extra-field" id="field-designation">
+          <label>Designation</label>
+          <input type="text" id="designation" placeholder="e.g. Assistant Professor">
+        </div>
+
+        <!-- ADMIN ONLY -->
+        <div class="extra-field" id="field-role-type">
+          <label>Admin Role Type</label>
+          <input type="text" id="roleType" placeholder="e.g. super_admin">
+        </div>
+
+        <!-- Password -->
+        <label>Password</label>
+        <input type="password" id="signupPassword" placeholder="Min 8 characters">
+
+        <!-- Button — FIXED: removed space in onclick -->
+        <button onclick="registerUser()">Create Account</button>
+
+        <p class="signup">
+          Already have an account? <a href="signin.html">Sign in</a>
+        </p>
+
+      </div>
+    </div>
+
   </div>
 
-</div>
+  <script type="module">
 
-<script type="module">
+    // ── API (inlined to avoid import issues) ──────────────────────────────
+    // const BASE_URL = 'http://localhost:5000/api/auth';
 
-  // ── API (inlined to avoid import issues) ──────────────────────────────
-  // const BASE_URL = 'http://localhost:5000/api/auth';
+    const BASE_URL = 'http://127.0.0.1:5000/api/auth';
 
-  const BASE_URL = 'http://127.0.0.1:5000/api/auth';
-  
-  const api = {
-    post: async (endpoint, body) => {
-      const res = await fetch(`${BASE_URL}${endpoint}`, {
-        method:      'POST',
-        headers:     { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body:        JSON.stringify(body),
-      });
-      return res.json();
-    },
-  };
+    const api = {
+      post: async (endpoint, body) => {
+        const res = await fetch(`${BASE_URL}${endpoint}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(body),
+        });
+        return res.json();
+      },
+    };
 
-  // ── Show/hide role fields ──────────────────────────────────────────────
-  window.handleRoleChange = () => {
-    const role = document.getElementById('role').value;
+    // ── Show/hide role fields ──────────────────────────────────────────────
+    window.handleRoleChange = () => {
+      const role = document.getElementById('role').value;
 
-    document.getElementById('field-enrollment').classList.remove('show');
-    document.getElementById('field-designation').classList.remove('show');
-    document.getElementById('field-role-type').classList.remove('show');
+      document.getElementById('field-enrollment').classList.remove('show');
+      document.getElementById('field-designation').classList.remove('show');
+      document.getElementById('field-role-type').classList.remove('show');
 
-    if (role === 'student')  document.getElementById('field-enrollment').classList.add('show');
-    if (role === 'teacher')  document.getElementById('field-designation').classList.add('show');
-    if (role === 'admin')    document.getElementById('field-role-type').classList.add('show');
-  };
+      if (role === 'student') document.getElementById('field-enrollment').classList.add('show');
+      if (role === 'teacher') document.getElementById('field-designation').classList.add('show');
+      if (role === 'admin') document.getElementById('field-role-type').classList.add('show');
+    };
 
-  // ── Register ───────────────────────────────────────────────────────────
-  window.registerUser = async () => {
-    const name       = document.getElementById('name').value.trim();
-    const email      = document.getElementById('email').value.trim();
-    const password   = document.getElementById('signupPassword').value.trim();
-    const role       = document.getElementById('role').value;
-    const department = document.getElementById('department').value.trim();
+    // ── Register ───────────────────────────────────────────────────────────
+    window.registerUser = async () => {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('signupPassword').value.trim();
+      const role = document.getElementById('role').value;
+      const department = document.getElementById('department').value.trim();
 
-    if (!name)     { alert('Please enter your full name');   return; }
-    if (!email)    { alert('Please enter your email');       return; }
-    if (!role)     { alert('Please select a role');          return; }
-    if (!password) { alert('Please enter a password');       return; }
+      if (!name) { alert('Please enter your full name'); return; }
+      if (!email) { alert('Please enter your email'); return; }
+      if (!role) { alert('Please select a role'); return; }
+      if (!password) { alert('Please enter a password'); return; }
 
-    if (password.length < 8) {
-      alert('Password must be at least 8 characters');
-      return;
-    }
-
-    const body = { name, email, password, role, department };
-
-    if (role === 'student') {
-      const enrollment = document.getElementById('enrollment').value.trim();
-      if (!enrollment) { alert('Please enter your enrollment number'); return; }
-      body.section_id = 1;
-      body.enrollment = enrollment;
-    }
-
-    if (role === 'teacher') {
-      const designation = document.getElementById('designation').value.trim();
-      body.designation  = designation || 'Assistant Professor';
-    }
-
-    if (role === 'admin') {
-      const roleType = document.getElementById('roleType').value.trim();
-      body.role_type = roleType || 'general_admin';
-    }
-
-    try {
-      console.log('Sending to backend:', body); // debug
-
-      const res = await api.post('/register', body);
-
-      console.log('Server response:', res); // debug
-
-      if (res.success) {
-        alert('Account created successfully! Please sign in.');
-        window.location.href = 'signin.html';
-      } else {
-        alert(res.message || 'Registration failed');
+      if (password.length < 8) {
+        alert('Password must be at least 8 characters');
+        return;
       }
 
-    } catch (err) {
-      console.error('Register error:', err);
-      alert('Cannot connect to server. Is the backend running on port 5000?');
-    }
-  };
+      const body = { name, email, password, role, department };
 
-</script>
+      if (role === 'student') {
+        const enrollment = document.getElementById('enrollment').value.trim();
+        if (!enrollment) { alert('Please enter your enrollment number'); return; }
+        body.section_id = 1;
+        body.enrollment = enrollment;
+      }
+
+      if (role === 'teacher') {
+        const designation = document.getElementById('designation').value.trim();
+        body.designation = designation || 'Assistant Professor';
+      }
+
+      if (role === 'admin') {
+        const roleType = document.getElementById('roleType').value.trim();
+        body.role_type = roleType || 'general_admin';
+      }
+
+      try {
+        console.log('Sending to backend:', body); // debug
+
+        const res = await api.post('/register', body);
+
+        console.log('Server response:', res); // debug
+
+        if (res.success) {
+          alert('Account created successfully! Please sign in.');
+          window.location.href = 'signin.html';
+        } else {
+          alert(res.message || 'Registration failed');
+        }
+
+      } catch (err) {
+        console.error('Register error:', err);
+        alert('Cannot connect to server. Is the backend running on port 5000?');
+      }
+    };
+
+  </script>
 
 </body>
+
 </html>

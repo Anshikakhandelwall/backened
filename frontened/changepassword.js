@@ -2,7 +2,7 @@ import api from './api.js';
 
 window.changePassword = async () => {
   const currentPassword = document.getElementById('currentPassword').value.trim();
-  const newPassword     = document.getElementById('newPassword').value.trim();
+  const newPassword = document.getElementById('newPassword').value.trim();
   const confirmPassword = document.getElementById('confirmPassword').value.trim();
 
   if (!currentPassword || !newPassword || !confirmPassword) {

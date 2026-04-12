@@ -2,7 +2,7 @@ import api from './api.js';
 
 // ── SIGN IN ────────────────────────────────────────────────────────────────
 window.loginUser = async () => {
-  const email    = document.getElementById('email').value.trim();
+  const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value.trim();
 
   if (!email || !password) {
@@ -24,9 +24,9 @@ window.loginUser = async () => {
     }
 
     // Role-based redirect
-    if (res.role === 'student')  window.location.href = 'dashboard.html';
-    if (res.role === 'teacher')  window.location.href = 'dashboard.html';
-    if (res.role === 'admin')    window.location.href = 'dashboard.html';
+    if (res.role === 'student') window.location.href = 'dashboard.html';
+    if (res.role === 'teacher') window.location.href = 'dashboard.html';
+    if (res.role === 'admin') window.location.href = 'dashboard.html';
 
   } else {
     alert(res.message || 'Login failed');
@@ -35,10 +35,10 @@ window.loginUser = async () => {
 
 // ── SIGN UP ────────────────────────────────────────────────────────────────
 window.registerUser = async () => {
-  const name       = document.getElementById('name').value.trim();
-  const email      = document.getElementById('email').value.trim();
-  const password   = document.getElementById('signupPassword').value.trim();
-  const role       = document.getElementById('role').value;
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('signupPassword').value.trim();
+  const role = document.getElementById('role').value;
   const department = document.getElementById('department').value.trim();
 
   if (!name || !email || !password || !role) {
@@ -50,8 +50,8 @@ window.registerUser = async () => {
 
   // Role-specific extra fields
   if (role === 'student') {
-    body.section_id  = 1; // default — update with real section picker later
-    body.enrollment  = document.getElementById('enrollment')?.value.trim() || '';
+    body.section_id = 1; // default — update with real section picker later
+    body.enrollment = document.getElementById('enrollment')?.value.trim() || '';
   }
   if (role === 'teacher') {
     body.designation = document.getElementById('designation')?.value.trim() || '';
@@ -73,7 +73,7 @@ window.registerUser = async () => {
 // ── TOGGLE PASSWORD ────────────────────────────────────────────────────────
 window.togglePassword = () => {
   const input = document.getElementById('password');
-  input.type  = input.type === 'password' ? 'text' : 'password';
+  input.type = input.type === 'password' ? 'text' : 'password';
 };
 
 // ── LOGOUT ─────────────────────────────────────────────────────────────────

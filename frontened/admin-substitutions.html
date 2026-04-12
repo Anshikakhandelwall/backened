@@ -1,169 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Substitutions</title>
   <link rel="stylesheet" href="admin.css">
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1c3557">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SmartTimetable">
+  <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
+
 <body>
-<div class="container">
+  <div class="container">
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div>
-      <div class="logo">🎓<div><h3>SmartTimetable</h3><p>Admin Panel</p></div></div>
-      <div class="profile">
-        <div class="avatar" id="avatarLetter">A</div>
-        <div class="profile-info"><h4 id="adminName">Admin</h4><span class="role-badge">Admin</span></div>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div>
+        <div class="logo">🎓<div>
+            <h3>SmartTimetable</h3>
+            <p>Admin Panel</p>
+          </div>
+        </div>
+        <div class="profile">
+          <div class="avatar" id="avatarLetter">A</div>
+          <div class="profile-info">
+            <h4 id="adminName">Admin</h4><span class="role-badge">Admin</span>
+          </div>
+        </div>
+        <ul class="menu">
+          <li><a href="admin-dashboard.html"><span class="menu-icon">📊</span>Dashboard</a></li>
+          <li><a href="admin-timetable.html"><span class="menu-icon">📅</span>Timetable</a></li>
+          <li class="active"><a href="admin-substitutions.html"><span class="menu-icon">🔁</span>Substitutions</a></li>
+          <li><a href="admin-attendance.html"><span class="menu-icon">👁</span>Attendance</a></li>
+          <li><a href="admin-events.html"><span class="menu-icon">🎉</span>Events</a></li>
+          <li><a href="admin-users.html"><span class="menu-icon">👥</span>Users</a></li>
+          <li><a href="admin-manage.html"><span class="menu-icon">🏫</span>Manage Structure</a></li>
+          <li><a href="admin-manage-students.html"><span class="menu-icon">🎓</span>Manage Students</a></li>
+          <li><a href="admin-manage-teachers.html"><span class="menu-icon">👨‍🏫</span>Manage Teachers</a></li>
+          <li><a href="changepassword.html"><span class="menu-icon">🔒</span>Change Password</a></li>
+        </ul>
       </div>
-      <ul class="menu">
-        <li><a href="admin-dashboard.html"><span class="menu-icon">📊</span>Dashboard</a></li>
-        <li><a href="admin-timetable.html"><span class="menu-icon">📅</span>Timetable</a></li>
-        <li class="active"><a href="admin-substitutions.html"><span class="menu-icon">🔁</span>Substitutions</a></li>
-        <li><a href="admin-attendance.html"><span class="menu-icon">👁</span>Attendance</a></li>
-        <li><a href="admin-events.html"><span class="menu-icon">🎉</span>Events</a></li>
-        <li><a href="admin-users.html"><span class="menu-icon">👥</span>Users</a></li>
-        <li><a href="changepassword.html"><span class="menu-icon">🔒</span>Change Password</a></li>
-      </ul>
+      <div class="logout"><a href="#" onclick="handleLogout()">Sign Out</a></div>
     </div>
-    <div class="logout"><a href="#" onclick="handleLogout()">Sign Out</a></div>
-  </div>
 
-  <!-- MAIN -->
-  <div class="main">
+    <!-- MAIN -->
+    <div class="main">
 
-    <div class="page-header">
-      <div class="page-header-left">
-        <h2>Substitutions</h2>
-        <p>Assign substitute teachers for absent slots</p>
+      <div class="page-header">
+        <div class="page-header-left">
+          <h2>Substitutions</h2>
+          <p>Assign substitute teachers for absent slots</p>
+        </div>
+        <button class="btn btn-primary" onclick="openAssignModal()">+ Assign Substitute</button>
       </div>
-      <button class="btn btn-primary" onclick="openAssignModal()">+ Assign Substitute</button>
-    </div>
 
-    <!-- TABLE -->
-    <div class="section-title">All Substitutions</div>
-    <div class="table-box">
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Subject</th>
-            <th>Section</th>
-            <th>Time</th>
-            <th>Original Teacher</th>
-            <th>Substitute</th>
-            <th>Reason</th>
-          </tr>
-        </thead>
-        <tbody id="subTable">
-          <tr><td colspan="7" style="text-align:center;padding:30px;color:#6b7280">Loading...</td></tr>
-        </tbody>
-      </table>
-    </div>
+      <!-- TABLE -->
+      <div class="section-title">All Substitutions</div>
+      <div class="table-box">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Subject</th>
+              <th>Section</th>
+              <th>Time</th>
+              <th>Original Teacher</th>
+              <th>Substitute</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody id="subTable">
+            <tr>
+              <td colspan="7" style="text-align:center;padding:30px;color:#6b7280">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-  </div>
-</div>
-
-<!-- ASSIGN MODAL -->
-<div class="modal-overlay" id="assignModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>Assign Substitute Teacher</h3>
-      <button class="modal-close-btn" onclick="closeModal()">✕</button>
-    </div>
-
-    <div class="form-group">
-      <label>Timetable Slot</label>
-      <select id="subSlot"></select>
-    </div>
-    <div class="form-group">
-      <label>Date</label>
-      <input type="date" id="subDate">
-    </div>
-    <div class="form-group">
-      <label>Original Teacher</label>
-      <select id="subOriginal"></select>
-    </div>
-    <div class="form-group">
-      <label>Substitute Teacher</label>
-      <select id="subSubstitute"></select>
-    </div>
-    <div class="form-group">
-      <label>Reason</label>
-      <input type="text" id="subReason" placeholder="e.g. Medical leave, Conference">
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-primary" onclick="assignSub()">Assign</button>
-      <button class="btn btn-danger"  onclick="closeModal()">Cancel</button>
     </div>
   </div>
-</div>
 
-<script type="module">
-  const BASE_URL = 'http://localhost:5000/api';
-  const token    = localStorage.getItem('accessToken');
-  const userName = localStorage.getItem('userName') || 'Admin';
-  if (!token || localStorage.getItem('userRole') !== 'admin') window.location.href = 'signin.html';
+  <!-- ASSIGN MODAL -->
+  <div class="modal-overlay" id="assignModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Assign Substitute Teacher</h3>
+        <button class="modal-close-btn" onclick="closeModal()">✕</button>
+      </div>
 
-  window.handleLogout = async () => {
-    await fetch(`${BASE_URL}/auth/logout`,{method:'POST',credentials:'include'});
-    localStorage.clear(); window.location.href = 'signin.html';
-  };
+      <div class="form-group">
+        <label>Timetable Slot</label>
+        <select id="subSlot"></select>
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="subDate">
+      </div>
+      <div class="form-group">
+        <label>Original Teacher</label>
+        <select id="subOriginal"></select>
+      </div>
+      <div class="form-group">
+        <label>Substitute Teacher</label>
+        <select id="subSubstitute"></select>
+      </div>
+      <div class="form-group">
+        <label>Reason</label>
+        <input type="text" id="subReason" placeholder="e.g. Medical leave, Conference">
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="assignSub()">Assign</button>
+        <button class="btn btn-danger" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
 
-  document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
-  document.getElementById('adminName').textContent    = userName;
+  <script type="module">
+    const BASE_URL = 'http://localhost:5000/api';
+    const token = localStorage.getItem('accessToken');
+    const userName = localStorage.getItem('userName') || 'Admin';
+    if (!token || localStorage.getItem('userRole') !== 'admin') window.location.href = 'signin.html';
 
-  // Set today's date as default
-  document.getElementById('subDate').value = new Date().toISOString().split('T')[0];
+    window.handleLogout = async () => {
+      await fetch(`${BASE_URL}/auth/logout`, { method: 'POST', credentials: 'include' });
+      localStorage.clear(); window.location.href = 'signin.html';
+    };
 
-  window.openAssignModal = () => {
-    loadModalDropdowns();
-    document.getElementById('assignModal').classList.add('show');
-  };
-  window.closeModal = () => document.getElementById('assignModal').classList.remove('show');
+    document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
+    document.getElementById('adminName').textContent = userName;
 
-  // ── Load dropdowns ─────────────────────────────────────────────────────
-  const loadModalDropdowns = async () => {
-    try {
-      const [slotRes, teachRes] = await Promise.all([
-        fetch(`${BASE_URL}/timetable/admin/all`,{ headers:{'Authorization':`Bearer ${token}`}, credentials:'include' }),
-        fetch(`${BASE_URL}/admin/teachers`,     { headers:{'Authorization':`Bearer ${token}`}, credentials:'include' }),
-      ]);
-      const [slots, teachers] = await Promise.all([slotRes.json(), teachRes.json()]);
+    // Set today's date as default
+    document.getElementById('subDate').value = new Date().toISOString().split('T')[0];
 
-      if (slots.success)
-        document.getElementById('subSlot').innerHTML =
-          slots.data.map(s =>
-            `<option value="${s.slot_id}">${s.day_of_week} | ${s.start_time} | ${s.subject_name} | ${s.section_name}</option>`
-          ).join('');
+    window.openAssignModal = () => {
+      loadModalDropdowns();
+      document.getElementById('assignModal').classList.add('show');
+    };
+    window.closeModal = () => document.getElementById('assignModal').classList.remove('show');
 
-      if (teachers.success) {
-        const opts = teachers.data.map(t => `<option value="${t.teacher_id}">${t.name}</option>`).join('');
-        document.getElementById('subOriginal').innerHTML   = opts;
-        document.getElementById('subSubstitute').innerHTML = opts;
+    // ── Load dropdowns ─────────────────────────────────────────────────────
+    const loadModalDropdowns = async () => {
+      try {
+        const [slotRes, teachRes] = await Promise.all([
+          fetch(`${BASE_URL}/timetable/admin/all`, { headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include' }),
+          fetch(`${BASE_URL}/admin/teachers`, { headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include' }),
+        ]);
+        const [slots, teachers] = await Promise.all([slotRes.json(), teachRes.json()]);
+
+        if (slots.success)
+          document.getElementById('subSlot').innerHTML =
+            slots.data.map(s =>
+              `<option value="${s.slot_id}">${s.day_of_week} | ${s.start_time} | ${s.subject_name} | ${s.section_name}</option>`
+            ).join('');
+
+        if (teachers.success) {
+          const opts = teachers.data.map(t => `<option value="${t.teacher_id}">${t.name}</option>`).join('');
+          document.getElementById('subOriginal').innerHTML = opts;
+          document.getElementById('subSubstitute').innerHTML = opts;
+        }
+      } catch { console.log('Modal dropdowns: sample mode'); }
+    };
+
+    // ── Fetch all substitutions ────────────────────────────────────────────
+    const fetchSubs = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/substitutions/all`, {
+          headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include',
+        });
+        const data = await res.json();
+        renderSubs(data.success ? data.data : getSample());
+      } catch { renderSubs(getSample()); }
+    };
+
+    const renderSubs = (subs) => {
+      const tbody = document.getElementById('subTable');
+      if (!subs.length) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:#6b7280">No substitutions found</td></tr>`;
+        return;
       }
-    } catch { console.log('Modal dropdowns: sample mode'); }
-  };
-
-  // ── Fetch all substitutions ────────────────────────────────────────────
-  const fetchSubs = async () => {
-    try {
-      const res  = await fetch(`${BASE_URL}/substitutions/all`, {
-        headers: {'Authorization':`Bearer ${token}`}, credentials:'include',
-      });
-      const data = await res.json();
-      renderSubs(data.success ? data.data : getSample());
-    } catch { renderSubs(getSample()); }
-  };
-
-  const renderSubs = (subs) => {
-    const tbody = document.getElementById('subTable');
-    if (!subs.length) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:#6b7280">No substitutions found</td></tr>`;
-      return;
-    }
-    tbody.innerHTML = subs.map(s => `
+      tbody.innerHTML = subs.map(s => `
       <tr>
         <td>${s.sub_date}</td>
         <td>${s.subject_name}</td>
@@ -173,38 +193,39 @@
         <td><span class="badge badge-green">${s.substitute_teacher}</span></td>
         <td>${s.reason || '—'}</td>
       </tr>`).join('');
-  };
-
-  // ── Assign substitute ──────────────────────────────────────────────────
-  window.assignSub = async () => {
-    const body = {
-      slot_id:               document.getElementById('subSlot').value,
-      sub_date:              document.getElementById('subDate').value,
-      original_teacher_id:   document.getElementById('subOriginal').value,
-      substitute_teacher_id: document.getElementById('subSubstitute').value,
-      reason:                document.getElementById('subReason').value,
     };
-    if (!body.sub_date) { alert('Please select a date'); return; }
-    try {
-      const res  = await fetch(`${BASE_URL}/substitutions/assign`, {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json','Authorization':`Bearer ${token}` },
-        credentials: 'include',
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-      if (data.success) { closeModal(); fetchSubs(); alert('Substitute assigned!'); }
-      else alert(data.message || 'Failed');
-    } catch { closeModal(); fetchSubs(); alert('Assigned (sample mode)'); }
-  };
 
-  const getSample = () => [
-    { sub_date:'2026-04-03', subject_name:'DBMS',             section_name:'CS-B', start_time:'10:10', end_time:'11:00', original_teacher:'Dr. Sharma', substitute_teacher:'Dr. Mehta',  reason:'Medical leave' },
-    { sub_date:'2026-03-28', subject_name:'Mathematics',      section_name:'CS-A', start_time:'11:00', end_time:'11:50', original_teacher:'Prof. Gupta', substitute_teacher:'Ms. Rao',   reason:'Conference' },
-    { sub_date:'2026-03-20', subject_name:'Machine Learning', section_name:'CS-A', start_time:'09:20', end_time:'10:10', original_teacher:'Dr. Mehta',   substitute_teacher:'Dr. Kumar', reason:'Personal leave' },
-  ];
+    // ── Assign substitute ──────────────────────────────────────────────────
+    window.assignSub = async () => {
+      const body = {
+        slot_id: document.getElementById('subSlot').value,
+        sub_date: document.getElementById('subDate').value,
+        original_teacher_id: document.getElementById('subOriginal').value,
+        substitute_teacher_id: document.getElementById('subSubstitute').value,
+        reason: document.getElementById('subReason').value,
+      };
+      if (!body.sub_date) { alert('Please select a date'); return; }
+      try {
+        const res = await fetch(`${BASE_URL}/substitutions/assign`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          credentials: 'include',
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+        if (data.success) { closeModal(); fetchSubs(); alert('Substitute assigned!'); }
+        else alert(data.message || 'Failed');
+      } catch { closeModal(); fetchSubs(); alert('Assigned (sample mode)'); }
+    };
 
-  fetchSubs();
-</script>
+    const getSample = () => [
+      { sub_date: '2026-04-03', subject_name: 'DBMS', section_name: 'CS-B', start_time: '10:10', end_time: '11:00', original_teacher: 'Dr. Sharma', substitute_teacher: 'Dr. Mehta', reason: 'Medical leave' },
+      { sub_date: '2026-03-28', subject_name: 'Mathematics', section_name: 'CS-A', start_time: '11:00', end_time: '11:50', original_teacher: 'Prof. Gupta', substitute_teacher: 'Ms. Rao', reason: 'Conference' },
+      { sub_date: '2026-03-20', subject_name: 'Machine Learning', section_name: 'CS-A', start_time: '09:20', end_time: '10:10', original_teacher: 'Dr. Mehta', substitute_teacher: 'Dr. Kumar', reason: 'Personal leave' },
+    ];
+
+    fetchSubs();
+  </script>
 </body>
+
 </html>

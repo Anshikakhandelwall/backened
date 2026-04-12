@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Teachers</title>
+    <link rel="stylesheet" href="admin.css">
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1c3557">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SmartTimetable">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+    <style>
+        .teacher-form-box {
+            background: white;
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+            margin-bottom: 28px
+        }
+
+        .teacher-form-box h3 {
+            font-size: 16px;
+            color: #1c3557;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f3f4f6
+        }
+
+        .multi-select-group {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 8px
+        }
+
+        .multi-select-group h4 {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            margin-bottom: 12px
+        }
+
+        .add-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+            align-items: flex-end
+        }
+
+        .add-row select {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            flex: 1;
+            min-width: 120px
+        }
+
+        .add-row select:focus {
+            border-color: #449bed
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px
+        }
+
+        .tag {
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .tag button {
+            background: none;
+            border: none;
+            color: #1d4ed8;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+            padding: 0
+        }
+
+        .tag button:hover {
+            color: #dc2626
+        }
+
+        .teacher-card {
+            background: white;
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: flex-start;
+            gap: 14px
+        }
+
+        .t-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #dcfce7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #15803d;
+            flex-shrink: 0
+        }
+
+        .t-info {
+            flex: 1
+        }
+
+        .t-info h4 {
+            font-size: 15px;
+            color: #1c3557;
+            margin-bottom: 4px
+        }
+
+        .t-info p {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 6px
+        }
+
+        .t-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px
+        }
+
+        .t-tag {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500
+        }
+
+        .success-banner {
+            background: #dcfce7;
+            color: #15803d;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none
+        }
+
+        .info-note {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #9a3412;
+            margin-bottom: 20px
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div>
+                <div class="logo">🎓<div>
+                        <h3>SmartTimetable</h3>
+                        <p>Admin Panel</p>
+                    </div>
+                </div>
+                <div class="profile">
+                    <div class="avatar" id="avatarLetter">A</div>
+                    <div class="profile-info">
+                        <h4 id="adminName">Admin</h4><span class="role-badge">Admin</span>
+                    </div>
+                </div>
+                <ul class="menu">
+                    <li><a href="admin-dashboard.html"><span class="menu-icon">📊</span>Dashboard</a></li>
+                    <li><a href="admin-timetable.html"><span class="menu-icon">📅</span>Timetable</a></li>
+                    <li><a href="admin-substitutions.html"><span class="menu-icon">🔁</span>Substitutions</a></li>
+                    <li><a href="admin-attendance.html"><span class="menu-icon">👁</span>Attendance</a></li>
+                    <li><a href="admin-events.html"><span class="menu-icon">🎉</span>Events</a></li>
+                    <li><a href="admin-users.html"><span class="menu-icon">👥</span>Users</a></li>
+                    <li><a href="admin-manage.html"><span class="menu-icon">🏫</span>Manage Structure</a></li>
+                    <li><a href="admin-manage-students.html"><span class="menu-icon">🎓</span>Manage Students</a></li>
+                    <li class="active"><a href="admin-manage-teachers.html"><span class="menu-icon">👨‍🏫</span>Manage
+                            Teachers</a></li>
+                    <li><a href="changepassword.html"><span class="menu-icon">🔒</span>Change Password</a></li>
+                </ul>
+            </div>
+            <div class="logout"><a href="#" onclick="handleLogout()">Sign Out</a></div>
+        </div>
+        <div class="main">
+            <div class="page-header">
+                <div class="page-header-left">
+                    <h2>Manage Teachers</h2>
+                    <p>Register teachers — assign multiple departments and sections</p>
+                </div>
+            </div>
+            <div class="success-banner" id="successBanner"></div>
+            <div class="info-note">ℹ️ A teacher can belong to multiple departments and teach in multiple sections across
+                different branches and semesters.</div>
+            <div class="teacher-form-box">
+                <h3>➕ Register New Teacher</h3>
+                <div class="form-row" style="margin-bottom:16px">
+                    <div class="form-group"><label>Full Name</label><input type="text" id="tchName"
+                            placeholder="e.g. Dr. Priya Mehta"></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="tchEmail"
+                            placeholder="teacher@college.edu"></div>
+                </div>
+                <div class="form-row" style="margin-bottom:16px">
+                    <div class="form-group"><label>Password</label><input type="password" id="tchPassword"
+                            placeholder="Min 8 characters"></div>
+                    <div class="form-group"><label>Designation</label>
+                        <select id="tchDesignation">
+                            <option value="Assistant Professor">Assistant Professor</option>
+                            <option value="Associate Professor">Associate Professor</option>
+                            <option value="Professor">Professor</option>
+                            <option value="Lecturer">Lecturer</option>
+                            <option value="HOD">HOD</option>
+                            <option value="Lab Instructor">Lab Instructor</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- MULTIPLE DEPARTMENTS -->
+                <div class="form-group" style="margin-bottom:16px">
+                    <label>Departments <span style="color:#6b7280;font-weight:400">(can add multiple)</span></label>
+                    <div class="multi-select-group">
+                        <h4>Add Department</h4>
+                        <div class="add-row">
+                            <input type="text" id="deptInput" placeholder="e.g. Computer Science"
+                                style="flex:1;padding:8px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;outline:none">
+                            <button class="btn btn-primary btn-sm" onclick="addDept()">+ Add</button>
+                        </div>
+                        <div class="tag-list" id="deptTags"></div>
+                    </div>
+                </div>
+
+                <!-- MULTIPLE SECTIONS -->
+                <div class="form-group" style="margin-bottom:20px">
+                    <label>Assign to Sections <span style="color:#6b7280;font-weight:400">(can select multiple from
+                            different branches)</span></label>
+                    <div class="multi-select-group">
+                        <h4>Add Section Assignment</h4>
+                        <div class="add-row">
+                            <select id="tchBranchSel" onchange="loadSemsForTeacher()">
+                                <option value="">Branch</option>
+                            </select>
+                            <select id="tchSemSel" onchange="loadSectionsForTeacher()">
+                                <option value="">Semester</option>
+                            </select>
+                            <select id="tchSecSel">
+                                <option value="">Section</option>
+                            </select>
+                            <button class="btn btn-primary btn-sm" onclick="addSection()">+ Add</button>
+                        </div>
+                        <div class="tag-list" id="sectionTags"></div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="registerTeacher()">✓ Register Teacher</button>
+            </div>
+
+            <!-- TEACHER LIST -->
+            <div class="section-title" style="margin-bottom:16px">All Teachers <span class="count-badge"
+                    id="tchCount">0</span></div>
+            <div style="margin-bottom:16px">
+                <input type="text" id="tchSearch" placeholder="Search by name or email..." oninput="filterTeachers()"
+                    style="padding:9px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:14px;outline:none;width:300px">
+            </div>
+            <div id="teacherList">
+                <p style="color:#6b7280">Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        const BASE = 'http://localhost:5000/api';
+        const userName = localStorage.getItem('userName') || 'Admin';
+        if (!localStorage.getItem('accessToken') || localStorage.getItem('userRole') !== 'admin') window.location.href = 'signin.html';
+        window.handleLogout = async () => { await fetch(`${BASE}/auth/logout`, { method: 'POST', credentials: 'include' }); localStorage.clear(); window.location.href = 'signin.html'; };
+        document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
+        document.getElementById('adminName').textContent = userName;
+
+        const apiFetch = async (url, method = 'GET', body = null) => {
+            let tkn = localStorage.getItem('accessToken');
+            const mk = async (t) => { const o = { method, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${t}` }, credentials: 'include' }; if (body) o.body = JSON.stringify(body); return fetch(url, o); };
+            let res = await mk(tkn);
+            if (res.status === 401) { const r = await fetch(`${BASE}/auth/refresh`, { method: 'POST', credentials: 'include' }); const d = await r.json(); if (d.success) { localStorage.setItem('accessToken', d.accessToken); res = await mk(d.accessToken); } else { localStorage.clear(); window.location.href = 'signin.html'; return null; } }
+            return res.json();
+        };
+
+        let departments = [], assignedSections = [], allBranches = [], allSems = [], allSections = [];
+        let allTeachers = [];
+
+        const init = async () => {
+            const [br, sm, sc] = await Promise.all([apiFetch(`${BASE}/manage/branches`), apiFetch(`${BASE}/manage/semesters`), apiFetch(`${BASE}/manage/sections`)]);
+            allBranches = br?.data || []; allSems = sm?.data || []; allSections = sc?.data || [];
+            document.getElementById('tchBranchSel').innerHTML = '<option value="">Branch</option>' + allBranches.map(b => `<option value="${b.branch_id}">${b.branch_name}</option>`).join('');
+            fetchTeachers();
+        };
+
+        window.loadSemsForTeacher = () => {
+            const bid = document.getElementById('tchBranchSel').value;
+            const filtered = allSems.filter(s => String(s.branch_id) === String(bid));
+            document.getElementById('tchSemSel').innerHTML = '<option value="">Semester</option>' + filtered.map(s => `<option value="${s.sem_id}">Sem ${s.sem_number}</option>`).join('');
+            document.getElementById('tchSecSel').innerHTML = '<option value="">Section</option>';
+        };
+
+        window.loadSectionsForTeacher = () => {
+            const sid = document.getElementById('tchSemSel').value;
+            const filtered = allSections.filter(s => String(s.sem_id) === String(sid));
+            document.getElementById('tchSecSel').innerHTML = '<option value="">Section</option>' + filtered.map(s => `<option value="${s.section_id}">${s.section_name}</option>`).join('');
+        };
+
+        window.addDept = () => {
+            const val = document.getElementById('deptInput').value.trim();
+            if (!val) return;
+            if (departments.includes(val)) { alert('Department already added'); return; }
+            departments.push(val); document.getElementById('deptInput').value = ''; renderDeptTags();
+        };
+
+        const renderDeptTags = () => {
+            document.getElementById('deptTags').innerHTML = departments.map((d, i) => `
+      <span class="tag">${d}<button onclick="removeDept(${i})">×</button></span>`).join('');
+        };
+        window.removeDept = (i) => { departments.splice(i, 1); renderDeptTags(); };
+
+        window.addSection = () => {
+            const brEl = document.getElementById('tchBranchSel');
+            const smEl = document.getElementById('tchSemSel');
+            const scEl = document.getElementById('tchSecSel');
+            if (!scEl.value) { alert('Please select a section'); return; }
+            const label = `${brEl.options[brEl.selectedIndex].text} › Sem ${smEl.options[smEl.selectedIndex].text.replace('Sem ', '')} › ${scEl.options[scEl.selectedIndex].text}`;
+            if (assignedSections.find(s => s.id === scEl.value)) { alert('Section already added'); return; }
+            assignedSections.push({ id: scEl.value, label }); renderSectionTags();
+        };
+
+        const renderSectionTags = () => {
+            document.getElementById('sectionTags').innerHTML = assignedSections.map((s, i) => `
+      <span class="tag">${s.label}<button onclick="removeSection(${i})">×</button></span>`).join('');
+        };
+        window.removeSection = (i) => { assignedSections.splice(i, 1); renderSectionTags(); };
+
+        window.registerTeacher = async () => {
+            const name = document.getElementById('tchName').value.trim();
+            const email = document.getElementById('tchEmail').value.trim();
+            const password = document.getElementById('tchPassword').value.trim();
+            const designation = document.getElementById('tchDesignation').value;
+            if (!name || !email || !password) { alert('Name, email and password are required'); return; }
+            if (password.length < 8) { alert('Password must be at least 8 characters'); return; }
+            const department = departments.join(', ') || 'General';
+            const d = await apiFetch(`${BASE}/admin/teachers/create`, 'POST', { name, email, password, department, designation, section_ids: assignedSections.map(s => s.id) });
+            if (!d) return;
+            if (d.success) {
+                showBanner(`✓ Teacher "${name}" registered successfully`);
+                ['tchName', 'tchEmail', 'tchPassword'].forEach(id => document.getElementById(id).value = '');
+                departments = []; assignedSections = []; renderDeptTags(); renderSectionTags();
+                fetchTeachers();
+            } else alert(d.message || 'Registration failed');
+        };
+
+        let allTeachersData = [];
+        const fetchTeachers = async () => {
+            const d = await apiFetch(`${BASE}/admin/users/role/teacher`);
+            if (!d?.success) return;
+            allTeachersData = d.data || [];
+            document.getElementById('tchCount').textContent = allTeachersData.length;
+            renderTeachers(allTeachersData);
+        };
+
+        window.filterTeachers = () => {
+            const q = document.getElementById('tchSearch').value.toLowerCase();
+            renderTeachers(allTeachersData.filter(t => t.name.toLowerCase().includes(q) || t.email.toLowerCase().includes(q)));
+        };
+
+        const renderTeachers = (teachers) => {
+            const list = document.getElementById('teacherList');
+            if (!teachers.length) { list.innerHTML = `<div style="text-align:center;padding:40px;color:#6b7280;background:white;border-radius:16px"><h3>No teachers yet</h3></div>`; return; }
+            list.innerHTML = teachers.map(t => `
+      <div class="teacher-card">
+        <div class="t-avatar">${t.name.charAt(0).toUpperCase()}</div>
+        <div class="t-info">
+          <h4>${t.name}</h4>
+          <p>${t.email} | <strong>${t.designation || 'Teacher'}</strong></p>
+          <div class="t-tags">
+            ${t.department ? t.department.split(',').map(d => `<span class="t-tag">${d.trim()}</span>`).join('') : ''}
+            ${t.is_first_login ? '<span class="t-tag" style="background:#fef3c7;color:#d97706">Password not changed</span>' : '<span class="t-tag" style="background:#dcfce7;color:#15803d">Active</span>'}
+          </div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="deleteTeacher(${t.user_id},'${t.name}')">Remove</button>
+      </div>`).join('');
+        };
+
+        window.deleteTeacher = async (id, name) => {
+            if (!confirm(`Remove teacher "${name}"?`)) return;
+            const d = await apiFetch(`${BASE}/admin/users/${id}`, 'DELETE');
+            if (d?.success) fetchTeachers(); else alert(d?.message || 'Failed');
+        };
+
+        const showBanner = (msg) => { const b = document.getElementById('successBanner'); b.textContent = msg; b.style.display = 'block'; setTimeout(() => b.style.display = 'none', 4000); };
+        init();
+    </script>
+</body>
+
+</html>
