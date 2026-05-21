@@ -1,533 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Timetable</title>
   <link rel="stylesheet" href="mytimetable.css">
-  <!-- PWA -->
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#1c3557">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="SmartTimetable">
   <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
-
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <!-- SIDEBAR -->
-
-    <div class="sidebar">
-
-      <div class="logo">
-        🎓 <div>
-          <h3>SmartTimetable</h3>
-          <p>Alert System</p>
-        </div>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">
+      🎓
+      <div>
+        <h3>SmartTimetable</h3>
+        <p>Alert System</p>
       </div>
-
-      <div class="profile">
-        <div class="avatar">I</div>
-        <div>
-          <h4>levi ackerman</h4>
-          <span class="role">Student</span>
-        </div>
-      </div>
-
-
-      <ul class="menu">
-        <li class="active"><a href="dashboard.html">Dashboard</a></li>
-        <li><a href="mytimetable.html">My Timetable</a></li>
-        <li><a href="iks.html">IKS Credits</a></li>
-        <li><a href="events.html">Events</a></li>
-        <li><a href="changepassword.html">Change Password </a></li>
-      </ul>
-
-      <div class="logout">
-        <a href="signin.html" onclick="logoutUser()">Sign Out</a>
-      </div>
-
     </div>
 
-
-    <!-- MAIN CONTENT -->
-    <div class="main">
-
-      <div class="header">
-        <div>
-          <h2>My Timetable</h2>
-          <p class="subtitle">Your weekly class schedule</p>
-        </div>
-
-        <div class="header-actions">
-          <button class="download-btn">Download PDF</button>
-        </div>
+    <div class="profile">
+      <div class="avatar" id="avatarEl">S</div>
+      <div>
+        <h4 id="nameEl">Student</h4>
+        <span class="role">Student</span>
       </div>
-
-      <!-- TOP CARDS -->
-      <div class="summary-cards">
-
-        <div class="summary-card">
-          <h3>Total Subjects</h3>
-          <p>6</p>
-        </div>
-
-        <div class="summary-card">
-          <h3>Classes This Week</h3>
-          <p>28</p>
-        </div>
-
-        <div class="summary-card">
-          <h3>Labs</h3>
-          <p>4</p>
-        </div>
-
-        <div class="summary-card">
-          <h3>Free Hours</h3>
-          <p>7</p>
-        </div>
-
-      </div>
-
-      <!-- TIMETABLE TABLE -->
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Day</th>
-              <th>9:20 - 10:10</th>
-              <th>10:10 - 11:00</th>
-              <th>11:00 - 11:50</th>
-              <th>11:50 - 12:40</th>
-              <th>12:40 - 1:40</th>
-              <th>1:40 - 2:30</th>
-              <th>2:30 - 3:20</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td class="day">Monday</td>
-
-              <td>
-                <div class="subject-card ml">
-                  <h4>Machine Learning</h4>
-                  <p>Room 301</p>
-                </div>
-              </td>
-
-              <td>
-                <div class="subject-card dbms">
-                  <h4>DBMS</h4>
-                  <p>Lab C</p>
-                </div>
-              </td>
-
-              <td>
-                <div class="subject-card maths">
-                  <h4>Mathematics</h4>
-                  <p>Room 102</p>
-                </div>
-              </td>
-
-              <td>
-                <div class="subject-card english">
-                  <h4>English</h4>
-                  <p>Room 204</p>
-                </div>
-              </td>
-
-              <td class="break">Break</td>
-
-              <td>
-                <div class="subject-card lab">
-                  <h4>Computer Lab</h4>
-                  <p>Lab A</p>
-                </div>
-              </td>
-
-              <td>-</td>
-            </tr>
-
-            <tr>
-              <td class="day">Tuesday</td>
-
-              <td>
-                <div class="subject-card dbms">
-                  <h4>DBMS</h4>
-                  <p>Lab C</p>
-                </div>
-              </td>
-
-              <td>
-                <div class="subject-card ml">
-                  <h4>Machine Learning</h4>
-                  <p>Room 301</p>
-                </div>
-              </td>
-
-              <td>-</td>
-
-              <td>
-                <div class="subject-card maths">
-                  <h4>Mathematics</h4>
-                  <p>Room 102</p>
-                </div>
-              </td>
-
-              <td class="break">Break</td>
-
-              <td>
-                <div class="subject-card english">
-                  <h4>English</h4>
-                  <p>Room 204</p>
-                </div>
-              </td>
-
-              <td>
-                <div class="subject-card lab">
-                  <h4>Computer Lab</h4>
-                  <p>Lab A</p>
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td class="day">Wednesday</td>
-
-              <td>
-                <div class="subject-card maths">
-                  <h4>Mathematics</h4>
-                  <p>Room 102</p>
-                </div>
-              </td>
-
-              <td>
-                <div class="subject-card english">
-                  <h4>English</h4>
-                  <p>Room 204</p>
-                </div>
-              </td>
-
-              <td>
-                <div class="subject-card ml">
-                  <h4>Machine Learning</h4>
-                  <p>Room 301</p>
-                </div>
-              </td>
-
-              <td>-</td>
-
-              <td class="break">Break</td>
-
-              <td>
-                <div class="subject-card dbms">
-                  <h4>DBMS</h4>
-                  <p>Lab C</p>
-                </div>
-              </td>
-
-              <td>
-                <div class="subject-card lab">
-                  <h4>Computer Lab</h4>
-                  <p>Lab A</p>
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td class="day">Thursday</td>
-
-              <td>
-                <div class="subject-card ml">
-                  <h4>Machine Learning</h4>
-                  <p>Room 301</p>
-                </div>
-              </td>
-
-              <td>
-                <div class="subject-card maths">
-                  <h4>Mathematics</h4>
-                  <p>Room 102</p>
-                </div>
-              </td>
-
-              <td>
-                <div class="subject-card dbms">
-                  <h4>DBMS</h4>
-                  <p>Lab C</p>
-                </div>
-              </td>
-
-              <td>-</td>
-
-              <td class="break">Break</td>
-
-              <td>
-                <div class="subject-card english">
-                  <h4>English</h4>
-                  <p>Room 204</p>
-                </div>
-              </td>
-
-              <td>
-                <div class="subject-card lab">
-                  <h4>Computer Lab</h4>
-                  <p>Lab A</p>
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td class="day">Friday</td>
-
-              <td>
-                <div class="subject-card english">
-                  <h4>English</h4>
-                  <p>Room 204</p>
-                </div>
-              </td>
-
-              <td>
-                <div class="subject-card lab">
-                  <h4>Computer Lab</h4>
-                  <p>Lab A</p>
-                </div>
-              </td>
-
-              <td>
-                <div class="subject-card maths">
-                  <h4>Mathematics</h4>
-                  <p>Room 102</p>
-                </div>
-              </td>
-
-              <td>
-                <div class="subject-card ml">
-                  <h4>Machine Learning</h4>
-                  <p>Room 301</p>
-                </div>
-              </td>
-
-              <td class="break">Break</td>
-
-              <td>
-                <div class="subject-card dbms">
-                  <h4>DBMS</h4>
-                  <p>Lab C</p>
-                </div>
-              </td>
-
-              <td>-</td>
-            </tr>
-
-            <tr>
-              <td class="day">Saturday</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td>-</td>
-              <td class="break">Break</td>
-              <td>-</td>
-              <td>-</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-
-
-      <!-- LEGEND -->
-      <div class="legend">
-        <div><span class="box ml-box"></span> Machine Learning</div>
-        <div><span class="box dbms-box"></span> DBMS</div>
-        <div><span class="box maths-box"></span> Mathematics</div>
-        <div><span class="box english-box"></span> English</div>
-        <div><span class="box lab-box"></span> Lab</div>
-      </div>
-
     </div>
 
+    <ul class="menu">
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li class="active"><a href="mytimetable.html">My Timetable</a></li>
+      <li><a href="iks.html">IKS Credits</a></li>
+      <li><a href="events.html">Events</a></li>
+      <li><a href="changepassword.html">Change Password</a></li>
+    </ul>
+
+    <div class="logout">
+      <a href="signin.html" onclick="logoutUser()">Sign Out</a>
+    </div>
   </div>
 
-  <script type="module">
-    const BASE_URL = 'http://localhost:5000/api/student';
-    const UPLOAD_URL = 'http://localhost:5000/api/upload';
-    const token = localStorage.getItem('accessToken');
-    const userName = localStorage.getItem('userName') || 'Student';
+  <!-- MAIN CONTENT -->
+  <div class="main">
 
-    if (!token || localStorage.getItem('userRole') !== 'student') {
-      window.location.href = 'signin.html';
-    }
+    <div class="header">
+      <div>
+        <h2>My Timetable</h2>
+        <p class="subtitle">Your weekly class schedule</p>
+      </div>
+    </div>
 
-    window.logoutUser = async () => {
-      await fetch('http://localhost:5000/api/auth/logout', { method: 'POST', credentials: 'include' });
-      localStorage.clear(); window.location.href = 'signin.html';
-    };
+    <!-- SUMMARY CARDS -->
+    <div class="summary-cards">
+      <div class="summary-card">
+        <h3>Total Subjects</h3>
+        <p id="totalSubjects">—</p>
+      </div>
+      <div class="summary-card">
+        <h3>Classes This Week</h3>
+        <p id="totalClasses">—</p>
+      </div>
+      <div class="summary-card">
+        <h3>Labs</h3>
+        <p id="totalLabs">—</p>
+      </div>
+      <div class="summary-card">
+        <h3>Free Hours</h3>
+        <p id="freeHours">—</p>
+      </div>
+    </div>
 
-    const avatarEl = document.querySelector('.avatar');
-    const nameEl = document.querySelector('.profile h4');
-    if (avatarEl) avatarEl.textContent = userName.charAt(0).toUpperCase();
-    if (nameEl) nameEl.textContent = userName;
+    <!-- UPLOADED TIMETABLE (admin image/PDF) — injected here by JS -->
+    <div id="uploadedTimetableContainer"></div>
 
-    const now = new Date();
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const dateEl = document.getElementById('date');
-    if (dateEl)
-      dateEl.textContent =
-        `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+    <!-- TIMETABLE TABLE -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>9:20 - 10:10</th>
+            <th>10:10 - 11:00</th>
+            <th>11:00 - 11:50</th>
+            <th>11:50 - 12:40</th>
+            <th>12:40 - 1:40</th>
+            <th>1:40 - 2:30</th>
+            <th>2:30 - 3:20</th>
+          </tr>
+        </thead>
+        <!-- ✅ id="timetableBody" — script renders into this -->
+        <tbody id="timetableBody">
+          <tr>
+            <td colspan="8"
+              style="text-align:center;padding:30px;color:#6b7280">
+              Loading timetable...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-    const authFetch = (url) => fetch(url, {
-      headers: { 'Authorization': `Bearer ${token}` },
-      credentials: 'include',
+    <!-- LEGEND — filled by JS -->
+    <div class="legend" id="legendEl"></div>
+
+  </div>
+</div>
+
+<script type="module">
+  const BASE_URL   = 'http://localhost:5000/api/student'
+  const UPLOAD_URL = 'http://localhost:5000/api/upload';
+  const FILE_URL   = 'http://localhost:5000/uploads';
+
+  const token    = localStorage.getItem('accessToken');
+  const userName = localStorage.getItem('userName') || 'Student';
+
+  // ── Auth guard ─────────────────────────────────────────────────────────
+  if (!token || localStorage.getItem('userRole') !== 'student') {
+    window.location.href = 'signin.html';
+  }
+
+  // ── Fill user info ─────────────────────────────────────────────────────
+  document.getElementById('avatarEl').textContent = userName.charAt(0).toUpperCase();
+  document.getElementById('nameEl').textContent   = userName;
+
+  window.logoutUser = async () => {
+    await fetch('http://localhost:5000/api/auth/logout', {
+      method: 'POST', credentials: 'include'
     });
+    localStorage.clear();
+    window.location.href = 'signin.html';
+  };
 
-    // ── Fetch student's section_id from profile ────────────────────────────
-    const fetchProfile = async () => {
-      try {
-        const res = await authFetch(`${BASE_URL}/profile`);
-        const data = await res.json();
-        if (data.success && data.data.section_id) {
-          loadUploadedTimetable(data.data.section_id);
-        }
-      } catch (err) {
-        console.error('Profile fetch error:', err);
+  const authFetch = (url) => fetch(url, {
+    headers:     { 'Authorization': `Bearer ${token}` },
+    credentials: 'include',
+  });
+
+  // ── Color map ──────────────────────────────────────────────────────────
+  const colorClasses = ['ml','dbms','maths','english','lab'];
+  const colorMap     = {};
+  let   colorIdx     = 0;
+
+  const getColor = (name) => {
+    if (!colorMap[name]) {
+      colorMap[name] = colorClasses[colorIdx % colorClasses.length];
+      colorIdx++;
+    }
+    return colorMap[name];
+  };
+
+  const timeSlots = ['09:20','10:10','11:00','11:50','12:40','13:40','14:30'];
+  const weekDays  = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  // ── Step 1: Get student profile → section_id ───────────────────────────
+  const fetchProfile = async () => {
+    try {
+      const res  = await authFetch(`${BASE_URL}/profile`);
+      const data = await res.json();
+      if (data.success && data.data.section_id) {
+        loadUploadedTimetable(data.data.section_id);
       }
-    };
+    } catch (err) {
+      console.error('Profile error:', err);
+    }
+  };
 
-    // ── Check if admin uploaded a timetable image/PDF ──────────────────────
-    const loadUploadedTimetable = async (sectionId) => {
-      try {
-        const res = await authFetch(`${UPLOAD_URL}/timetable/section/${sectionId}`);
-        const data = await res.json();
+  // ── Step 2: Load admin-uploaded image/PDF timetable ────────────────────
+  const loadUploadedTimetable = async (sectionId) => {
+    try {
+      const res  = await authFetch(`${UPLOAD_URL}/timetable/section/${sectionId}`);
+      const data = await res.json();
 
-        if (data.success && data.data) {
-          // Show uploaded timetable at the top
-          const container = document.querySelector('.table-container') ||
-            document.querySelector('.main');
+      const container = document.getElementById('uploadedTimetableContainer');
 
-          const uploadedDiv = document.createElement('div');
-          uploadedDiv.style.cssText = `
-          background:white;border-radius:18px;padding:20px;
-          box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-bottom:24px;`;
-
-          uploadedDiv.innerHTML = `
-          <h3 style="font-size:16px;color:#1c3557;margin-bottom:14px">
-            📅 Official Timetable
-          </h3>`;
-
-          if (data.data.file_type === 'pdf') {
-            uploadedDiv.innerHTML += `
-            <iframe src="http://localhost:5000/uploads/timetables/${data.data.file_path}"
-              style="width:100%;height:500px;border:none;border-radius:10px"></iframe>`;
-          } else {
-            uploadedDiv.innerHTML += `
-            <img src="http://localhost:5000/uploads/timetables/${data.data.file_path}"
-              alt="Timetable" style="width:100%;border-radius:10px;max-height:600px;object-fit:contain">`;
-          }
-
-          // Insert before the existing table
-          const tableBox = document.querySelector('.table-container');
-          if (tableBox) {
-            tableBox.parentNode.insertBefore(uploadedDiv, tableBox);
-          }
-        }
-      } catch (err) {
-        console.error('Uploaded timetable fetch error:', err);
+      if (!data.success || !data.data) {
+        container.innerHTML = ''; // nothing uploaded — hide container
+        return;
       }
-    };
 
-    // ── Color map ──────────────────────────────────────────────────────────
-    const colorClasses = ['ml', 'dbms', 'maths', 'english', 'lab'];
-    const colorMap = {};
-    let colorIdx = 0;
+      const fileUrl = `${FILE_URL}/timetables/${data.data.file_path}`;
+      console.log('Loading timetable file:', fileUrl);
 
-    const getColor = (subjectName) => {
-      if (!colorMap[subjectName]) {
-        colorMap[subjectName] = colorClasses[colorIdx % colorClasses.length];
-        colorIdx++;
+      if (data.data.file_type === 'pdf') {
+        container.innerHTML = `
+          <div style="background:white;border-radius:18px;padding:20px;
+               box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-bottom:24px">
+            <h3 style="font-size:16px;color:#1c3557;margin-bottom:14px">
+              📅 Official Timetable
+            </h3>
+            <iframe src="${fileUrl}"
+              style="width:100%;height:500px;border:none;border-radius:10px"
+              title="Timetable PDF">
+            </iframe>
+          </div>`;
+      } else {
+        container.innerHTML = `
+          <div style="background:white;border-radius:18px;padding:20px;
+               box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-bottom:24px">
+            <h3 style="font-size:16px;color:#1c3557;margin-bottom:14px">
+              📅 Official Timetable
+            </h3>
+            <img
+              src="${fileUrl}"
+              alt="Section Timetable"
+              style="width:100%;border-radius:10px;
+                     max-height:600px;object-fit:contain"
+              onerror="
+                this.style.display='none';
+                this.nextElementSibling.style.display='block'">
+            <p style="display:none;color:#dc2626;font-size:13px;margin-top:8px">
+              ⚠️ Could not load timetable image.
+              Make sure backend is running on port 5000.
+            </p>
+          </div>`;
       }
-      return colorMap[subjectName];
-    };
 
-    const timeSlots = ['09:20', '10:10', '11:00', '11:50', '12:40', '13:40', '14:30'];
-    const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    } catch (err) {
+      console.error('Uploaded timetable error:', err);
+      document.getElementById('uploadedTimetableContainer').innerHTML = '';
+    }
+  };
 
-    // ── Fetch weekly timetable ─────────────────────────────────────────────
-    const fetchWeekly = async () => {
-      try {
-        const res = await authFetch(`${BASE_URL}/timetable/weekly`);
-        const data = await res.json();
+  // ── Step 3: Fetch weekly slot timetable from DB ────────────────────────
+  const fetchWeekly = async () => {
+    const tbody = document.getElementById('timetableBody');
 
-        if (data.success && data.data.length > 0) {
-          renderTimetable(data.data);
+    try {
+      const res  = await authFetch(`${BASE_URL}/timetable/weekly`);
+      const data = await res.json();
 
-          // Update summary cards
-          const uniqueSubjects = [...new Set(data.data.map(l => l.subject_name))];
-          const labs = data.data.filter(l => l.slot_type === 'lab').length;
-          const totalSubEl = document.querySelector('.summary-card:nth-child(1) p');
-          const totalLecEl = document.querySelector('.summary-card:nth-child(2) p');
-          const labEl = document.querySelector('.summary-card:nth-child(3) p');
-          if (totalSubEl) totalSubEl.textContent = uniqueSubjects.length;
-          if (totalLecEl) totalLecEl.textContent = data.data.length;
-          if (labEl) labEl.textContent = labs;
+      console.log('Weekly timetable response:', data);
 
-        } else {
-          // No slots — show message in table body
-          const tbody = document.getElementById('timetableBody');
-          if (tbody)
-            tbody.innerHTML = `<tr><td colspan="8"
-            style="text-align:center;padding:30px;color:#6b7280">
-            No timetable slots assigned yet. Check with your admin.
-          </td></tr>`;
-        }
-
-      } catch (err) {
-        console.error('Fetch timetable error:', err);
+      if (data.success && data.data.length > 0) {
+        renderTimetable(data.data);
+      } else {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8"
+              style="text-align:center;padding:30px;color:#6b7280">
+              No timetable slots assigned yet.
+              Ask your admin to add slots in Timetable Manager.
+            </td>
+          </tr>`;
       }
-    };
 
-    // ── Render timetable table ─────────────────────────────────────────────
-    const renderTimetable = (lectures) => {
-      const tbody = document.getElementById('timetableBody');
-      if (!tbody) return;
+    } catch (err) {
+      console.error('Fetch timetable error:', err);
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8"
+            style="text-align:center;padding:30px;color:#dc2626">
+            Could not load timetable.
+            Make sure backend is running on port 3000.
+          </td>
+        </tr>`;
+    }
+  };
 
-      tbody.innerHTML = weekDays.map(day => {
-        const cells = timeSlots.map(startTime => {
-          if (startTime === '12:40')
-            return `<td class="break">Break</td>`;
+  // ── Render timetable rows ──────────────────────────────────────────────
+  const renderTimetable = (lectures) => {
+    const tbody = document.getElementById('timetableBody');
 
-          const lecture = lectures.find(l =>
-            l.day_of_week === day &&
-            l.start_time.slice(0, 5) === startTime
-          );
+    // Update summary cards
+    const uniqueSubjects = [...new Set(lectures.map(l => l.subject_name))];
+    const labs           = lectures.filter(l => l.slot_type === 'lab').length;
+    const totalSlots     = lectures.length;
+    const totalPossible  = weekDays.length * (timeSlots.length - 1); // -1 for break
+    const free           = totalPossible - totalSlots;
 
-          if (lecture) {
-            const colorClass = getColor(lecture.subject_name);
-            return `<td>
-            <div class="subject-card ${colorClass}">
+    document.getElementById('totalSubjects').textContent = uniqueSubjects.length;
+    document.getElementById('totalClasses').textContent  = totalSlots;
+    document.getElementById('totalLabs').textContent     = labs;
+    document.getElementById('freeHours').textContent     = Math.max(0, free);
+
+    // Render rows
+    tbody.innerHTML = weekDays.map(day => {
+      const cells = timeSlots.map(startTime => {
+
+        // Break column
+        if (startTime === '12:40')
+          return `<td class="break">Break</td>`;
+
+        // Find matching lecture
+        const lecture = lectures.find(l =>
+          l.day_of_week === day &&
+          l.start_time.slice(0, 5) === startTime
+        );
+
+        if (lecture) {
+          const c = getColor(lecture.subject_name);
+          return `<td>
+            <div class="subject-card ${c}">
               <h4>${lecture.subject_name}</h4>
-              <p>${lecture.teacher_name}</p>
+              <p>${lecture.teacher_name || ''}</p>
               <p>${lecture.room || 'TBD'}</p>
             </div>
           </td>`;
-          }
+        }
 
-          return `<td>-</td>`;
-        });
+        return `<td>-</td>`;
+      });
 
-        return `<tr><td class="day">${day}</td>${cells.join('')}</tr>`;
+      return `<tr><td class="day">${day}</td>${cells.join('')}</tr>`;
+    }).join('');
+
+    // Render legend
+    const legendEl = document.getElementById('legendEl');
+    if (legendEl) {
+      legendEl.innerHTML = uniqueSubjects.map(name => {
+        const c = getColor(name);
+        return `<div><span class="box ${c}-box"></span> ${name}</div>`;
       }).join('');
-    };
+    }
+  };
 
-    fetchProfile();
-    fetchWeekly();
-  </script>
+  // ── Run ────────────────────────────────────────────────────────────────
+  fetchProfile();   // loads uploaded image
+  fetchWeekly();    // loads DB slots
+</script>
+
 </body>
-
 </html>

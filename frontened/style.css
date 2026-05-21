@@ -158,3 +158,13 @@ button:hover {
 .forgot-password a:hover {
     text-decoration: underline;
 }
+.error {
+  color: red;
+  font-size: 12px;
+  display: block;
+  margin-top: 4px;
+}
+
+input.error-border {
+  border: 1px solid red;
+}

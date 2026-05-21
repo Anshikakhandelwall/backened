@@ -15,6 +15,7 @@ import uploadRoutes       from './routes/upload.routes.js';
 import pushRoutes from './routes/push.routes.js';
 
 
+
 dotenv.config();
 
 const app = express();
@@ -24,11 +25,39 @@ const app = express();
 //   credentials: true
 // }));
 
+// app.use(cors({
+//   origin: ['http://127.0.0.1:3000', 'http://localhost:3000'],
+//   credentials: true,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+// }));
+
 app.use(cors({
-  origin: ['http://127.0.0.1:3000', 'http://localhost:3000'],
+  origin: (origin, callback) => {
+    // Allow these origins
+    const allowed = [
+      'http://127.0.0.1:3000',
+      'http://localhost:3000',
+      'http://127.0.0.1:5500',
+      'http://localhost:5500',
+      'http://127.0.0.1:5501',
+      'http://localhost:5501',
+    ];
+
+    // Allow requests with no origin (Postman, mobile apps)
+    if (!origin) return callback(null, true);
+
+    if (allowed.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn('CORS blocked origin:', origin);
+      callback(new Error(`CORS blocked: ${origin}`));
+    }
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods:     ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
 
 app.use(express.json());
 app.use(cookieParser());

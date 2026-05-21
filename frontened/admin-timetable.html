@@ -482,32 +482,108 @@
     window.handleDragLeave = () => document.getElementById('dropZone').classList.remove('dragover');
     window.handleDrop = (e) => { e.preventDefault(); document.getElementById('dropZone').classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); };
 
+    // window.uploadTimetable = async () => {
+    //   const sectionId = document.getElementById('uploadSection').value;
+    //   if (!sectionId) { alert('Please select a section'); return; }
+    //   if (!selectedFile) { alert('Please select a file'); return; }
+    //   const formData = new FormData();
+    //   formData.append('timetable', selectedFile);
+    //   formData.append('section_id', sectionId);
+    //   try {
+    //     const res = await fetch(`${BASE}/upload/timetable`, {
+    //       method: 'POST',
+    //       headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
+    //       credentials: 'include',
+    //       body: formData,
+    //     });
+    //     const data = await res.json();
+    //     if (data.success) {
+    //       alert('Timetable uploaded successfully!');
+    //       selectedFile = null;
+    //       document.getElementById('uploadBtn').disabled = true;
+    //       document.getElementById('previewBox').style.display = 'none';
+    //       document.getElementById('fileInfo').style.display = 'none';
+    //       document.getElementById('fileInput').value = '';
+    //       loadExistingTimetable();
+    //     } else alert(data.message || 'Upload failed');
+    //   } catch (err) { console.error(err); alert('Upload failed'); }
+    // };
+
     window.uploadTimetable = async () => {
-      const sectionId = document.getElementById('uploadSection').value;
-      if (!sectionId) { alert('Please select a section'); return; }
-      if (!selectedFile) { alert('Please select a file'); return; }
-      const formData = new FormData();
-      formData.append('timetable', selectedFile);
-      formData.append('section_id', sectionId);
-      try {
-        const res = await fetch(`${BASE}/upload/timetable`, {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
-          credentials: 'include',
-          body: formData,
-        });
-        const data = await res.json();
-        if (data.success) {
-          alert('Timetable uploaded successfully!');
-          selectedFile = null;
-          document.getElementById('uploadBtn').disabled = true;
-          document.getElementById('previewBox').style.display = 'none';
-          document.getElementById('fileInfo').style.display = 'none';
-          document.getElementById('fileInput').value = '';
-          loadExistingTimetable();
-        } else alert(data.message || 'Upload failed');
-      } catch (err) { console.error(err); alert('Upload failed'); }
-    };
+  const sectionId = document.getElementById('uploadSection').value;
+  if (!sectionId)   { alert('Please select a section'); return; }
+  if (!selectedFile){ alert('Please select a file');    return; }
+
+  const btn = document.getElementById('uploadBtn');
+  btn.textContent = '⏳ Uploading & running OCR...';
+  btn.disabled    = true;
+
+  const formData = new FormData();
+  formData.append('timetable',  selectedFile);
+  formData.append('section_id', sectionId);
+
+  try {
+    const res  = await fetch(`${BASE}/upload/timetable`, {
+      method:      'POST',
+      headers:     { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
+      credentials: 'include',
+      body:        formData,
+    });
+    const data = await res.json();
+
+    btn.textContent = 'Upload Timetable';
+    btn.disabled    = false;
+
+    const infoEl = document.getElementById('fileInfo');
+    infoEl.style.display = 'block';
+
+    if (data.success) {
+      if (data.slotsCreated > 0) {
+        infoEl.style.background = '#dcfce7';
+        infoEl.style.color      = '#15803d';
+        infoEl.style.border     = '1px solid #bbf7d0';
+        infoEl.innerHTML = `
+          <strong>✅ ${data.message}</strong><br><br>
+          📊 <strong>${data.slotsCreated}</strong> slots created<br>
+          ⏭️ <strong>${data.slotsSkipped}</strong> already existed (skipped)<br>
+          ❌ <strong>${data.slotsFailed}</strong> could not be created
+          ${data.slotsFailed > 0 ? `<br><small style="color:#dc2626">
+            Tip: Make sure teachers are registered before uploading timetable
+          </small>` : ''}`;
+      } else {
+        infoEl.style.background = '#fef3c7';
+        infoEl.style.color      = '#d97706';
+        infoEl.style.border     = '1px solid #fde68a';
+        infoEl.innerHTML = `
+          <strong>⚠️ ${data.message}</strong>
+          ${data.rawText ? `<br><br>
+            <small>OCR extracted text (first 300 chars):</small><br>
+            <code style="font-size:11px;background:#f3f4f6;
+                         padding:6px;border-radius:4px;display:block;
+                         white-space:pre-wrap;margin-top:6px">
+              ${data.rawText.slice(0,300)}
+            </code>` : ''}`;
+      }
+
+      selectedFile = null;
+      document.getElementById('previewBox').style.display = 'none';
+      document.getElementById('fileInput').value          = '';
+      fetchSlots(); // refresh slot table
+
+    } else {
+      infoEl.style.background = '#fee2e2';
+      infoEl.style.color      = '#dc2626';
+      infoEl.style.border     = '1px solid #fecaca';
+      infoEl.textContent      = `❌ ${data.message}`;
+    }
+
+  } catch (err) {
+    console.error('Upload error:', err);
+    btn.textContent = 'Upload Timetable';
+    btn.disabled    = false;
+    alert('Upload failed. Check console for details.');
+  }
+};
 
     // ── UPLOADED LIST ──────────────────────────────────────────────────────
     const loadUploadedList = async () => {

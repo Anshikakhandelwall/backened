@@ -121,111 +121,180 @@
   </div>
 
   <script type="module">
-    const BASE_URL = 'http://localhost:5000/api';
-    const token = localStorage.getItem('accessToken');
+    const BASE_URL = 'http://localhost:5000/api';  // ✅ correct port
+    const token    = localStorage.getItem('accessToken');
     const userName = localStorage.getItem('userName') || 'Admin';
-    if (!token || localStorage.getItem('userRole') !== 'admin') window.location.href = 'signin.html';
+
+    if (!token || localStorage.getItem('userRole') !== 'admin') {
+      window.location.href = 'signin.html';
+    }
 
     window.handleLogout = async () => {
       await fetch(`${BASE_URL}/auth/logout`, { method: 'POST', credentials: 'include' });
-      localStorage.clear(); window.location.href = 'signin.html';
+      localStorage.clear();
+      window.location.href = 'signin.html';
     };
 
     document.getElementById('avatarLetter').textContent = userName.charAt(0).toUpperCase();
-    document.getElementById('adminName').textContent = userName;
+    document.getElementById('adminName').textContent    = userName;
 
-    // Set today's date as default
     document.getElementById('subDate').value = new Date().toISOString().split('T')[0];
 
-    window.openAssignModal = () => {
-      loadModalDropdowns();
+    window.openAssignModal = async () => {
       document.getElementById('assignModal').classList.add('show');
+      await loadModalDropdowns();
     };
+
     window.closeModal = () => document.getElementById('assignModal').classList.remove('show');
 
-    // ── Load dropdowns ─────────────────────────────────────────────────────
+    // ── Load dropdowns ──────────────────────────────────────────────────
     const loadModalDropdowns = async () => {
       try {
         const [slotRes, teachRes] = await Promise.all([
-          fetch(`${BASE_URL}/timetable/admin/all`, { headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include' }),
-          fetch(`${BASE_URL}/admin/teachers`, { headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include' }),
+          fetch(`${BASE_URL}/timetable/admin/all`, {
+            headers: { 'Authorization': `Bearer ${token}` },
+            credentials: 'include',
+          }),
+          fetch(`${BASE_URL}/admin/teachers`, {
+            headers: { 'Authorization': `Bearer ${token}` },
+            credentials: 'include',
+          }),
         ]);
-        const [slots, teachers] = await Promise.all([slotRes.json(), teachRes.json()]);
 
-        if (slots.success)
+        const [slots, teachers] = await Promise.all([
+          slotRes.json(),
+          teachRes.json(),
+        ]);
+
+        console.log('Slots response:', slots);
+        console.log('Teachers response:', teachers);
+
+        // ── Populate slot dropdown ──────────────────────────────────
+        if (slots.success && slots.data.length) {
           document.getElementById('subSlot').innerHTML =
             slots.data.map(s =>
-              `<option value="${s.slot_id}">${s.day_of_week} | ${s.start_time} | ${s.subject_name} | ${s.section_name}</option>`
+              `<option value="${s.slot_id}">
+                ${s.day_of_week} | ${s.start_time}–${s.end_time} |
+                ${s.subject_name} | ${s.section_name}
+              </option>`
             ).join('');
-
-        if (teachers.success) {
-          const opts = teachers.data.map(t => `<option value="${t.teacher_id}">${t.name}</option>`).join('');
-          document.getElementById('subOriginal').innerHTML = opts;
-          document.getElementById('subSubstitute').innerHTML = opts;
+        } else {
+          document.getElementById('subSlot').innerHTML =
+            `<option value="">⚠️ No slots found — add timetable slots first</option>`;
         }
-      } catch { console.log('Modal dropdowns: sample mode'); }
+
+        // ── Populate teacher dropdowns ──────────────────────────────
+        if (teachers.success && teachers.data.length) {
+          const opts = teachers.data.map(t =>
+            `<option value="${t.teacher_id}">${t.name} — ${t.designation || 'Teacher'}</option>`
+          ).join('');
+          document.getElementById('subOriginal').innerHTML   = opts;
+          document.getElementById('subSubstitute').innerHTML = opts;
+        } else {
+          const noTeacher = `<option value="">⚠️ No teachers found</option>`;
+          document.getElementById('subOriginal').innerHTML   = noTeacher;
+          document.getElementById('subSubstitute').innerHTML = noTeacher;
+        }
+
+      } catch (err) {
+        console.error('Dropdown load error:', err);
+        document.getElementById('subSlot').innerHTML =
+          `<option value="">❌ Could not load — check server on port 5000</option>`;
+      }
     };
 
-    // ── Fetch all substitutions ────────────────────────────────────────────
+    // ── Fetch all substitutions ────────────────────────────────────────
     const fetchSubs = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/substitutions/all`, {
-          headers: { 'Authorization': `Bearer ${token}` }, credentials: 'include',
+        const res  = await fetch(`${BASE_URL}/substitutions/all`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+          credentials: 'include',
         });
         const data = await res.json();
-        renderSubs(data.success ? data.data : getSample());
-      } catch { renderSubs(getSample()); }
+        renderSubs(data.success ? data.data : []);
+      } catch (err) {
+        console.error('Fetch subs error:', err);
+        renderSubs([]);
+      }
     };
 
     const renderSubs = (subs) => {
       const tbody = document.getElementById('subTable');
       if (!subs.length) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:#6b7280">No substitutions found</td></tr>`;
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7"
+              style="text-align:center;padding:30px;color:#6b7280">
+              No substitutions found
+            </td>
+          </tr>`;
         return;
       }
       tbody.innerHTML = subs.map(s => `
-      <tr>
-        <td>${s.sub_date}</td>
-        <td>${s.subject_name}</td>
-        <td>${s.section_name}</td>
-        <td>${s.start_time} – ${s.end_time}</td>
-        <td>${s.original_teacher}</td>
-        <td><span class="badge badge-green">${s.substitute_teacher}</span></td>
-        <td>${s.reason || '—'}</td>
-      </tr>`).join('');
+        <tr>
+          <td>${s.sub_date}</td>
+          <td>${s.subject_name}</td>
+          <td>${s.section_name}</td>
+          <td>${s.start_time} – ${s.end_time}</td>
+          <td>${s.original_teacher}</td>
+          <td><span class="badge badge-green">${s.substitute_teacher}</span></td>
+          <td>${s.reason || '—'}</td>
+        </tr>`).join('');
     };
 
-    // ── Assign substitute ──────────────────────────────────────────────────
+    // ── Assign substitute ──────────────────────────────────────────────
     window.assignSub = async () => {
-      const body = {
-        slot_id: document.getElementById('subSlot').value,
-        sub_date: document.getElementById('subDate').value,
-        original_teacher_id: document.getElementById('subOriginal').value,
-        substitute_teacher_id: document.getElementById('subSubstitute').value,
-        reason: document.getElementById('subReason').value,
-      };
-      if (!body.sub_date) { alert('Please select a date'); return; }
-      try {
-        const res = await fetch(`${BASE_URL}/substitutions/assign`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          credentials: 'include',
-          body: JSON.stringify(body),
-        });
-        const data = await res.json();
-        if (data.success) { closeModal(); fetchSubs(); alert('Substitute assigned!'); }
-        else alert(data.message || 'Failed');
-      } catch { closeModal(); fetchSubs(); alert('Assigned (sample mode)'); }
-    };
+      const slotId  = document.getElementById('subSlot').value;
+      const date    = document.getElementById('subDate').value;
+      const origId  = document.getElementById('subOriginal').value;
+      const subId   = document.getElementById('subSubstitute').value;
+      const reason  = document.getElementById('subReason').value;
 
-    const getSample = () => [
-      { sub_date: '2026-04-03', subject_name: 'DBMS', section_name: 'CS-B', start_time: '10:10', end_time: '11:00', original_teacher: 'Dr. Sharma', substitute_teacher: 'Dr. Mehta', reason: 'Medical leave' },
-      { sub_date: '2026-03-28', subject_name: 'Mathematics', section_name: 'CS-A', start_time: '11:00', end_time: '11:50', original_teacher: 'Prof. Gupta', substitute_teacher: 'Ms. Rao', reason: 'Conference' },
-      { sub_date: '2026-03-20', subject_name: 'Machine Learning', section_name: 'CS-A', start_time: '09:20', end_time: '10:10', original_teacher: 'Dr. Mehta', substitute_teacher: 'Dr. Kumar', reason: 'Personal leave' },
-    ];
+      if (!slotId)  { alert('Please select a timetable slot'); return; }
+      if (!date)    { alert('Please select a date'); return; }
+      if (!origId)  { alert('Please select the original teacher'); return; }
+      if (!subId)   { alert('Please select a substitute teacher'); return; }
+      if (origId === subId) {
+        alert('Substitute cannot be the same as the original teacher');
+        return;
+      }
+
+      try {
+        const res  = await fetch(`${BASE_URL}/substitutions/assign`, {
+          method:  'POST',
+          headers: {
+            'Content-Type':  'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            slot_id:               slotId,
+            sub_date:              date,
+            original_teacher_id:   origId,
+            substitute_teacher_id: subId,
+            reason:                reason || null,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          closeModal();
+          fetchSubs();
+          alert('✅ Substitute assigned successfully!');
+        } else {
+          alert(`❌ ${data.message || 'Could not assign substitute'}`);
+        }
+
+      } catch (err) {
+        console.error('Assign error:', err);
+        alert('Could not connect to server. Is it running on port 3000?');
+      }
+    };
 
     fetchSubs();
-  </script>
-</body>
 
+    
+</script>
+</body>
 </html>

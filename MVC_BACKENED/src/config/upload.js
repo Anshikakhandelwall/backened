@@ -1,59 +1,57 @@
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
+import multer  from 'multer';
+import path    from 'path';
+import fs      from 'fs';
 
-// Create uploads directory if not exists
-const uploadDir = './uploads';
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+const uploadDir     = './uploads';
+const timetableDir  = './uploads/timetables';
+const excelDir      = './uploads/excel';
 
-const timetableDir = './uploads/timetables';
-if (!fs.existsSync(timetableDir)) fs.mkdirSync(timetableDir, { recursive: true });
+[uploadDir, timetableDir, excelDir].forEach(d => {
+  if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });
+});
 
-const excelDir = './uploads/excel';
-if (!fs.existsSync(excelDir)) fs.mkdirSync(excelDir, { recursive: true });
-
-// ── Timetable image/PDF storage ──────────────────────────────────────────
+// ── Timetable storage ──────────────────────────────────────────────────
 const timetableStorage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, './uploads/timetables'),
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        const name = `timetable_section_${req.body.section_id}_${Date.now()}${ext}`;
-        cb(null, name);
-    },
+  destination: (req, file, cb) => cb(null, './uploads/timetables'),
+  filename:    (req, file, cb) => {
+    const ext  = path.extname(file.originalname).toLowerCase();
+    const name = `timetable_${Date.now()}${ext}`;  // ← removed section_id here
+    cb(null, name);
+  },
 });
 
 const timetableFilter = (req, file, cb) => {
-    const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
-    if (allowed.includes(file.mimetype)) cb(null, true);
-    else cb(new Error('Only JPG, PNG and PDF files are allowed'), false);
+  const allowed = ['image/jpeg','image/jpg','image/png','application/pdf'];
+  if (allowed.includes(file.mimetype)) cb(null, true);
+  else cb(new Error('Only JPG, PNG and PDF files allowed'), false);
 };
 
 export const uploadTimetable = multer({
-    storage: timetableStorage,
-    fileFilter: timetableFilter,
-    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  storage:    timetableStorage,
+  fileFilter: timetableFilter,
+  limits:     { fileSize: 10 * 1024 * 1024 },
 });
 
-// ── Excel storage ────────────────────────────────────────────────────────
+// ── Excel storage ──────────────────────────────────────────────────────
 const excelStorage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, './uploads/excel'),
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        cb(null, `students_${Date.now()}${ext}`);
-    },
+  destination: (req, file, cb) => cb(null, './uploads/excel'),
+  filename:    (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    cb(null, `students_${Date.now()}${ext}`);
+  },
 });
 
 const excelFilter = (req, file, cb) => {
-    const allowed = [
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'application/vnd.ms-excel',
-    ];
-    if (allowed.includes(file.mimetype)) cb(null, true);
-    else cb(new Error('Only Excel files (.xlsx, .xls) are allowed'), false);
+  const allowed = [
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-excel',
+  ];
+  if (allowed.includes(file.mimetype)) cb(null, true);
+  else cb(new Error('Only Excel files (.xlsx, .xls) allowed'), false);
 };
 
 export const uploadExcel = multer({
-    storage: excelStorage,
-    fileFilter: excelFilter,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  storage:    excelStorage,
+  fileFilter: excelFilter,
+  limits:     { fileSize: 5 * 1024 * 1024 },
 });
