@@ -45,6 +45,18 @@ const TimetableUploadModel = {
     return rows;
   },
 
+
+
+deleteById: async (id) => {
+    const [result] = await db.query(
+      `DELETE FROM section_timetables WHERE id = ?`,
+      [id]
+    );
+    return result;
+  },
 };
 
+
+
 export default TimetableUploadModel;
+

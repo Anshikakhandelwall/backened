@@ -107,7 +107,7 @@
   </div>
 
   <script type="module">
-    const BASE_URL = 'http://localhost:5000/api';
+    const BASE_URL = 'http://127.0.0.1:5000/api';
     const token = localStorage.getItem('accessToken');
     const userName = localStorage.getItem('userName') || 'Teacher';
     const userRole = localStorage.getItem('userRole');
@@ -243,7 +243,7 @@
     fetchSubCount();
 
 
-    const PUSH_URL = 'http://localhost:5000/api/push';
+    const PUSH_URL = 'http://127.0.0.1:5000/api/push';
 
 
     // ── Register service worker + subscribe to push ────────────────────

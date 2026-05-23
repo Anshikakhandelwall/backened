@@ -211,7 +211,7 @@
   </div>
 
   <script type="module">
-    const BASE_URL = 'http://localhost:5000/api/student';
+    const BASE_URL = 'http://127.0.0.1:5000/api/student';
     const token = localStorage.getItem('accessToken');
     const userName = localStorage.getItem('userName') || 'Student';
 
@@ -220,7 +220,7 @@
     }
 
     window.logoutUser = async () => {
-      await fetch('http://localhost:5000/api/auth/logout', { method: 'POST', credentials: 'include' });
+      await fetch('http://127.0.0.1:5000/api/auth/logout', { method: 'POST', credentials: 'include' });
       localStorage.clear(); window.location.href = 'signin.html';
     };
 

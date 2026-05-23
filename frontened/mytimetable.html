@@ -113,9 +113,9 @@
 </div>
 
 <script type="module">
-  const BASE_URL   = 'http://localhost:5000/api/student'
-  const UPLOAD_URL = 'http://localhost:5000/api/upload';
-  const FILE_URL   = 'http://localhost:5000/uploads';
+  const BASE_URL   = 'http://127.0.0.1:5000/api/student'
+  const UPLOAD_URL = 'http://127.0.0.1:5000/api/upload';
+  const FILE_URL   = 'http://127.0.0.1:5000/uploads';
 
   const token    = localStorage.getItem('accessToken');
   const userName = localStorage.getItem('userName') || 'Student';
@@ -130,7 +130,7 @@
   document.getElementById('nameEl').textContent   = userName;
 
   window.logoutUser = async () => {
-    await fetch('http://localhost:5000/api/auth/logout', {
+    await fetch('http://127.0.0.1:5000/api/auth/logout', {
       method: 'POST', credentials: 'include'
     });
     localStorage.clear();
@@ -171,61 +171,12 @@
     }
   };
 
-  // ── Step 2: Load admin-uploaded image/PDF timetable ────────────────────
+  
+
   const loadUploadedTimetable = async (sectionId) => {
-    try {
-      const res  = await authFetch(`${UPLOAD_URL}/timetable/section/${sectionId}`);
-      const data = await res.json();
-
-      const container = document.getElementById('uploadedTimetableContainer');
-
-      if (!data.success || !data.data) {
-        container.innerHTML = ''; // nothing uploaded — hide container
-        return;
-      }
-
-      const fileUrl = `${FILE_URL}/timetables/${data.data.file_path}`;
-      console.log('Loading timetable file:', fileUrl);
-
-      if (data.data.file_type === 'pdf') {
-        container.innerHTML = `
-          <div style="background:white;border-radius:18px;padding:20px;
-               box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-bottom:24px">
-            <h3 style="font-size:16px;color:#1c3557;margin-bottom:14px">
-              📅 Official Timetable
-            </h3>
-            <iframe src="${fileUrl}"
-              style="width:100%;height:500px;border:none;border-radius:10px"
-              title="Timetable PDF">
-            </iframe>
-          </div>`;
-      } else {
-        container.innerHTML = `
-          <div style="background:white;border-radius:18px;padding:20px;
-               box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-bottom:24px">
-            <h3 style="font-size:16px;color:#1c3557;margin-bottom:14px">
-              📅 Official Timetable
-            </h3>
-            <img
-              src="${fileUrl}"
-              alt="Section Timetable"
-              style="width:100%;border-radius:10px;
-                     max-height:600px;object-fit:contain"
-              onerror="
-                this.style.display='none';
-                this.nextElementSibling.style.display='block'">
-            <p style="display:none;color:#dc2626;font-size:13px;margin-top:8px">
-              ⚠️ Could not load timetable image.
-              Make sure backend is running on port 5000.
-            </p>
-          </div>`;
-      }
-
-    } catch (err) {
-      console.error('Uploaded timetable error:', err);
-      document.getElementById('uploadedTimetableContainer').innerHTML = '';
-    }
-  };
+  // Image display removed — slots from OCR are shown in colored boxes instead
+  return;
+};
 
   // ── Step 3: Fetch weekly slot timetable from DB ────────────────────────
   const fetchWeekly = async () => {
@@ -321,7 +272,7 @@
   };
 
   // ── Run ────────────────────────────────────────────────────────────────
-  fetchProfile();   // loads uploaded image
+  
   fetchWeekly();    // loads DB slots
 </script>
 

@@ -322,7 +322,7 @@
   </div>
 
   <script type="module">
-    const BASE = 'http://localhost:5000/api';
+    const BASE = 'http://127.0.0.1:5000/api';
     const token = localStorage.getItem('accessToken');
     const userName = localStorage.getItem('userName') || 'Admin';
     if (!token || localStorage.getItem('userRole') !== 'admin') window.location.href = 'signin.html';
@@ -482,32 +482,7 @@
     window.handleDragLeave = () => document.getElementById('dropZone').classList.remove('dragover');
     window.handleDrop = (e) => { e.preventDefault(); document.getElementById('dropZone').classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); };
 
-    // window.uploadTimetable = async () => {
-    //   const sectionId = document.getElementById('uploadSection').value;
-    //   if (!sectionId) { alert('Please select a section'); return; }
-    //   if (!selectedFile) { alert('Please select a file'); return; }
-    //   const formData = new FormData();
-    //   formData.append('timetable', selectedFile);
-    //   formData.append('section_id', sectionId);
-    //   try {
-    //     const res = await fetch(`${BASE}/upload/timetable`, {
-    //       method: 'POST',
-    //       headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
-    //       credentials: 'include',
-    //       body: formData,
-    //     });
-    //     const data = await res.json();
-    //     if (data.success) {
-    //       alert('Timetable uploaded successfully!');
-    //       selectedFile = null;
-    //       document.getElementById('uploadBtn').disabled = true;
-    //       document.getElementById('previewBox').style.display = 'none';
-    //       document.getElementById('fileInfo').style.display = 'none';
-    //       document.getElementById('fileInput').value = '';
-    //       loadExistingTimetable();
-    //     } else alert(data.message || 'Upload failed');
-    //   } catch (err) { console.error(err); alert('Upload failed'); }
-    // };
+    
 
     window.uploadTimetable = async () => {
   const sectionId = document.getElementById('uploadSection').value;
@@ -585,33 +560,74 @@
   }
 };
 
-    // ── UPLOADED LIST ──────────────────────────────────────────────────────
+    
+
     const loadUploadedList = async () => {
-      const data = await apiFetch(`${BASE}/upload/timetable/all`);
-      const list = document.getElementById('uploadedList');
-      if (!data?.success || !data.data.length) {
-        list.innerHTML = `<div class="empty-state"><h3>No timetables uploaded yet</h3></div>`; return;
-      }
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      list.innerHTML = data.data.map(t => {
-        const d = new Date(t.uploaded_at);
-        const ds = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
-        const icon = t.file_type === 'pdf' ? '📄' : '🖼️';
-        return `
-        <div class="uploaded-card">
-          <div>
-            <h4>${icon} ${t.section_name} — ${t.branch_name} Sem ${t.sem_number}</h4>
-            <p>Uploaded by ${t.uploaded_by_name} on ${ds} · ${t.file_type.toUpperCase()}</p>
-          </div>
-          <button class="view-btn"
-            onclick="window.open('http://localhost:3000/uploads/timetables/${t.file_path}','_blank')">
+  const data = await apiFetch(`${BASE}/upload/timetable/all`);
+  const list = document.getElementById('uploadedList');
+
+  if (!data?.success || !data.data.length) {
+    list.innerHTML = `<div style="text-align:center;padding:40px;color:#6b7280">
+      <h3>No timetables uploaded yet</h3></div>`;
+    return;
+  }
+
+  const months = ['Jan','Feb','Mar','Apr','May','Jun',
+                  'Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  list.innerHTML = data.data.map(t => {
+    const d   = new Date(t.uploaded_at);
+    const ds  = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    const icon = t.file_type === 'pdf' ? '📄' : '🖼️';
+
+    return `
+      <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;
+           padding:16px 20px;margin-bottom:12px;
+           display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <h4 style="font-size:14px;color:#1c3557;margin-bottom:4px">
+            ${icon} ${t.section_name} — ${t.branch_name} Sem ${t.sem_number}
+          </h4>
+          <p style="font-size:12px;color:#6b7280">
+            Uploaded by ${t.uploaded_by_name} on ${ds} · ${t.file_type.toUpperCase()}
+          </p>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button
+            onclick="window.open('http://127.0.0.1:5000/uploads/timetables/${t.file_path}','_blank')"
+            style="background:#449bed;color:white;border:none;padding:8px 16px;
+                   border-radius:8px;cursor:pointer;font-size:13px;font-weight:bold">
             View
           </button>
-        </div>`;
-      }).join('');
-    };
+          <button
+            onclick="deleteUploadedTimetable(${t.id}, ${t.section_id})"
+            style="background:#fee2e2;color:#dc2626;border:none;padding:8px 16px;
+                   border-radius:8px;cursor:pointer;font-size:13px;font-weight:bold">
+            Delete
+          </button>
+        </div>
+      </div>`;
+  }).join('');
+};
 
+window.deleteUploadedTimetable = async (id, sectionId) => {
+  if (!confirm('Delete this uploaded timetable?\nSlots created from it will also be removed.'))
+    return;
+
+  const data = await apiFetch(
+    `${BASE}/upload/timetable/${id}?section_id=${sectionId}`,
+    'DELETE'
+  );
+
+  if (data?.success) {
+    alert('Timetable deleted successfully');
+    loadUploadedList();
     fetchSlots();
+  } else {
+    alert(data?.message || 'Could not delete');
+  }
+};
+
   </script>
 </body>
 

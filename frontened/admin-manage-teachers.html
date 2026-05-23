@@ -297,7 +297,7 @@
     </div>
 
     <script type="module">
-        const BASE = 'http://localhost:5000/api';
+        const BASE = 'http://127.0.0.1:5000/api';
         const userName = localStorage.getItem('userName') || 'Admin';
         if (!localStorage.getItem('accessToken') || localStorage.getItem('userRole') !== 'admin') window.location.href = 'signin.html';
         window.handleLogout = async () => { await fetch(`${BASE}/auth/logout`, { method: 'POST', credentials: 'include' }); localStorage.clear(); window.location.href = 'signin.html'; };

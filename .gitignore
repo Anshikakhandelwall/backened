@@ -1,2 +1,6 @@
-.env
 node_modules/
+.env
+uploads/timetables/*
+uploads/excel/*
+!uploads/timetables/.gitkeep
+!uploads/excel/.gitkeep

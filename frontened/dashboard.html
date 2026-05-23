@@ -170,7 +170,7 @@
   </div>
 
   <script type="module">
-    const BASE_URL = 'http://localhost:5000/api/student';
+    const BASE_URL = 'http://127.0.0.1:5000/api/student';
     const token = localStorage.getItem('accessToken');
     const userName = localStorage.getItem('userName') || 'Student';
     const userRole = localStorage.getItem('userRole');
@@ -182,7 +182,7 @@
 
     // ── Logout ─────────────────────────────────────────────────────────────
     window.logoutUser = async () => {
-      await fetch('http://localhost:5000/api/auth/logout', {
+      await fetch('http://127.0.0.1:5000/api/auth/logout', {
         method: 'POST', credentials: 'include'
       });
       localStorage.clear();
@@ -333,7 +333,7 @@
     fetchTodayLectures();
     fetchUpcomingEvent();
 
-    const PUSH_URL = 'http://localhost:5000/api/push';
+    const PUSH_URL = 'http://127.0.0.1:5000/api/push';
 
 
     // ── Register service worker + subscribe to push ────────────────────
