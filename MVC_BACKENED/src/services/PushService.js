@@ -177,3 +177,17 @@ export default {
   notifySubstitution,
   notifyEventConflict,
 };
+
+// Only set VAPID if keys are present
+if (process.env.VAPID_PUBLIC_KEY && 
+    process.env.VAPID_PRIVATE_KEY && 
+    process.env.VAPID_EMAIL) {
+  webpush.setVapidDetails(
+    process.env.VAPID_EMAIL,
+    process.env.VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  );
+  console.log('✅ Push notifications configured');
+} else {
+  console.warn('⚠️ VAPID keys not set — push notifications disabled');
+}
