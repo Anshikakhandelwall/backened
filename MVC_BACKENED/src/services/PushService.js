@@ -6,11 +6,18 @@ import PushModel from '../models/PushModel.js';
 dotenv.config();
 
 // ── Configure VAPID ────────────────────────────────────────────────────
-webpush.setVapidDetails(
-  process.env.VAPID_EMAIL,
-  process.env.VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
-);
+if (process.env.VAPID_PUBLIC_KEY &&
+    process.env.VAPID_PRIVATE_KEY &&
+    process.env.VAPID_EMAIL) {
+  webpush.setVapidDetails(
+    process.env.VAPID_EMAIL,
+    process.env.VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  );
+  console.log('✅ Push notifications configured');
+} else {
+  console.warn('⚠️ VAPID keys missing — push notifications disabled');
+}
 
 // ── Send push to one subscription ─────────────────────────────────────
 const sendPush = async (subscription, payload) => {
@@ -178,16 +185,3 @@ export default {
   notifyEventConflict,
 };
 
-// Only set VAPID if keys are present
-if (process.env.VAPID_PUBLIC_KEY && 
-    process.env.VAPID_PRIVATE_KEY && 
-    process.env.VAPID_EMAIL) {
-  webpush.setVapidDetails(
-    process.env.VAPID_EMAIL,
-    process.env.VAPID_PUBLIC_KEY,
-    process.env.VAPID_PRIVATE_KEY
-  );
-  console.log('✅ Push notifications configured');
-} else {
-  console.warn('⚠️ VAPID keys not set — push notifications disabled');
-}
