@@ -4,7 +4,7 @@
 
 ---
 
-## 📋 Table of Contents
+##  Table of Contents
 
 - [Overview](#overview)
 - [Features](#features)
@@ -641,6 +641,6 @@ Built for educational purposes as part of a university project.
 
 ---
 
-*SmartTimetable Alert System — Built for Smart University Management* 🎓
+*SmartTimetable Alert System — Built for University Management* 
 
-OWNER- ANSHIKA KHANDELWAL
+owner : Anshika Khandelwal
