@@ -1,14 +1,22 @@
-import mysql from 'mysql2/promise';
+import mysql  from 'mysql2/promise';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  // Railway uses MYSQLHOST etc., fallback to DB_HOST for local
+  host:     process.env.MYSQLHOST     || process.env.DB_HOST,
+  port:     parseInt(process.env.MYSQLPORT || process.env.DB_PORT || 3306),
+  user:     process.env.MYSQLUSER     || process.env.DB_USER,
+  password: process.env.MYSQLPASSWORD || process.env.DB_PASSWORD,
+  database: process.env.MYSQLDATABASE || process.env.DB_NAME,
+
+  // SSL required for Railway MySQL
+  ssl: process.env.NODE_ENV === 'production'
+    ? { rejectUnauthorized: false }
+    : false,
+
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit:    10,
 });
 
 const checkDBConnection = async () => {
