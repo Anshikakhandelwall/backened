@@ -322,7 +322,7 @@
   </div>
 
   <script type="module">
-    const BASE = 'http://127.0.0.1:5000/api';
+    const BASE = 'https://backened-production-b558.up.railway.app/api';
     const token = localStorage.getItem('accessToken');
     const userName = localStorage.getItem('userName') || 'Admin';
     if (!token || localStorage.getItem('userRole') !== 'admin') window.location.href = 'signin.html';
@@ -594,7 +594,8 @@
         </div>
         <div style="display:flex;gap:10px">
           <button
-            onclick="window.open('http://127.0.0.1:5000/uploads/timetables/${t.file_path}','_blank')"
+            onclick="window.open('https://backened-production-b558.up.railway.app/uploads
+/timetables/${t.file_path}','_blank')"
             style="background:#449bed;color:white;border:none;padding:8px 16px;
                    border-radius:8px;cursor:pointer;font-size:13px;font-weight:bold">
             View

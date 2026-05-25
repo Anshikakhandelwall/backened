@@ -24,7 +24,7 @@ window.changePassword = async () => {
   const email = localStorage.getItem('userEmail');
   const token = localStorage.getItem('accessToken');
 
-  const res = await fetch('http://127.0.0.1:5000/api/auth/change-password', {
+  const res = await fetch('https://backened-production-b558.up.railway.app/api/auth/change-password', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
